@@ -26,6 +26,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Lexia — Directorio de Abogados en México",
   description: "Encuentra al abogado ideal para tu caso. El directorio más completo de abogados verificados en México.",
+  verification: {
+    google: "o4OSbbUGPVshzIXUFuHPiuOnS58yZEImIK5FsuiK6Rs",
+  },
   other: {
     "color-scheme": "light",
   },
