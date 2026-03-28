@@ -13,6 +13,7 @@ import {
   Briefcase,
   CreditCard,
 } from "lucide-react"
+import { registrarAbogado } from "@/app/actions/registro"
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -91,6 +92,8 @@ export default function RegistroPage() {
   const [step, setStep] = useState(0)
   const [form, setForm] = useState<FormData>(initial)
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState("")
 
   function set<K extends keyof FormData>(field: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -105,10 +108,18 @@ export default function RegistroPage() {
     )
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (step < STEPS.length - 1) {
       setStep(step + 1)
+      return
+    }
+    setLoading(true)
+    setServerError("")
+    const result = await registrarAbogado(form)
+    setLoading(false)
+    if (result.error) {
+      setServerError(result.error)
     } else {
       setSubmitted(true)
     }
@@ -636,6 +647,13 @@ export default function RegistroPage() {
             </div>
           )}
 
+          {/* Server error */}
+          {serverError && (
+            <p className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+              {serverError}
+            </p>
+          )}
+
           {/* Navigation */}
           <div className="flex gap-3 pt-6 mt-2 border-t border-[#EAE4D9]">
             {step > 0 && (
@@ -651,13 +669,14 @@ export default function RegistroPage() {
             <button
               type="submit"
               disabled={
+                loading ||
                 (step === 2 && form.specialties.length === 0) ||
                 (step === 3 && (!form.acceptTerms || form.specialties.length === 0))
               }
               className="flex-1 flex items-center justify-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] disabled:opacity-40 disabled:cursor-not-allowed text-[#0C0D10] font-semibold text-sm py-2.5 px-5 rounded-lg transition-colors"
             >
               {step === STEPS.length - 1 ? (
-                <>Crear mi cuenta <Check className="w-4 h-4" strokeWidth={2.5} /></>
+                loading ? "Creando cuenta..." : <>Crear mi cuenta <Check className="w-4 h-4" strokeWidth={2.5} /></>
               ) : (
                 <>Siguiente <ChevronRight className="w-4 h-4" /></>
               )}

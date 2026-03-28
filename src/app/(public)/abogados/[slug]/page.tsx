@@ -4,24 +4,43 @@ import {
   MapPin, Star, ShieldCheck, Phone, MessageCircle,
   Globe, GraduationCap, Briefcase, ArrowLeft, Mail,
 } from "lucide-react"
-import { getLawyerBySlug, getAverageRating } from "@/lib/mock-lawyers"
+import { prisma } from "@/lib/prisma"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
+async function getLawyer(slug: string) {
+  return prisma.lawyer.findUnique({
+    where: { slug, isActive: true },
+    include: {
+      specialties: { include: { specialty: true }, orderBy: { isPrimary: "desc" } },
+      reviews: { where: { isVisible: true }, include: { user: true } },
+      memberships: { include: { plan: true }, orderBy: { createdAt: "desc" }, take: 1 },
+    },
+  })
+}
+
+function avgRating(reviews: { rating: number }[]) {
+  if (!reviews.length) return 0
+  return reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+}
+
 export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slug]'>) {
   const { slug } = await props.params
-  const lawyer = getLawyerBySlug(slug)
+  const lawyer = await getLawyer(slug)
   if (!lawyer) notFound()
 
-  const avg = getAverageRating(lawyer)
-  const primarySpecialty = lawyer.specialties.find((s) => s.isPrimary)?.name ?? lawyer.specialties[0]?.name
+  const avg = avgRating(lawyer.reviews)
+  const primarySpecialty =
+    lawyer.specialties.find((s) => s.isPrimary)?.specialty.name ??
+    lawyer.specialties[0]?.specialty.name
   const initials = lawyer.name
     .replace(/^Lic\.\s*/i, "")
     .split(" ")
     .slice(0, 2)
     .map((n) => n[0])
     .join("")
-  const isPremium = lawyer.membership === "premium" || lawyer.membership === "despacho"
+  const planName = lawyer.memberships[0]?.plan.name ?? "Básico"
+  const isPremium = planName === "Premium" || planName === "Despacho"
 
   return (
     <main className="min-h-screen bg-[#FAF7F2]">
@@ -37,22 +56,15 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
           </Link>
 
           <div className="flex gap-5 items-start">
-            {/* Avatar */}
             <div className="w-16 h-16 rounded-xl bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] flex items-center justify-center flex-shrink-0">
-              <span
-                className="text-2xl font-semibold text-[#C49A3C]"
-                style={displayFont}
-              >
+              <span className="text-2xl font-semibold text-[#C49A3C]" style={displayFont}>
                 {initials}
               </span>
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1
-                  className="text-2xl md:text-3xl text-[#FAF7F2] leading-tight"
-                  style={displayFont}
-                >
+                <h1 className="text-2xl md:text-3xl text-[#FAF7F2] leading-tight" style={displayFont}>
                   {lawyer.name}
                 </h1>
                 {lawyer.isVerified && (
@@ -75,10 +87,12 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
                   <MapPin className="w-3.5 h-3.5" />
                   {lawyer.city}, {lawyer.state}
                 </div>
-                <div className="flex items-center gap-1 text-[#FAF7F2]/40 text-sm">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  {lawyer.yearsExperience} años de experiencia
-                </div>
+                {lawyer.yearsExperience && (
+                  <div className="flex items-center gap-1 text-[#FAF7F2]/40 text-sm">
+                    <Briefcase className="w-3.5 h-3.5" />
+                    {lawyer.yearsExperience} años de experiencia
+                  </div>
+                )}
                 {lawyer.reviews.length > 0 && (
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
@@ -102,56 +116,40 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main column */}
           <div className="lg:col-span-2 space-y-5">
-            {/* Bio */}
-            <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
-              <h2
-                className="text-lg text-[#0C0D10] mb-3"
-                style={displayFont}
-              >
-                Sobre mí
-              </h2>
-              <p className="text-[#0C0D10]/65 leading-relaxed text-sm">{lawyer.bio}</p>
-            </div>
+            {lawyer.bio && (
+              <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
+                <h2 className="text-lg text-[#0C0D10] mb-3" style={displayFont}>Sobre mí</h2>
+                <p className="text-[#0C0D10]/65 leading-relaxed text-sm">{lawyer.bio}</p>
+              </div>
+            )}
 
-            {/* Specialties */}
             <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
-              <h2
-                className="text-lg text-[#0C0D10] mb-4"
-                style={displayFont}
-              >
-                Especialidades
-              </h2>
+              <h2 className="text-lg text-[#0C0D10] mb-4" style={displayFont}>Especialidades</h2>
               <div className="flex flex-wrap gap-2">
                 {lawyer.specialties.map((s) => (
                   <Link
-                    key={s.slug}
-                    href={`/abogados?especialidad=${encodeURIComponent(s.name)}`}
+                    key={s.specialtyId}
+                    href={`/abogados?especialidad=${encodeURIComponent(s.specialty.name)}`}
                     className={`text-sm px-3 py-1 rounded-full transition-colors ${
                       s.isPrimary
                         ? "bg-[rgba(196,154,60,0.12)] text-[#C49A3C] border border-[rgba(196,154,60,0.3)] hover:bg-[rgba(196,154,60,0.2)]"
                         : "bg-[#F5F0E8] text-[#0C0D10]/60 border border-[#EAE4D9] hover:border-[#C49A3C] hover:text-[#C49A3C]"
                     }`}
                   >
-                    {s.name}
+                    {s.specialty.name}
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Education */}
             {(lawyer.university || lawyer.cedula) && (
               <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
-                <h2
-                  className="text-lg text-[#0C0D10] mb-5"
-                  style={displayFont}
-                >
-                  Formación
-                </h2>
+                <h2 className="text-lg text-[#0C0D10] mb-5" style={displayFont}>Formación</h2>
                 <div className="space-y-4">
                   {lawyer.university && (
                     <div className="flex gap-4">
                       <div className="w-9 h-9 bg-[#FAF7F2] border border-[#EAE4D9] rounded-lg flex items-center justify-center flex-shrink-0">
-                        <GraduationCap className="w-4.5 h-4.5 text-[#C49A3C]" />
+                        <GraduationCap className="w-4 h-4 text-[#C49A3C]" />
                       </div>
                       <div>
                         <p className="font-medium text-[#0C0D10] text-sm">Licenciatura en Derecho</p>
@@ -165,7 +163,7 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
                   {lawyer.cedula && (
                     <div className="flex gap-4">
                       <div className="w-9 h-9 bg-[#FAF7F2] border border-[rgba(196,154,60,0.3)] rounded-lg flex items-center justify-center flex-shrink-0">
-                        <ShieldCheck className="w-4.5 h-4.5 text-[#C49A3C]" />
+                        <ShieldCheck className="w-4 h-4 text-[#C49A3C]" />
                       </div>
                       <div>
                         <p className="font-medium text-[#0C0D10] text-sm">Cédula Profesional SEP</p>
@@ -177,18 +175,14 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
               </div>
             )}
 
-            {/* Reviews */}
             <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2
-                  className="text-lg text-[#0C0D10]"
-                  style={displayFont}
-                >
+                <h2 className="text-lg text-[#0C0D10]" style={displayFont}>
                   Reseñas {lawyer.reviews.length > 0 && `(${lawyer.reviews.length})`}
                 </h2>
                 {lawyer.reviews.length > 0 && (
                   <div className="flex items-center gap-1 text-amber-500">
-                    <Star className="w-4.5 h-4.5 fill-amber-400" />
+                    <Star className="w-4 h-4 fill-amber-400" />
                     <span className="font-semibold text-[#0C0D10] text-sm">{avg.toFixed(1)}</span>
                   </div>
                 )}
@@ -199,10 +193,12 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
               ) : (
                 <div className="space-y-5">
                   {lawyer.reviews.map((r, i) => (
-                    <div key={i}>
+                    <div key={r.id}>
                       {i > 0 && <div className="h-px bg-[#EAE4D9] mb-5" />}
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-medium text-[#0C0D10] text-sm">{r.autorNombre}</span>
+                        <span className="font-medium text-[#0C0D10] text-sm">
+                          {r.user?.name ?? "Anónimo"}
+                        </span>
                         <div className="flex gap-0.5">
                           {[1, 2, 3, 4, 5].map((n) => (
                             <Star
@@ -224,14 +220,8 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
 
           {/* Sidebar */}
           <aside className="space-y-4">
-            {/* Contact card */}
             <div className="bg-white border border-[#EAE4D9] rounded-2xl p-5 sticky top-20">
-              <h3
-                className="text-lg text-[#0C0D10] mb-5"
-                style={displayFont}
-              >
-                Contactar
-              </h3>
+              <h3 className="text-lg text-[#0C0D10] mb-5" style={displayFont}>Contactar</h3>
 
               <div className="space-y-2.5">
                 {lawyer.whatsapp && (
@@ -245,7 +235,6 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
                     Escribir por WhatsApp
                   </a>
                 )}
-
                 {lawyer.phone && (
                   <a
                     href={`tel:${lawyer.phone}`}
@@ -255,7 +244,6 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
                     {lawyer.phone}
                   </a>
                 )}
-
                 <button className="flex items-center justify-center gap-2 w-full border border-[#EAE4D9] text-[#0C0D10]/70 hover:border-[#C49A3C] hover:text-[#C49A3C] text-sm font-medium py-2.5 px-4 rounded-xl transition-colors">
                   <Mail className="w-4 h-4" />
                   Enviar mensaje
@@ -264,7 +252,6 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
 
               <div className="h-px bg-[#EAE4D9] my-4" />
 
-              {/* External links */}
               <div className="space-y-2">
                 {lawyer.website && (
                   <a
@@ -295,16 +282,10 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
               </p>
             </div>
 
-            {/* Similar lawyers */}
             <div className="bg-white border border-[#EAE4D9] rounded-2xl p-5">
-              <h3
-                className="text-base text-[#0C0D10] mb-3"
-                style={displayFont}
-              >
-                Abogados similares
-              </h3>
+              <h3 className="text-base text-[#0C0D10] mb-3" style={displayFont}>Abogados similares</h3>
               <Link
-                href={`/abogados?especialidad=${encodeURIComponent(lawyer.specialties[0]?.name ?? "")}`}
+                href={`/abogados?especialidad=${encodeURIComponent(primarySpecialty ?? "")}`}
                 className="text-[#C49A3C] text-sm hover:text-[#E2B865] transition-colors"
               >
                 Ver más {primarySpecialty} →

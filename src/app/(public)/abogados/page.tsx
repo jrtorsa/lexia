@@ -1,6 +1,7 @@
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import LawyerCard from "@/components/LawyerCard"
-import { LAWYERS } from "@/lib/mock-lawyers"
+import { prisma } from "@/lib/prisma"
+import type { Lawyer } from "@/lib/mock-lawyers"
 
 const ESPECIALIDADES = [
   "Todas",
@@ -17,6 +18,7 @@ const ESPECIALIDADES = [
 const ESTADOS = [
   "Todos",
   "CDMX",
+  "Ciudad de México",
   "Jalisco",
   "Nuevo León",
   "Puebla",
@@ -29,34 +31,87 @@ interface PageProps {
   searchParams: Promise<{ especialidad?: string; estado?: string; q?: string }>
 }
 
+// Map DB lawyer to the shape LawyerCard expects
+function toLawyerCard(l: Awaited<ReturnType<typeof fetchLawyers>>[number]): Lawyer {
+  const plan = l.memberships[0]?.plan.name ?? "Básico"
+  return {
+    id: l.id,
+    name: l.name,
+    slug: l.slug,
+    photoUrl: l.photoUrl,
+    city: l.city,
+    state: l.state,
+    bio: l.bio ?? "",
+    yearsExperience: l.yearsExperience ?? 0,
+    isVerified: l.isVerified,
+    cedula: l.cedula,
+    university: l.university,
+    graduationYear: l.graduationYear,
+    phone: l.phone,
+    whatsapp: l.whatsapp,
+    website: l.website,
+    linkedin: l.linkedin,
+    specialties: l.specialties.map((s) => ({
+      name: s.specialty.name,
+      slug: s.specialty.slug,
+      isPrimary: s.isPrimary,
+    })),
+    reviews: l.reviews.map((r) => ({
+      rating: r.rating,
+      comment: r.comment ?? null,
+      autorNombre: r.user?.name ?? "Anónimo",
+    })),
+    membership: plan === "Premium" ? "premium" : plan === "Despacho" ? "despacho" : "free",
+  }
+}
+
+async function fetchLawyers(filters: { especialidad?: string; estado?: string; q?: string }) {
+  return prisma.lawyer.findMany({
+    where: {
+      isActive: true,
+      ...(filters.especialidad && filters.especialidad !== "Todas"
+        ? { specialties: { some: { specialty: { name: filters.especialidad } } } }
+        : {}),
+      ...(filters.estado && filters.estado !== "Todos"
+        ? { OR: [{ state: filters.estado }, { city: filters.estado }] }
+        : {}),
+      ...(filters.q
+        ? {
+            OR: [
+              { name: { contains: filters.q, mode: "insensitive" } },
+              { city: { contains: filters.q, mode: "insensitive" } },
+              { specialties: { some: { specialty: { name: { contains: filters.q, mode: "insensitive" } } } } },
+            ],
+          }
+        : {}),
+    },
+    include: {
+      specialties: { include: { specialty: true } },
+      reviews: { include: { user: true } },
+      memberships: { include: { plan: true }, orderBy: { createdAt: "desc" }, take: 1 },
+    },
+    orderBy: [
+      { memberships: { _count: "desc" } },
+      { createdAt: "desc" },
+    ],
+  })
+}
+
 export default async function AbogadosPage({ searchParams }: PageProps) {
   const { especialidad, estado, q } = await searchParams
 
-  const filtered = LAWYERS.filter((l) => {
-    if (especialidad && especialidad !== "Todas") {
-      const match = l.specialties.some((s) => s.name === especialidad)
-      if (!match) return false
-    }
-    if (estado && estado !== "Todos") {
-      if (l.state !== estado) return false
-    }
-    if (q) {
-      const query = q.toLowerCase()
-      const inName = l.name.toLowerCase().includes(query)
-      const inCity = l.city.toLowerCase().includes(query)
-      const inSpec = l.specialties.some((s) => s.name.toLowerCase().includes(query))
-      if (!inName && !inCity && !inSpec) return false
-    }
-    return true
-  })
+  const rows = await fetchLawyers({ especialidad, estado, q })
+  const sorted = rows
+    .map(toLawyerCard)
+    .sort((a, b) => {
+      const order = { premium: 0, despacho: 0, free: 1 }
+      return order[a.membership] - order[b.membership]
+    })
 
-  // Premium first
-  const sorted = [...filtered].sort((a, b) => {
-    const order = { premium: 0, despacho: 0, free: 1 }
-    return order[a.membership] - order[b.membership]
-  })
-
-  const hasFilters = !!(especialidad && especialidad !== "Todas") || !!(estado && estado !== "Todos") || !!q
+  const hasFilters =
+    !!(especialidad && especialidad !== "Todas") ||
+    !!(estado && estado !== "Todos") ||
+    !!q
 
   return (
     <main className="min-h-screen bg-[#FAF7F2]">
@@ -74,7 +129,7 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
               ? "Sin resultados"
               : `${sorted.length} abogado${sorted.length !== 1 ? "s" : ""} disponible${sorted.length !== 1 ? "s" : ""}`}
           </h1>
-          {(especialidad && especialidad !== "Todas" || estado && estado !== "Todos") && (
+          {(especialidad && especialidad !== "Todas") || (estado && estado !== "Todos") ? (
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               {especialidad && especialidad !== "Todas" && (
                 <span className="text-xs bg-[rgba(196,154,60,0.15)] text-[#C49A3C] px-3 py-1 rounded-full">
@@ -87,7 +142,7 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
                 </span>
               )}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -99,7 +154,6 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
               method="GET"
               className="bg-white border border-[#EAE4D9] rounded-2xl p-5 space-y-6 sticky top-20"
             >
-              {/* Search */}
               <div>
                 <label className="text-[11px] font-semibold text-[#0C0D10]/60 block mb-2 tracking-widest uppercase">
                   Buscar
@@ -115,7 +169,6 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
                 </div>
               </div>
 
-              {/* Especialidad */}
               <div>
                 <label className="text-[11px] font-semibold text-[#0C0D10]/60 block mb-3 tracking-widest uppercase">
                   Especialidad
@@ -138,7 +191,6 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
                 </div>
               </div>
 
-              {/* Estado */}
               <div>
                 <label className="text-[11px] font-semibold text-[#0C0D10]/60 block mb-3 tracking-widest uppercase">
                   Estado
@@ -189,10 +241,7 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
                 <p className="text-[#0C0D10]/40 text-base mb-3">
                   No se encontraron abogados con esos filtros.
                 </p>
-                <a
-                  href="/abogados"
-                  className="text-[#C49A3C] text-sm hover:text-[#E2B865] transition-colors"
-                >
+                <a href="/abogados" className="text-[#C49A3C] text-sm hover:text-[#E2B865] transition-colors">
                   Ver todos los abogados →
                 </a>
               </div>

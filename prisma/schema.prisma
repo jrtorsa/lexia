@@ -92,7 +92,7 @@ model LawyerSpecialty {
 // ─────────────────────────────────────────
 model Plan {
   id          String   @id @default(cuid())
-  name        String   // "Básico", "Premium", "Despacho"
+  name        String   @unique // "Básico", "Premium", "Despacho"
   price       Decimal  @db.Decimal(10, 2) // MXN mensual
   features    Json     // array de características incluidas
   highlighted Boolean  @default(false) // plan recomendado

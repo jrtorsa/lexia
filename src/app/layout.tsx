@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Geist_Mono } from "next/font/google";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -37,7 +38,9 @@ export default function RootLayout({
       lang="es"
       className={`${cormorant.variable} ${dmSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

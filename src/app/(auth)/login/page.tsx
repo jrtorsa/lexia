@@ -2,20 +2,34 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { Scale, Eye, EyeOff, ArrowRight } from "lucide-react"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
 export default function LoginPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    // TODO: conectar con next-auth
-    setTimeout(() => setLoading(false), 1000)
+    setError("")
+    const result = await signIn("credentials", {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    })
+    setLoading(false)
+    if (result?.error) {
+      setError("Correo o contraseña incorrectos.")
+    } else {
+      router.push("/mi-perfil")
+    }
   }
 
   return (
@@ -57,6 +71,12 @@ export default function LoginPage() {
           <p className="text-[#0C0D10]/45 text-xs text-center mb-7 tracking-wide">
             Ingresa a tu cuenta de abogado
           </p>
+
+          {error && (
+            <p className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-4 py-2 mb-4">
+              {error}
+            </p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
