@@ -48,6 +48,7 @@ model Lawyer {
   website         String?
   linkedin        String?
   isVerified      Boolean  @default(false)
+  cedulaStatus    String?  // null | "pending" | "approved" | "rejected"
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

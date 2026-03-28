@@ -46,6 +46,7 @@ export default async function EditarPerfilPage() {
       <VerificarCedulaCard
         cedulaActual={lawyer.cedula}
         isVerified={lawyer.isVerified}
+        cedulaStatus={lawyer.cedulaStatus}
       />
       <EditarForm lawyer={data} />
     </div>
