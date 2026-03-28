@@ -38,18 +38,18 @@ export async function actualizarPerfil(data: {
   await prisma.lawyer.update({
     where: { id: lawyerId },
     data: {
-      name: data.name.trim() || undefined,
-      bio: data.bio.trim() || null,
-      cedula: data.cedula.trim() || null,
+      name: data.name?.trim() || undefined,
+      bio: data.bio?.trim() || null,
+      cedula: data.cedula?.trim() || null,
       yearsExperience: data.yearsExperience ? parseInt(data.yearsExperience) : null,
-      university: data.university.trim() || null,
+      university: data.university?.trim() || null,
       graduationYear: data.graduationYear ? parseInt(data.graduationYear) : null,
-      state: data.state,
-      city: data.city.trim() || undefined,
-      phone: data.phone.trim() || null,
-      whatsapp: data.whatsapp.trim() || null,
-      website: data.website.trim() || null,
-      linkedin: data.linkedin.trim() || null,
+      state: data.state || undefined,
+      city: data.city?.trim() || undefined,
+      phone: data.phone?.trim() || null,
+      whatsapp: data.whatsapp?.trim() || null,
+      website: data.website?.trim() || null,
+      linkedin: data.linkedin?.trim() || null,
     },
   })
 
