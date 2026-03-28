@@ -28,9 +28,16 @@ async function getSepToken(): Promise<string> {
     },
     signal: AbortSignal.timeout(8000),
   })
-  if (!res.ok) throw new Error("No se pudo obtener token del SEP")
+  if (!res.ok) {
+    const body = await res.text().catch(() => "")
+    console.error("[SEP] token error", res.status, body)
+    throw new Error(`Token SEP error ${res.status}`)
+  }
   const data = await res.json()
-  if (!data.access_token) throw new Error("Token inválido del SEP")
+  if (!data.access_token) {
+    console.error("[SEP] token response missing access_token", data)
+    throw new Error("Token inválido del SEP")
+  }
   return data.access_token
 }
 
@@ -55,16 +62,23 @@ export async function verificarCedula(cedula: string): Promise<
         "Content-Type":  "application/json",
         "Authorization": `Bearer ${token}`,
         "X-API-Key":     SEP_APIKEY,
+        "Referer":       "https://cedulaprofesional.sep.gob.mx/",
+        "Origin":        "https://cedulaprofesional.sep.gob.mx",
       },
       body: JSON.stringify({ numCedula: num }),
       signal: AbortSignal.timeout(10000),
     })
 
-    if (!res.ok) return { ok: false, error: "El servicio del SEP no está disponible. Intenta más tarde." }
+    if (!res.ok) {
+      const body = await res.text().catch(() => "")
+      console.error("[SEP] Solr error", res.status, body)
+      return { ok: false, error: `SEP respondió ${res.status}. Intenta más tarde.` }
+    }
 
     records = await res.json()
-  } catch {
-    return { ok: false, error: "No se pudo conectar con el SEP. Verifica tu conexión e intenta de nuevo." }
+  } catch (err) {
+    console.error("[SEP] fetch error", err)
+    return { ok: false, error: `Error de conexión con el SEP: ${err instanceof Error ? err.message : String(err)}` }
   }
 
   if (!records || records.length === 0) {
