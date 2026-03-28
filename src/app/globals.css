@@ -148,16 +148,46 @@
   }
 }
 
-/* Hero entrance animation */
+/* ── Entrance ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up {
-  animation: fadeUp 0.7s ease both;
+.animate-fade-up          { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-fade-up-1        { animation-delay: 0.05s; }
+.animate-fade-up-2        { animation-delay: 0.18s; }
+.animate-fade-up-3        { animation-delay: 0.30s; }
+.animate-fade-up-4        { animation-delay: 0.42s; }
+.animate-fade-up-5        { animation-delay: 0.54s; }
+.animate-fade-up-6        { animation-delay: 0.66s; }
+
+/* ── Floating card ── */
+@keyframes cardFloat {
+  0%, 100% { transform: rotate(-2.5deg) translateY(0px);   }
+  50%       { transform: rotate(-2.5deg) translateY(-10px); }
 }
-.animate-fade-up-1 { animation-delay: 0.05s; }
-.animate-fade-up-2 { animation-delay: 0.15s; }
-.animate-fade-up-3 { animation-delay: 0.25s; }
-.animate-fade-up-4 { animation-delay: 0.35s; }
-.animate-fade-up-5 { animation-delay: 0.45s; }
+.animate-card-float {
+  animation: cardFloat 5s ease-in-out infinite;
+}
+
+/* ── Specialty ticker ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── Subtle pulse on gold dot ── */
+@keyframes goldPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1);    }
+  50%       { opacity: 1;   transform: scale(1.25); }
+}
+.animate-gold-pulse {
+  animation: goldPulse 2.5s ease-in-out infinite;
+}

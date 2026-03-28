@@ -64,7 +64,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#planes" className="hover:text-cream transition-colors">
+                <Link href="/planes" className="hover:text-cream transition-colors">
                   Planes y precios
                 </Link>
               </li>

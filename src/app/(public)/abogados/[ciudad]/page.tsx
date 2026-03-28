@@ -1,12 +1,22 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import {
   MapPin, Star, ShieldCheck, Phone, MessageCircle,
-  Globe, GraduationCap, Briefcase, ArrowLeft, Mail,
+  Globe, GraduationCap, Briefcase, ArrowLeft, Mail, ChevronRight,
 } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import {
+  CIUDADES,
+  CITY_SLUGS,
+  ESPECIALIDADES,
+  getCiudadesCercanas,
+  type CiudadData,
+} from "@/lib/seo-data"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
+
+// ─── Lawyer helpers ───────────────────────────────────────────────────────────
 
 async function getLawyer(slug: string) {
   return prisma.lawyer.findUnique({
@@ -24,9 +34,66 @@ function avgRating(reviews: { rating: number }[]) {
   return reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
 }
 
-export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slug]'>) {
-  const { slug } = await props.params
-  const lawyer = await getLawyer(slug)
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type Props = { params: Promise<{ ciudad: string }> }
+
+// ─── Metadata ─────────────────────────────────────────────────────────────────
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { ciudad } = await params
+
+  if (CITY_SLUGS.has(ciudad)) {
+    const c = CIUDADES[ciudad]
+    const title = `Abogados en ${c.nombre} | Lexia`
+    const description = `Encuentra abogados verificados en ${c.nombre}, ${c.estado}. Derecho familiar, penal, laboral, civil y más. Contacto directo sin intermediarios.`.slice(0, 155)
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description: `Directorio de abogados en ${c.nombre}, ${c.estado}`,
+        url: `https://lexiamx.com/abogados/${ciudad}`,
+        type: "website",
+      },
+      alternates: { canonical: `https://lexiamx.com/abogados/${ciudad}` },
+    }
+  }
+
+  // Lawyer profile metadata
+  const lawyer = await getLawyer(ciudad)
+  if (!lawyer) return { title: "Abogado no encontrado | Lexia" }
+
+  const primarySpecialty =
+    lawyer.specialties.find((s) => s.isPrimary)?.specialty.name ??
+    lawyer.specialties[0]?.specialty.name ?? "Abogado"
+
+  return {
+    title: `${lawyer.name} — ${primarySpecialty} en ${lawyer.city} | Lexia`,
+    description:
+      lawyer.bio?.slice(0, 155) ??
+      `Perfil de ${lawyer.name}, abogado de ${primarySpecialty} en ${lawyer.city}, ${lawyer.state}. Contacto directo en Lexia.`,
+    alternates: { canonical: `https://lexiamx.com/abogados/${ciudad}` },
+  }
+}
+
+// ─── Static params (cities only; lawyer slugs rendered on demand) ─────────────
+
+export async function generateStaticParams() {
+  return Array.from(CITY_SLUGS).map((slug) => ({ ciudad: slug }))
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default async function Page({ params }: Props) {
+  const { ciudad } = await params
+
+  if (CITY_SLUGS.has(ciudad)) {
+    return <CiudadPage slug={ciudad} />
+  }
+
+  // Lawyer profile
+  const lawyer = await getLawyer(ciudad)
   if (!lawyer) notFound()
 
   const avg = avgRating(lawyer.reviews)
@@ -293,6 +360,212 @@ export default async function AbogadoPerfilPage(props: PageProps<'/abogados/[slu
             </div>
           </aside>
         </div>
+      </div>
+    </main>
+  )
+}
+
+// ─── City SEO page component ──────────────────────────────────────────────────
+
+function CiudadPage({ slug }: { slug: string }) {
+  const c = CIUDADES[slug] as CiudadData
+  const especialidades = Object.values(ESPECIALIDADES)
+  const cercanas = getCiudadesCercanas(slug)
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LegalService",
+    name: `Abogados en ${c.nombre}`,
+    description: `Directorio de abogados verificados en ${c.nombre}, ${c.estado}. Derecho familiar, penal, laboral, civil y más.`,
+    areaServed: {
+      "@type": "City",
+      name: c.nombreCompleto,
+      containedInPlace: {
+        "@type": "State",
+        name: c.estado,
+        containedInPlace: { "@type": "Country", name: "México" },
+      },
+    },
+    url: `https://lexiamx.com/abogados/${slug}`,
+  }
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://lexiamx.com" },
+      { "@type": "ListItem", position: 2, name: "Abogados", item: "https://lexiamx.com/abogados" },
+      { "@type": "ListItem", position: 3, name: c.nombre, item: `https://lexiamx.com/abogados/${slug}` },
+    ],
+  }
+
+  const faqsData = [
+    {
+      pregunta: `¿Cómo encuentro un abogado confiable en ${c.nombre}?`,
+      respuesta: `En Lexia puedes buscar abogados verificados en ${c.nombre} por especialidad. Todos los perfiles incluyen cédula profesional, reseñas de clientes y datos de contacto directo. Recomendamos revisar la especialidad del abogado, sus años de experiencia y las opiniones de otros clientes antes de tomar una decisión.`,
+    },
+    {
+      pregunta: `¿Cuánto cobra un abogado en ${c.nombre}?`,
+      respuesta: `Los honorarios de los abogados en ${c.nombre} varían según la especialidad y la complejidad del caso. Una consulta inicial puede costar entre $500 y $2,000 pesos. Los asuntos laborales, familiares o penales pueden involucrar honorarios desde $5,000 hasta $50,000 o más dependiendo del procedimiento. Te recomendamos solicitar una primera consulta para obtener un presupuesto preciso.`,
+    },
+    {
+      pregunta: `¿Los abogados en Lexia de ${c.nombre} están verificados?`,
+      respuesta: `Sí. Lexia verifica la cédula profesional de los abogados registrados en nuestra plataforma a través de la Dirección General de Profesiones de la SEP. Los perfiles con el sello de verificación han acreditado que cuentan con título y cédula legalmente expedidos. Esto te da certeza sobre la formación y habilitación del profesionista.`,
+    },
+    {
+      pregunta: `¿Puedo contactar directamente a un abogado en ${c.nombre} desde Lexia?`,
+      respuesta: `Sí. Los perfiles de abogados en ${c.nombre} incluyen teléfono, WhatsApp y correo electrónico para contacto directo. Lexia no intermedia ni cobra comisión por el contacto: la relación profesional es directamente entre tú y el abogado. Esto significa que los honorarios son acordados libremente entre ambas partes.`,
+    },
+  ]
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqsData.map((f) => ({
+      "@type": "Question",
+      name: f.pregunta,
+      acceptedAnswer: { "@type": "Answer", text: f.respuesta },
+    })),
+  }
+
+  return (
+    <main className="min-h-screen bg-[#FAF7F2]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+
+      {/* Hero */}
+      <div className="bg-[#1A1C26] border-b border-white/8">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8 py-10">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-xs text-[#FAF7F2]/35 mb-6">
+            <Link href="/" className="hover:text-[#C49A3C] transition-colors">Inicio</Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link href="/abogados" className="hover:text-[#C49A3C] transition-colors">Abogados</Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-[#FAF7F2]/60">{c.nombre}</span>
+          </nav>
+
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin className="w-5 h-5 text-[#C49A3C]" />
+            <span className="text-[#C49A3C] text-sm font-medium tracking-wide uppercase">{c.estado}</span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl text-[#FAF7F2] leading-tight mb-4" style={displayFont}>
+            Abogados en {c.nombre}
+          </h1>
+
+          <p className="text-[#FAF7F2]/55 text-base max-w-2xl leading-relaxed">
+            Directorio de abogados verificados en {c.nombreCompleto}. Contacto directo, sin intermediarios.
+          </p>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="max-w-5xl mx-auto px-6 lg:px-8 py-10 space-y-10">
+
+        {/* City description */}
+        <section className="bg-white border border-[#EAE4D9] rounded-2xl p-8">
+          <h2 className="text-2xl text-[#0C0D10] mb-5" style={displayFont}>
+            Servicios jurídicos en {c.nombre}
+          </h2>
+          <div className="space-y-3 text-[#0C0D10]/65 leading-relaxed text-sm">
+            <p>{c.contexto}</p>
+            <p>{c.contextoEconomico}</p>
+            <p>
+              Lexia es el directorio de abogados verificados más completo para {c.nombre} y el estado de {c.estado}.
+              Todos los perfiles incluyen cédula profesional validada, reseñas de clientes reales y datos de contacto
+              directo. Puedes buscar por especialidad, filtrar por experiencia y comunicarte sin intermediarios con
+              el abogado que mejor se adapte a tu situación.
+            </p>
+          </div>
+        </section>
+
+        {/* Specialties grid */}
+        <section>
+          <h2 className="text-2xl text-[#0C0D10] mb-6" style={displayFont}>
+            Especialidades en {c.nombre}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {especialidades.map((e) => (
+              <Link
+                key={e.slug}
+                href={`/abogados/${slug}/${e.slug}`}
+                className="group bg-white border border-[#EAE4D9] rounded-xl p-4 hover:border-[#C49A3C] hover:shadow-sm transition-all"
+              >
+                <p className="font-medium text-[#0C0D10] text-sm group-hover:text-[#C49A3C] transition-colors" style={displayFont}>
+                  {e.nombre}
+                </p>
+                <p className="text-[#0C0D10]/40 text-xs mt-1 leading-snug">{e.descripcion}</p>
+                <span className="inline-flex items-center gap-0.5 text-[#C49A3C] text-xs mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Ver abogados <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="bg-white border border-[#EAE4D9] rounded-2xl p-8">
+          <h2 className="text-2xl text-[#0C0D10] mb-7" style={displayFont}>
+            Preguntas frecuentes sobre abogados en {c.nombre}
+          </h2>
+          <div className="space-y-6">
+            {faqsData.map((faq, i) => (
+              <div key={i} className={i > 0 ? "pt-6 border-t border-[#EAE4D9]" : ""}>
+                <h3 className="font-medium text-[#0C0D10] text-sm mb-2">{faq.pregunta}</h3>
+                <p className="text-[#0C0D10]/60 text-sm leading-relaxed">{faq.respuesta}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Nearby cities */}
+        {cercanas.length > 0 && (
+          <section>
+            <h2 className="text-xl text-[#0C0D10] mb-4" style={displayFont}>
+              Abogados en ciudades cercanas
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {cercanas.map((ciudad) => (
+                <Link
+                  key={ciudad.slug}
+                  href={`/abogados/${ciudad.slug}`}
+                  className="flex items-center gap-2 bg-white border border-[#EAE4D9] rounded-xl px-4 py-2.5 text-sm text-[#0C0D10]/70 hover:border-[#C49A3C] hover:text-[#C49A3C] transition-colors"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  {ciudad.nombre}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* CTA */}
+        <section className="bg-[#1A1C26] border border-[rgba(196,154,60,0.2)] rounded-2xl p-8 text-center">
+          <h2 className="text-2xl text-[#FAF7F2] mb-3" style={displayFont}>
+            ¿Eres abogado en {c.nombre}?
+          </h2>
+          <p className="text-[#FAF7F2]/50 text-sm mb-6 max-w-md mx-auto">
+            Registra tu perfil gratis en Lexia y conecta con clientes en {c.nombre} y el estado de {c.estado}.
+            Sin comisiones. Contacto directo.
+          </p>
+          <Link
+            href="/registro"
+            className="inline-flex items-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
+          >
+            Registra tu perfil gratis
+          </Link>
+        </section>
       </div>
     </main>
   )
