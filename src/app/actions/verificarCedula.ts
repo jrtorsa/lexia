@@ -5,14 +5,33 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 
+const SEP_BASE   = "https://cedulaprofesional.sep.gob.mx/api"
+const SEP_CLIENT = "rnp-angular-app-prod"
+const SEP_APIKEY = "65da8s675f8s75fda675s8d76as87d5as675da"
+
 interface SepRecord {
-  numero:  string
-  nombre:  string
-  paterno: string
-  materno: string
-  desins:  string   // institución
-  carrera: string
-  tipo:    string
+  cedula:           string
+  nombre:           string
+  primerApellido:   string
+  segundoApellido:  string
+  profesion:        string
+  institucion:      string
+  nivelEducativo:   string
+  anioRegistro:     string
+}
+
+async function getSepToken(): Promise<string> {
+  const res = await fetch(`${SEP_BASE}/auth/token`, {
+    headers: {
+      "X-Client-Id": SEP_CLIENT,
+      "X-API-Key":   SEP_APIKEY,
+    },
+    signal: AbortSignal.timeout(8000),
+  })
+  if (!res.ok) throw new Error("No se pudo obtener token del SEP")
+  const data = await res.json()
+  if (!data.access_token) throw new Error("Token inválido del SEP")
+  return data.access_token
 }
 
 export async function verificarCedula(cedula: string): Promise<
@@ -28,16 +47,18 @@ export async function verificarCedula(cedula: string): Promise<
   let records: SepRecord[]
 
   try {
-    const res = await fetch(
-      "https://www.cedulaprofesional.sep.gob.mx/cedula/numCedula.action",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `numero=${encodeURIComponent(num)}`,
-        // 8 second timeout
-        signal: AbortSignal.timeout(8000),
+    const token = await getSepToken()
+
+    const res = await fetch(`${SEP_BASE}/solr/profesionista/consultar/byDetalle`, {
+      method: "POST",
+      headers: {
+        "Content-Type":  "application/json",
+        "Authorization": `Bearer ${token}`,
+        "X-API-Key":     SEP_APIKEY,
       },
-    )
+      body: JSON.stringify({ numCedula: num }),
+      signal: AbortSignal.timeout(10000),
+    })
 
     if (!res.ok) return { ok: false, error: "El servicio del SEP no está disponible. Intenta más tarde." }
 
@@ -62,9 +83,9 @@ export async function verificarCedula(cedula: string): Promise<
   revalidatePath(`/abogados/${session.user.slug}`)
 
   return {
-    ok: true,
-    nombre:      [r.nombre, r.paterno, r.materno].filter(Boolean).join(" "),
-    carrera:     r.carrera,
-    institucion: r.desins,
+    ok:          true,
+    nombre:      [r.nombre, r.primerApellido, r.segundoApellido].filter(Boolean).join(" "),
+    carrera:     r.profesion ?? r.nivelEducativo ?? "Derecho",
+    institucion: r.institucion,
   }
 }
