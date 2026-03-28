@@ -113,7 +113,9 @@ export async function registrarAbogado(input: RegistroInput) {
   })
 
   // Send welcome email (non-blocking)
-  sendWelcomeEmail({ to: input.email, name: input.name }).catch(() => {})
+  sendWelcomeEmail({ to: input.email, name: input.name }).catch((e) =>
+    console.error("[email] welcome failed:", e?.message)
+  )
 
   return { success: true }
 }

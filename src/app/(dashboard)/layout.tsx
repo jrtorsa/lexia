@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { Scale, LayoutDashboard, User, MessageSquare, BarChart3, CreditCard } from "lucide-react"
 import DashboardLogout from "@/components/DashboardLogout"
+import Toaster from "@/components/Toaster"
 
 const NAV = [
   { href: "/mi-perfil", label: "Resumen", icon: LayoutDashboard },
@@ -81,6 +82,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <main className="flex-1 ml-60 min-h-screen">
         {children}
       </main>
+      <Toaster />
     </div>
   )
 }

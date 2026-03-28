@@ -29,9 +29,9 @@ export async function registrarContacto(lawyerId: string, type: ContactType) {
         visitorName:  "Visitante",
         visitorEmail: "anonimo@lexiamx.com",
         type,
-      }).catch(() => {})
+      }).catch((e) => console.error("[email] contact notification failed:", e?.message))
     }
-  } catch {
-    // Never block the user if tracking fails
+  } catch (e: unknown) {
+    console.error("[contact] tracking failed:", e instanceof Error ? e.message : e)
   }
 }

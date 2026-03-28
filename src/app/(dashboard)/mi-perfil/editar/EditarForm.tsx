@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { actualizarPerfil } from "@/app/actions/actualizarPerfil"
+import { toast } from "@/lib/toast"
 
 const ESPECIALIDADES = [
   "Derecho Familiar", "Derecho Penal", "Derecho Laboral", "Derecho Fiscal",
@@ -76,8 +77,10 @@ export default function EditarForm({ lawyer }: { lawyer: LawyerData }) {
         })
         setSaved(true)
         setTimeout(() => setSaved(false), 2500)
+        toast("Perfil guardado correctamente.", "success")
       } catch {
         setError("Ocurrió un error al guardar. Intenta de nuevo.")
+        toast("Error al guardar. Intenta de nuevo.", "error")
       }
     })
   }

@@ -2,6 +2,7 @@
 
 import { MessageCircle, Phone, Mail } from "lucide-react"
 import { registrarContacto, type ContactType } from "@/app/actions/registrarContacto"
+import { toast } from "@/lib/toast"
 
 interface Props {
   lawyerId: string
@@ -24,6 +25,13 @@ export default function ContactButton({
 }: Props) {
   async function handleClick() {
     await registrarContacto(lawyerId, type)
+    const messages: Record<ContactType, string> = {
+      WHATSAPP: `Conectando con ${lawyerName} por WhatsApp…`,
+      CALL:     `Llamando a ${lawyerName}…`,
+      EMAIL:    `Abriendo correo para ${lawyerName}…`,
+      MESSAGE:  `Mensaje enviado a ${lawyerName}.`,
+    }
+    toast(messages[type], "success")
   }
 
   const Icon =
