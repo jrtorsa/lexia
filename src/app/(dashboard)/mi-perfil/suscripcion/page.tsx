@@ -141,11 +141,12 @@ export default async function SuscripcionPage({
               </p>
             </div>
           </div>
-          <Link href="/planes">
-            <Button className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto">
-              <CreditCard className="w-4 h-4 mr-2" />
-              Activar plan Premium — {PROMO.precioOriginal}{PROMO.periodo}
-            </Button>
+          <Link
+            href="/planes"
+            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors w-full sm:w-auto justify-center"
+          >
+            <CreditCard className="w-4 h-4" />
+            Activar plan Premium — {PROMO.precioOriginal}{PROMO.periodo}
           </Link>
         </div>
       )}
@@ -193,11 +194,12 @@ export default async function SuscripcionPage({
 
           {daysLeft <= 10 && (
             <div className="mt-4">
-              <Link href="/planes">
-                <Button className="bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] text-sm">
-                  <Zap className="w-4 h-4 mr-2" />
-                  Agregar método de pago
-                </Button>
+              <Link
+                href="/planes"
+                className="inline-flex items-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              >
+                <Zap className="w-4 h-4" />
+                Agregar método de pago
               </Link>
             </div>
           )}
@@ -320,7 +322,7 @@ export default async function SuscripcionPage({
                 <p className="text-xs text-slate-400">Gestionada por Stripe</p>
               </div>
             </div>
-            <Button variant="outline" size="sm">Actualizar</Button>
+            <button className="text-xs border border-slate-200 hover:border-slate-400 text-slate-600 px-3 py-1.5 rounded-lg transition-colors">Actualizar</button>
           </div>
         ) : isTrial && daysLeft > 10 ? (
           <p className="text-sm text-slate-400">
