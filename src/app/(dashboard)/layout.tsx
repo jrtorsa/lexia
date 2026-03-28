@@ -2,7 +2,8 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { Scale, LayoutDashboard, User, MessageSquare, BarChart3, CreditCard } from "lucide-react"
+import Image from "next/image"
+import { LayoutDashboard, User, MessageSquare, BarChart3, CreditCard } from "lucide-react"
 import DashboardLogout from "@/components/DashboardLogout"
 import Toaster from "@/components/Toaster"
 
@@ -33,16 +34,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <aside className="w-60 bg-[#1A1C26] flex flex-col fixed top-0 left-0 h-full z-40">
         {/* Logo */}
         <div className="p-5 border-b border-white/8">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-sm bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] flex items-center justify-center">
-              <Scale className="w-3.5 h-3.5 text-[#C49A3C]" />
-            </div>
-            <span
-              className="text-xl font-medium text-[#FAF7F2] tracking-wide"
-              style={{ fontFamily: "var(--font-cormorant)" }}
-            >
-              Lexia
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo.png"
+              alt="Lexia MX"
+              width={600}
+              height={400}
+              className="h-12 w-auto rounded-sm"
+              style={{ width: "auto" }}
+            />
           </Link>
         </div>
 

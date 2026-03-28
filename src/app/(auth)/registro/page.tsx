@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import {
-  Scale,
   ChevronRight,
   ChevronLeft,
   Check,
@@ -205,13 +205,16 @@ export default function RegistroPage() {
 
       <div className="relative w-full max-w-lg">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2.5 mb-10">
-          <div className="w-8 h-8 rounded-sm bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.35)] flex items-center justify-center">
-            <Scale className="w-4 h-4 text-[#C49A3C]" />
-          </div>
-          <span className="text-2xl font-medium text-[#FAF7F2] tracking-wide" style={displayFont}>
-            Lexia
-          </span>
+        <div className="flex items-center justify-center mb-10">
+          <Image
+            src="/logo.png"
+            alt="Lexia MX"
+            width={600}
+            height={400}
+            className="h-16 w-auto rounded-sm"
+            style={{ width: "auto" }}
+            priority
+          />
         </div>
 
         {/* Stepper */}

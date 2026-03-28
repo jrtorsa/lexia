@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { MapPin, Star, ShieldCheck, ArrowUpRight } from "lucide-react"
 import { type Lawyer, getAverageRating } from "@/lib/mock-lawyers"
 import ContactButton from "@/components/ContactButton"
@@ -38,13 +39,20 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
         {/* Header */}
         <div className="flex gap-3.5 items-start">
           {/* Avatar */}
-          <div className="w-13 h-13 rounded-xl bg-[#FAF7F2] border border-[#EAE4D9] flex items-center justify-center flex-shrink-0">
-            <span
-              className="text-xl font-semibold text-[#C49A3C]"
-              style={displayFont}
-            >
-              {initials}
-            </span>
+          <div className="w-13 h-13 rounded-xl bg-[#FAF7F2] border border-[#EAE4D9] flex items-center justify-center flex-shrink-0 overflow-hidden">
+            {lawyer.photoUrl ? (
+              <Image
+                src={lawyer.photoUrl}
+                alt={lawyer.name}
+                width={52}
+                height={52}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xl font-semibold text-[#C49A3C]" style={displayFont}>
+                {initials}
+              </span>
+            )}
           </div>
 
           <div className="flex-1 min-w-0">

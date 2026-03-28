@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Scale } from "lucide-react"
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -8,16 +8,15 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-sm bg-gold/10 border border-gold/30 flex items-center justify-center">
-                <Scale className="w-3.5 h-3.5 text-gold" />
-              </div>
-              <span
-                className="text-xl font-medium text-cream tracking-wide"
-                style={{ fontFamily: "var(--font-cormorant)" }}
-              >
-                Lexia
-              </span>
+            <div className="mb-4">
+              <Image
+                src="/logo.png"
+                alt="Lexia MX"
+                width={600}
+                height={400}
+                className="h-12 w-auto rounded-sm"
+                style={{ width: "auto" }}
+              />
             </div>
             <p className="text-sm leading-relaxed max-w-[200px]">
               El directorio de abogados más completo de México.

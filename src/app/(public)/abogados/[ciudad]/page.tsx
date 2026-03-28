@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import {
   MapPin, Star, ShieldCheck, Phone, MessageCircle,
   Globe, GraduationCap, Briefcase, ArrowLeft, Mail, ChevronRight,
@@ -124,10 +125,20 @@ export default async function Page({ params }: Props) {
           </Link>
 
           <div className="flex gap-5 items-start">
-            <div className="w-16 h-16 rounded-xl bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-semibold text-[#C49A3C]" style={displayFont}>
-                {initials}
-              </span>
+            <div className="w-20 h-20 rounded-xl bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {lawyer.photoUrl ? (
+                <Image
+                  src={lawyer.photoUrl}
+                  alt={lawyer.name}
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-2xl font-semibold text-[#C49A3C]" style={displayFont}>
+                  {initials}
+                </span>
+              )}
             </div>
 
             <div className="flex-1 min-w-0">

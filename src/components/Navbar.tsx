@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Scale } from "lucide-react"
+import Image from "next/image"
 
 export default function Navbar() {
   return (
@@ -7,16 +7,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-sm bg-gold/10 border border-gold/30 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-              <Scale className="w-3.5 h-3.5 text-gold" />
-            </div>
-            <span
-              className="text-xl font-medium tracking-wide text-cream"
-              style={{ fontFamily: "var(--font-cormorant)" }}
-            >
-              Lexia
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="Lexia MX"
+              width={600}
+              height={400}
+              className="h-14 w-auto rounded-sm"
+              style={{ width: "auto" }}
+              priority
+            />
           </Link>
 
           {/* Nav links */}

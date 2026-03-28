@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
+import { makeToken } from "@/lib/cedula-token"
+import { sendCedulaAdminRequest } from "@/lib/email"
 
 function toSlug(name: string) {
   return name
@@ -33,14 +35,39 @@ export async function actualizarPerfil(data: {
   if (!session) return { error: "No autorizado" }
 
   const lawyerId = session.user.id
+  const newCedula = data.cedula?.trim() || undefined
 
   try {
+  // Check if cedula changed and needs verification
+  let cedulaStatusUpdate: { cedulaStatus: string; isVerified: boolean } | undefined
+  if (newCedula) {
+    const current = await prisma.lawyer.findUnique({
+      where: { id: lawyerId },
+      select: { cedula: true, cedulaStatus: true, name: true, email: true },
+    })
+    const cedulaChanged = current?.cedula !== newCedula
+    const notVerified = current?.cedulaStatus !== "approved"
+    if (cedulaChanged || notVerified) {
+      cedulaStatusUpdate = { cedulaStatus: "pending", isVerified: false }
+      const base = process.env.NEXTAUTH_URL ?? "https://lexiamx.com"
+      sendCedulaAdminRequest({
+        lawyerId,
+        lawyerName: current!.name,
+        lawyerEmail: current!.email,
+        cedula: newCedula,
+        aprobarUrl:  `${base}/api/admin/cedula?id=${lawyerId}&action=aprobar&token=${makeToken(lawyerId, "aprobar")}`,
+        rechazarUrl: `${base}/api/admin/cedula?id=${lawyerId}&action=rechazar&token=${makeToken(lawyerId, "rechazar")}`,
+      }).catch(console.error)
+    }
+  }
+
   await prisma.lawyer.update({
     where: { id: lawyerId },
     data: {
       name: data.name?.trim() || undefined,
       bio: data.bio?.trim() || null,
-      cedula: data.cedula?.trim() || null,
+      cedula: newCedula,
+      ...cedulaStatusUpdate,
       yearsExperience: data.yearsExperience ? parseInt(data.yearsExperience) : null,
       university: data.university?.trim() || null,
       graduationYear: data.graduationYear ? parseInt(data.graduationYear) : null,
