@@ -30,10 +30,11 @@ export async function actualizarPerfil(data: {
   specialties: string[]
 }) {
   const session = await getServerSession(authOptions)
-  if (!session) throw new Error("No autorizado")
+  if (!session) return { error: "No autorizado" }
 
   const lawyerId = session.user.id
 
+  try {
   await prisma.lawyer.update({
     where: { id: lawyerId },
     data: {
@@ -71,4 +72,9 @@ export async function actualizarPerfil(data: {
   revalidatePath("/mi-perfil")
   revalidatePath("/mi-perfil/editar")
   revalidatePath(`/abogados/${session.user.slug}`)
+  return { ok: true }
+  } catch (err) {
+    console.error("[actualizarPerfil]", err)
+    return { error: err instanceof Error ? err.message : String(err) }
+  }
 }

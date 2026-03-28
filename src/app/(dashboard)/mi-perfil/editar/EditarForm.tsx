@@ -60,7 +60,7 @@ export default function EditarForm({ lawyer }: { lawyer: LawyerData }) {
 
     startTransition(async () => {
       try {
-        await actualizarPerfil({
+        const result = await actualizarPerfil({
           name: fd.get("name") as string,
           bio: fd.get("bio") as string,
           cedula: fd.get("cedula") as string,
@@ -75,12 +75,18 @@ export default function EditarForm({ lawyer }: { lawyer: LawyerData }) {
           linkedin: fd.get("linkedin") as string,
           specialties,
         })
-        setSaved(true)
-        setTimeout(() => setSaved(false), 2500)
-        toast("Perfil guardado correctamente.", "success")
-      } catch {
-        setError("Ocurrió un error al guardar. Intenta de nuevo.")
-        toast("Error al guardar. Intenta de nuevo.", "error")
+        if (result?.error) {
+          setError(result.error)
+          toast(result.error, "error")
+        } else {
+          setSaved(true)
+          setTimeout(() => setSaved(false), 2500)
+          toast("Perfil guardado correctamente.", "success")
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Error al guardar. Intenta de nuevo."
+        setError(msg)
+        toast(msg, "error")
       }
     })
   }
