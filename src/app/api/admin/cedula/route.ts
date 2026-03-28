@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { verifyToken } from "@/app/actions/verificarCedula"
+import { verifyToken } from "@/lib/cedula-token"
 import { sendCedulaApprovedEmail, sendCedulaRejectedEmail } from "@/lib/email"
 
 export async function GET(req: Request) {
