@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import {
   Scale,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import { registrarAbogado } from "@/app/actions/registro"
 import { PROMO } from "@/lib/promo"
+import { getLugaresRestantes } from "@/app/actions/getLugares"
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -93,6 +94,11 @@ const displayFont = { fontFamily: "var(--font-cormorant)" }
 
 export default function RegistroPage() {
   const [step, setStep] = useState(0)
+  const [lugaresRestantes, setLugaresRestantes] = useState(PROMO.lugaresTotal)
+
+  useEffect(() => {
+    getLugaresRestantes().then(setLugaresRestantes)
+  }, [])
   const [form, setForm] = useState<FormData>(initial)
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -617,7 +623,7 @@ export default function RegistroPage() {
                     </p>
                     {PROMO.activa && (
                       <p className="text-[#C49A3C] text-[11px] font-semibold mt-2">
-                        ¡Solo quedan {PROMO.lugaresRestantes} lugares! · Después {PROMO.precioOriginal}{PROMO.periodo}
+                        ¡Solo quedan {lugaresRestantes} lugares! · Después {PROMO.precioOriginal}{PROMO.periodo}
                       </p>
                     )}
                   </div>

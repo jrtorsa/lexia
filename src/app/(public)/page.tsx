@@ -7,6 +7,7 @@ import {
 } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { PROMO } from "@/lib/promo"
+import { getLugaresRestantes } from "@/app/actions/getLugares"
 
 const df = { fontFamily: "var(--font-cormorant)" }
 
@@ -94,7 +95,10 @@ async function getFeaturedLawyers() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function HomePage() {
-  const lawyers = await getFeaturedLawyers()
+  const [lawyers, lugaresRestantes] = await Promise.all([
+    getFeaturedLawyers(),
+    getLugaresRestantes(),
+  ])
 
   return (
     <div className="bg-[#FAF7F2]">
@@ -105,7 +109,7 @@ export default async function HomePage() {
       <CiudadesSection />
       {lawyers.length > 0 && <AbogadosDestacados lawyers={lawyers} />}
       <ParaAbogados />
-      <PlanesSection />
+      <PlanesSection lugaresRestantes={lugaresRestantes} />
       <CTAFinal />
     </div>
   )
@@ -551,7 +555,7 @@ function ParaAbogados() {
 }
 
 // ─── Planes ───────────────────────────────────────────────────────────────────
-function PlanesSection() {
+function PlanesSection({ lugaresRestantes }: { lugaresRestantes: number }) {
   return (
     <section id="planes" className="py-20 bg-[#FAF7F2]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -600,7 +604,7 @@ function PlanesSection() {
                       Después: <del>{PROMO.precioOriginal}</del>{PROMO.periodo}
                     </p>
                     <p className="text-[10px] text-[#C49A3C] mt-1 font-semibold">
-                      ¡Solo quedan {PROMO.lugaresRestantes} lugares!
+                      ¡Solo quedan {lugaresRestantes} lugares!
                     </p>
                   </div>
                 ) : (

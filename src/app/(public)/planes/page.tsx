@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { CheckCircle2, ArrowRight } from "lucide-react"
 import { PROMO } from "@/lib/promo"
+import { getLugaresRestantes } from "@/app/actions/getLugares"
 
 const df = { fontFamily: "var(--font-cormorant)" }
 
@@ -64,7 +65,8 @@ const COMPARATIVA = [
   { feature: "Soporte prioritario",             basico: false, premium: false, despacho: true  },
 ]
 
-export default function PlanesPage() {
+export default async function PlanesPage() {
+  const lugaresRestantes = await getLugaresRestantes()
   return (
     <div className="bg-[#FAF7F2]">
       {/* Header */}
@@ -123,7 +125,7 @@ export default function PlanesPage() {
                       Después: <del>{PROMO.precioOriginal}</del>{PROMO.periodo}
                     </p>
                     <p className="text-[10px] text-[#C49A3C] mt-1.5 font-semibold">
-                      ¡Solo quedan {PROMO.lugaresRestantes} lugares!
+                      ¡Solo quedan {lugaresRestantes} lugares!
                     </p>
                   </div>
                 ) : (

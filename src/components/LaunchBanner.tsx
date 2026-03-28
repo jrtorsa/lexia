@@ -7,7 +7,7 @@ import { PROMO } from "@/lib/promo"
 
 const STORAGE_KEY = "lexia_launch_banner_closed"
 
-export default function LaunchBanner() {
+export default function LaunchBanner({ lugaresRestantes }: { lugaresRestantes: number }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function LaunchBanner() {
             🎉 {PROMO.mesesGratis} meses Premium gratis para los primeros{" "}
             <strong>{PROMO.lugaresTotal} abogados</strong> registrados.{" "}
             <span className="text-[#5C3D0A] font-semibold">
-              ¡Solo quedan {PROMO.lugaresRestantes} lugares!
+              ¡Solo quedan {lugaresRestantes} lugares!
             </span>
           </span>
 
