@@ -5,6 +5,7 @@ import {
   MapPin, Star, ShieldCheck, Phone, MessageCircle,
   Globe, GraduationCap, Briefcase, ArrowLeft, Mail, ChevronRight,
 } from "lucide-react"
+import ContactButton from "@/components/ContactButton"
 import { prisma } from "@/lib/prisma"
 import {
   CIUDADES,
@@ -292,29 +293,38 @@ export default async function Page({ params }: Props) {
 
               <div className="space-y-2.5">
                 {lawyer.whatsapp && (
-                  <a
-                    href={`https://wa.me/${lawyer.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full bg-[#22C55E]/10 border border-[#22C55E]/25 text-[#16A34A] hover:bg-[#22C55E]/20 text-sm font-medium py-2.5 px-4 rounded-xl transition-colors"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    Escribir por WhatsApp
-                  </a>
+                  <ContactButton
+                    lawyerId={lawyer.id}
+                    lawyerName={lawyer.name}
+                    type="WHATSAPP"
+                    href={`https://wa.me/${lawyer.whatsapp}?text=${encodeURIComponent(`Hola ${lawyer.name}, te contacto desde Lexia. Me gustaría obtener información sobre tus servicios legales.`)}`}
+                    label="Escribir por WhatsApp"
+                    variant="whatsapp"
+                    className="w-full text-sm font-medium py-2.5 px-4 rounded-xl"
+                  />
                 )}
                 {lawyer.phone && (
-                  <a
+                  <ContactButton
+                    lawyerId={lawyer.id}
+                    lawyerName={lawyer.name}
+                    type="CALL"
                     href={`tel:${lawyer.phone}`}
-                    className="flex items-center justify-center gap-2 w-full border border-[#EAE4D9] text-[#0C0D10]/70 hover:border-[#C49A3C] hover:text-[#C49A3C] text-sm font-medium py-2.5 px-4 rounded-xl transition-colors"
-                  >
-                    <Phone className="w-4 h-4" />
-                    {lawyer.phone}
-                  </a>
+                    label={lawyer.phone}
+                    variant="phone"
+                    className="w-full text-sm font-medium py-2.5 px-4 rounded-xl"
+                  />
                 )}
-                <button className="flex items-center justify-center gap-2 w-full border border-[#EAE4D9] text-[#0C0D10]/70 hover:border-[#C49A3C] hover:text-[#C49A3C] text-sm font-medium py-2.5 px-4 rounded-xl transition-colors">
-                  <Mail className="w-4 h-4" />
-                  Enviar mensaje
-                </button>
+                {lawyer.email && (
+                  <ContactButton
+                    lawyerId={lawyer.id}
+                    lawyerName={lawyer.name}
+                    type="EMAIL"
+                    href={`mailto:${lawyer.email}?subject=Consulta desde Lexia&body=${encodeURIComponent(`Hola ${lawyer.name},\n\nTe contacto desde Lexia. Me gustaría obtener información sobre tus servicios legales.\n\nGracias.`)}`}
+                    label="Enviar mensaje"
+                    variant="email"
+                    className="w-full text-sm font-medium py-2.5 px-4 rounded-xl"
+                  />
+                )}
               </div>
 
               <div className="h-px bg-[#EAE4D9] my-4" />

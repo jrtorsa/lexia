@@ -2,6 +2,7 @@
 
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { sendWelcomeEmail } from "@/lib/email"
 
 type RegistroInput = {
   email: string
@@ -100,10 +101,19 @@ export async function registrarAbogado(input: RegistroInput) {
         create: {
           planId: planRecord.id,
           status: input.plan === "free" ? "ACTIVE" : "TRIAL",
+          ...(input.plan !== "free" && (() => {
+            const start = new Date()
+            const end   = new Date(start)
+            end.setMonth(end.getMonth() + 3)
+            return { currentPeriodStart: start, currentPeriodEnd: end }
+          })()),
         },
       },
     },
   })
+
+  // Send welcome email (non-blocking)
+  sendWelcomeEmail({ to: input.email, name: input.name }).catch(() => {})
 
   return { success: true }
 }

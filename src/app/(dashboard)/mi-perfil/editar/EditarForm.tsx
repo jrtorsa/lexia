@@ -83,7 +83,7 @@ export default function EditarForm({ lawyer }: { lawyer: LawyerData }) {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900">Editar perfil</h1>
         <p className="text-slate-500 mt-1">Los cambios se reflejan en el directorio inmediatamente.</p>

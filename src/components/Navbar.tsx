@@ -3,7 +3,7 @@ import { Scale } from "lucide-react"
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-ink border-b border-white/8">
+    <header className="sticky top-0 z-40 bg-ink border-b border-white/8">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

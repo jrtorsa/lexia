@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { MapPin, Star, ShieldCheck, MessageCircle, Phone, ArrowUpRight } from "lucide-react"
+import { MapPin, Star, ShieldCheck, ArrowUpRight } from "lucide-react"
 import { type Lawyer, getAverageRating } from "@/lib/mock-lawyers"
+import ContactButton from "@/components/ContactButton"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
@@ -110,24 +111,25 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
           </Link>
 
           {lawyer.whatsapp ? (
-            <a
-              href={`https://wa.me/${lawyer.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1"
-            >
-              <button className="w-full bg-[#22C55E]/10 border border-[#22C55E]/25 text-[#16A34A] hover:bg-[#22C55E]/20 text-xs font-medium py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                <MessageCircle className="w-3 h-3" />
-                WhatsApp
-              </button>
-            </a>
+            <ContactButton
+              lawyerId={lawyer.id}
+              lawyerName={lawyer.name}
+              type="WHATSAPP"
+              href={`https://wa.me/${lawyer.whatsapp}?text=${encodeURIComponent(`Hola ${lawyer.name}, te contacto desde Lexia. Me gustaría obtener información sobre tus servicios legales.`)}`}
+              label="WhatsApp"
+              variant="whatsapp"
+              className="flex-1 text-xs py-2 px-3 rounded-lg"
+            />
           ) : lawyer.phone ? (
-            <a href={`tel:${lawyer.phone}`} className="flex-1">
-              <button className="w-full bg-[#C49A3C]/8 border border-[#C49A3C]/25 text-[#C49A3C] hover:bg-[#C49A3C]/15 text-xs font-medium py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                <Phone className="w-3 h-3" />
-                Llamar
-              </button>
-            </a>
+            <ContactButton
+              lawyerId={lawyer.id}
+              lawyerName={lawyer.name}
+              type="CALL"
+              href={`tel:${lawyer.phone}`}
+              label="Llamar"
+              variant="phone"
+              className="flex-1 text-xs py-2 px-3 rounded-lg"
+            />
           ) : null}
         </div>
       </div>

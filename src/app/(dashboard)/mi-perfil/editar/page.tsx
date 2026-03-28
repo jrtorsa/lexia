@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import EditarForm from "./EditarForm"
+import VerificarCedulaCard from "@/components/VerificarCedulaCard"
+import FotoPerfilUpload from "@/components/FotoPerfilUpload"
 
 export default async function EditarPerfilPage() {
   const session = await getServerSession(authOptions)
@@ -33,5 +35,17 @@ export default async function EditarPerfilPage() {
     specialtyNames: lawyer.specialties.map((ls) => ls.specialty.name),
   }
 
-  return <EditarForm lawyer={data} />
+  return (
+    <div className="p-8 max-w-3xl space-y-6">
+      <FotoPerfilUpload
+        nombre={lawyer.name}
+        photoUrl={lawyer.photoUrl}
+      />
+      <VerificarCedulaCard
+        cedulaActual={lawyer.cedula}
+        isVerified={lawyer.isVerified}
+      />
+      <EditarForm lawyer={data} />
+    </div>
+  )
 }

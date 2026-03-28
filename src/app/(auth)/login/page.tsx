@@ -57,7 +57,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#EAE4D9] p-8">
+        <div className="bg-white rounded-2xl border border-[#EAE4D9] p-8" style={{ colorScheme: "light" }}>
           {/* Decorative top rule */}
           <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-[#EAE4D9]" />
@@ -91,7 +91,7 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="tu@email.com"
-                className="w-full px-3.5 py-2.5 text-sm border border-[#EAE4D9] rounded-lg text-[#0C0D10] placeholder-[#0C0D10]/30 focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                className="w-full px-3.5 py-2.5 text-sm border border-[#EAE4D9] rounded-lg text-[#0C0D10] bg-white placeholder-[#0C0D10]/30 focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
               />
             </div>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full px-3.5 py-2.5 pr-10 text-sm border border-[#EAE4D9] rounded-lg text-[#0C0D10] placeholder-[#0C0D10]/30 focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                  className="w-full px-3.5 py-2.5 pr-10 text-sm border border-[#EAE4D9] rounded-lg text-[#0C0D10] bg-white placeholder-[#0C0D10]/30 focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
                 />
                 <button
                   type="button"

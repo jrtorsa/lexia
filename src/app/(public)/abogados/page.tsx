@@ -1,7 +1,47 @@
-import { Search, SlidersHorizontal, X } from "lucide-react"
+import { Search, SlidersHorizontal, X, ArrowRight } from "lucide-react"
+import Link from "next/link"
 import LawyerCard from "@/components/LawyerCard"
 import { prisma } from "@/lib/prisma"
 import type { Lawyer } from "@/lib/mock-lawyers"
+
+const PROMO_INTERVAL = 6   // Insert promo card every N lawyer cards
+
+function PromoCard({ ciudad }: { ciudad?: string }) {
+  const lugar = ciudad ?? "México"
+  return (
+    <div
+      className="rounded-xl p-5 flex flex-col gap-3 border border-[rgba(196,154,60,0.4)]"
+      style={{ background: "linear-gradient(135deg, #1A1300 0%, #2A1F00 100%)" }}
+    >
+      <div>
+        <span className="text-[10px] font-bold tracking-widest uppercase text-[#C49A3C]">
+          Oferta de lanzamiento
+        </span>
+        <h3 className="text-lg font-light text-white mt-1 leading-snug" style={{ fontFamily: "var(--font-cormorant)" }}>
+          ¿Eres abogado en {lugar}?
+        </h3>
+      </div>
+
+      <p className="text-xs text-[#FAF7F2]/55 leading-relaxed">
+        Únete a los primeros 50 abogados verificados y consigue 3 meses
+        Premium completamente gratis.
+      </p>
+
+      <div className="flex items-center gap-2">
+        <del className="text-xs text-[#FAF7F2]/35">$599/mes</del>
+        <span className="text-xs font-semibold text-[#E2B865]">→ Gratis por 3 meses</span>
+      </div>
+
+      <Link
+        href="/registro"
+        className="mt-auto flex items-center justify-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors"
+      >
+        Quiero mi perfil gratis
+        <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    </div>
+  )
+}
 
 const ESPECIALIDADES = [
   "Todas",
@@ -247,8 +287,13 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {sorted.map((lawyer) => (
-                  <LawyerCard key={lawyer.id} lawyer={lawyer} />
+                {sorted.map((lawyer, i) => (
+                  <>
+                    <LawyerCard key={lawyer.id} lawyer={lawyer} />
+                    {(i + 1) % PROMO_INTERVAL === 0 && i < sorted.length - 1 && (
+                      <PromoCard key={`promo-${i}`} ciudad={estado !== "Todos" ? estado : undefined} />
+                    )}
+                  </>
                 ))}
               </div>
             )}

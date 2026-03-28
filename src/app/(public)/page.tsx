@@ -6,6 +6,7 @@ import {
   CheckCircle2, MapPin, ChevronRight, Phone,
 } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import { PROMO } from "@/lib/promo"
 
 const df = { fontFamily: "var(--font-cormorant)" }
 
@@ -573,19 +574,43 @@ function PlanesSection() {
               }`}
             >
               {destacado && (
-                <span className="text-[10px] font-bold tracking-widest uppercase text-[#C49A3C] mb-4">
-                  Más popular
-                </span>
+                <div className="flex items-center gap-2 mb-4 flex-wrap">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-[#C49A3C]">
+                    Más popular
+                  </span>
+                  {PROMO.activa && (
+                    <span className="text-[10px] font-bold tracking-widest uppercase bg-[#C49A3C] text-[#0C0D10] px-2 py-0.5 rounded-full">
+                      {PROMO.badge}
+                    </span>
+                  )}
+                </div>
               )}
               <h3 className={`text-2xl font-light mb-1 ${destacado ? "text-white" : "text-[#0C0D10]"}`} style={df}>
                 {nombre}
               </h3>
               <p className={`text-xs mb-4 ${destacado ? "text-[#FAF7F2]/40" : "text-slate-400"}`}>{desc}</p>
               <div className="mb-6">
-                <span className={`text-4xl font-light ${destacado ? "text-[#E2B865]" : "text-[#0C0D10]"}`} style={df}>
-                  {precio}
-                </span>
-                <span className={`text-sm ml-1 ${destacado ? "text-[#FAF7F2]/40" : "text-slate-400"}`}>{periodo}</span>
+                {destacado && PROMO.activa ? (
+                  <div>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-4xl font-light text-[#E2B865]" style={df}>Gratis</span>
+                      <span className="text-xs text-[#FAF7F2]/40">por {PROMO.mesesGratis} meses</span>
+                    </div>
+                    <p className="text-xs text-[#FAF7F2]/35">
+                      Después: <del>{PROMO.precioOriginal}</del>{PROMO.periodo}
+                    </p>
+                    <p className="text-[10px] text-[#C49A3C] mt-1 font-semibold">
+                      ¡Solo quedan {PROMO.lugaresRestantes} lugares!
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <span className={`text-4xl font-light ${destacado ? "text-[#E2B865]" : "text-[#0C0D10]"}`} style={df}>
+                      {precio}
+                    </span>
+                    <span className={`text-sm ml-1 ${destacado ? "text-[#FAF7F2]/40" : "text-slate-400"}`}>{periodo}</span>
+                  </div>
+                )}
               </div>
               <ul className="space-y-2.5 flex-1 mb-7">
                 {caracteristicas.map((c) => (

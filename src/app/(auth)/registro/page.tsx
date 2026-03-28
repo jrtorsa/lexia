@@ -12,8 +12,11 @@ import {
   FileText,
   Briefcase,
   CreditCard,
+  Eye,
+  EyeOff,
 } from "lucide-react"
 import { registrarAbogado } from "@/app/actions/registro"
+import { PROMO } from "@/lib/promo"
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -72,7 +75,7 @@ const initial: FormData = {
   name: "", phone: "", whatsapp: "", city: "", state: "",
   cedula: "", university: "", graduationYear: "", yearsExperience: "", bio: "",
   specialties: [],
-  plan: "free",
+  plan: "premium",
   acceptTerms: false,
 }
 
@@ -94,6 +97,8 @@ export default function RegistroPage() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   function set<K extends keyof FormData>(field: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -254,6 +259,7 @@ export default function RegistroPage() {
         <form
           onSubmit={handleSubmit}
           className="bg-white rounded-2xl border border-[#EAE4D9] p-7"
+          style={{ colorScheme: "light" }}
         >
           {/* Step title */}
           <div className="mb-6">
@@ -300,30 +306,50 @@ export default function RegistroPage() {
                 <label htmlFor="password" className={labelCls}>
                   Contraseña
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  minLength={8}
-                  value={form.password}
-                  onChange={(e) => set("password", e.target.value)}
-                  placeholder="Mínimo 8 caracteres"
-                  className={inputCls}
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={8}
+                    value={form.password}
+                    onChange={(e) => set("password", e.target.value)}
+                    placeholder="Mínimo 8 caracteres"
+                    className={`${inputCls} pr-10`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30 hover:text-[#0C0D10]/60 transition-colors"
+                    aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label htmlFor="confirmPassword" className={labelCls}>
                   Confirmar contraseña
                 </label>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={form.confirmPassword}
-                  onChange={(e) => set("confirmPassword", e.target.value)}
-                  placeholder="Repite tu contraseña"
-                  className={inputCls}
-                />
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    type={showConfirm ? "text" : "password"}
+                    required
+                    value={form.confirmPassword}
+                    onChange={(e) => set("confirmPassword", e.target.value)}
+                    placeholder="Repite tu contraseña"
+                    className={`${inputCls} pr-10`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30 hover:text-[#0C0D10]/60 transition-colors"
+                    aria-label={showConfirm ? "Ocultar contraseña" : "Ver contraseña"}
+                  >
+                    {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <p className="text-[#0C0D10]/45 text-xs pt-1">
@@ -553,67 +579,69 @@ export default function RegistroPage() {
 
           {/* ── Step 3: Plan ── */}
           {step === 3 && (
-            <div className="space-y-4">
-              {(["free", "premium"] as const).map((p) => {
-                const active = form.plan === p
-                return (
-                  <label
-                    key={p}
-                    className={`block rounded-xl p-4 cursor-pointer transition-all border-2 ${
-                      active
-                        ? p === "premium"
-                          ? "border-[#C49A3C] bg-[rgba(196,154,60,0.04)]"
-                          : "border-[#C49A3C] bg-[rgba(196,154,60,0.04)]"
-                        : "border-[#EAE4D9] hover:border-[#C49A3C]/40"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                          active ? "border-[#C49A3C] bg-[#C49A3C]" : "border-[#EAE4D9]"
-                        }`}
-                      >
-                        {active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                      </div>
-                      <input
-                        type="radio"
-                        name="plan"
-                        value={p}
-                        checked={active}
-                        onChange={() => set("plan", p)}
-                        className="sr-only"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-[#0C0D10] text-sm">
-                            {p === "free" ? "Básico" : "Premium"}
+            <div className="space-y-3">
+              {/* Premium — active & selectable */}
+              <div className="rounded-xl p-4 border-2 border-[#C49A3C] bg-[rgba(196,154,60,0.04)] relative overflow-hidden">
+                {/* Promo glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#C49A3C]/5 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 w-4 h-4 rounded-full border-2 border-[#C49A3C] bg-[#C49A3C] flex items-center justify-center flex-shrink-0">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-[#0C0D10] text-sm">Premium</span>
+                      {PROMO.activa ? (
+                        <>
+                          <span className="font-semibold text-sm text-[#C49A3C]" style={displayFont}>
+                            Gratis
+                            <span className="text-xs text-[#0C0D10]/40 font-normal"> por {PROMO.mesesGratis} meses</span>
                           </span>
-                          <span
-                            className="font-semibold text-sm"
-                            style={displayFont}
-                          >
-                            {p === "free" ? (
-                              <span className="text-[#0C0D10]/50">Gratis</span>
-                            ) : (
-                              <span className="text-[#C49A3C]">$599<span className="text-xs text-[#0C0D10]/40 font-normal">/mes MXN</span></span>
-                            )}
+                          <span className="text-[10px] bg-[#C49A3C] text-white font-bold px-2 py-0.5 rounded-full tracking-widest uppercase">
+                            {PROMO.badge}
                           </span>
-                          {p === "premium" && (
-                            <span className="text-[10px] bg-[#C49A3C] text-white font-bold px-2 py-0.5 rounded-full tracking-widest uppercase">
-                              Recomendado
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[#0C0D10]/45 text-xs mt-1 leading-relaxed">
-                          {p === "free"
-                            ? "Perfil básico en el directorio. Hasta 2 especialidades, contacto por formulario."
-                            : "Posición preferente, WhatsApp directo, estadísticas de visitas y badge verificado."}
-                        </p>
-                      </div>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-semibold text-sm text-[#C49A3C]" style={displayFont}>
+                            {PROMO.precioOriginal}<span className="text-xs text-[#0C0D10]/40 font-normal">{PROMO.periodo}</span>
+                          </span>
+                          <span className="text-[10px] bg-[#C49A3C] text-white font-bold px-2 py-0.5 rounded-full tracking-widest uppercase">
+                            Recomendado
+                          </span>
+                        </>
+                      )}
                     </div>
-                  </label>
-                )
-              })}
+                    <p className="text-[#0C0D10]/55 text-xs mt-1 leading-relaxed">
+                      Posición preferente, WhatsApp directo, estadísticas de visitas y badge verificado.
+                    </p>
+                    {PROMO.activa && (
+                      <p className="text-[#C49A3C] text-[11px] font-semibold mt-2">
+                        ¡Solo quedan {PROMO.lugaresRestantes} lugares! · Después {PROMO.precioOriginal}{PROMO.periodo}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Básico — disabled */}
+              <div className="rounded-xl p-4 border-2 border-[#EAE4D9] bg-[#FAF7F2]/50 opacity-50 cursor-not-allowed select-none">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 w-4 h-4 rounded-full border-2 border-[#EAE4D9] flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-[#0C0D10]/40 text-sm">Básico</span>
+                      <span className="text-sm text-[#0C0D10]/30" style={displayFont}>Gratis</span>
+                      <span className="text-[10px] border border-[#0C0D10]/15 text-[#0C0D10]/30 font-medium px-2 py-0.5 rounded-full tracking-widest uppercase">
+                        No disponible
+                      </span>
+                    </div>
+                    <p className="text-[#0C0D10]/30 text-xs mt-1 leading-relaxed">
+                      Perfil básico en el directorio. No disponible durante el periodo de lanzamiento.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {/* Terms */}
               <div className="pt-2">
