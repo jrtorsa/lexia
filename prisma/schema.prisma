@@ -1,0 +1,198 @@
+// Lexia - Directorio de Abogados
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// USUARIOS (clientes que buscan abogado)
+// ─────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  questions Question[]
+  reviews   Review[]
+  contacts  Contact[]
+}
+
+// ─────────────────────────────────────────
+// ABOGADOS
+// ─────────────────────────────────────────
+model Lawyer {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String   // hashed
+  name            String
+  slug            String   @unique // para URL: /abogados/chihuahua/juan-perez
+  phone           String?
+  whatsapp        String?
+  bio             String?  @db.Text
+  photoUrl        String?
+  cedula          String?  // cédula profesional SEP
+  university      String?
+  graduationYear  Int?
+  yearsExperience Int?
+  city            String
+  state           String
+  address         String?
+  website         String?
+  linkedin        String?
+  isVerified      Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relaciones
+  specialties   LawyerSpecialty[]
+  memberships   Membership[]
+  reviews       Review[]
+  contacts      Contact[]
+  answers       Answer[]
+
+  @@index([city, state])
+  @@index([slug])
+}
+
+// ─────────────────────────────────────────
+// ESPECIALIDADES
+// ─────────────────────────────────────────
+model Specialty {
+  id          String  @id @default(cuid())
+  name        String  @unique // "Derecho familiar"
+  slug        String  @unique // "derecho-familiar"
+  description String?
+  icon        String? // nombre del ícono
+
+  lawyers LawyerSpecialty[]
+}
+
+model LawyerSpecialty {
+  lawyerId    String
+  specialtyId String
+  isPrimary   Boolean @default(false) // especialidad principal
+
+  lawyer    Lawyer    @relation(fields: [lawyerId], references: [id])
+  specialty Specialty @relation(fields: [specialtyId], references: [id])
+
+  @@id([lawyerId, specialtyId])
+}
+
+// ─────────────────────────────────────────
+// MEMBRESÍAS (modelo de negocio)
+// ─────────────────────────────────────────
+model Plan {
+  id          String   @id @default(cuid())
+  name        String   // "Básico", "Premium", "Despacho"
+  price       Decimal  @db.Decimal(10, 2) // MXN mensual
+  features    Json     // array de características incluidas
+  highlighted Boolean  @default(false) // plan recomendado
+  createdAt   DateTime @default(now())
+
+  memberships Membership[]
+}
+
+model Membership {
+  id             String           @id @default(cuid())
+  lawyerId       String
+  planId         String
+  status         MembershipStatus @default(TRIAL)
+  stripeSubId    String?          // ID de suscripción en Stripe
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  lawyer Lawyer @relation(fields: [lawyerId], references: [id])
+  plan   Plan   @relation(fields: [planId], references: [id])
+}
+
+enum MembershipStatus {
+  TRIAL     // periodo de prueba
+  ACTIVE    // suscripción activa
+  PAST_DUE  // pago pendiente
+  CANCELLED // cancelado
+}
+
+// ─────────────────────────────────────────
+// RESEÑAS
+// ─────────────────────────────────────────
+model Review {
+  id        String   @id @default(cuid())
+  lawyerId  String
+  userId    String?  // null si es anónimo
+  rating    Int      // 1-5
+  comment   String?  @db.Text
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  lawyer Lawyer @relation(fields: [lawyerId], references: [id])
+  user   User?  @relation(fields: [userId], references: [id])
+
+  @@index([lawyerId])
+}
+
+// ─────────────────────────────────────────
+// CONTACTOS (lead tracking)
+// ─────────────────────────────────────────
+model Contact {
+  id        String   @id @default(cuid())
+  lawyerId  String
+  userId    String?
+  name      String
+  email     String
+  phone     String?
+  message   String?  @db.Text
+  type      ContactType @default(MESSAGE)
+  createdAt DateTime @default(now())
+
+  lawyer Lawyer @relation(fields: [lawyerId], references: [id])
+  user   User?  @relation(fields: [userId], references: [id])
+
+  @@index([lawyerId])
+}
+
+enum ContactType {
+  MESSAGE   // mensaje directo
+  WHATSAPP  // click en WhatsApp
+  CALL      // click en teléfono
+  EMAIL     // click en email
+}
+
+// ─────────────────────────────────────────
+// PREGUNTAS LEGALES (asesoría gratuita)
+// ─────────────────────────────────────────
+model Question {
+  id          String   @id @default(cuid())
+  userId      String?
+  title       String
+  content     String   @db.Text
+  specialtyId String?
+  city        String?
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user    User?    @relation(fields: [userId], references: [id])
+  answers Answer[]
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  questionId String
+  lawyerId   String
+  content    String   @db.Text
+  isAccepted Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  question Question @relation(fields: [questionId], references: [id])
+  lawyer   Lawyer   @relation(fields: [lawyerId], references: [id])
+}
