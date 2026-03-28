@@ -44,6 +44,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/herramientas" className="hover:text-cream transition-colors">
+                  Calculadora de finiquito
+                </Link>
+              </li>
+              <li>
                 <Link href="/blog" className="hover:text-cream transition-colors">
                   Blog legal
                 </Link>
