@@ -36,6 +36,13 @@ export default function Navbar() {
               <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300" />
             </Link>
             <Link
+              href="/blog"
+              className="hover:text-cream transition-colors relative group"
+            >
+              Blog
+              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300" />
+            </Link>
+            <Link
               href="#para-abogados"
               className="hover:text-cream transition-colors relative group"
             >
