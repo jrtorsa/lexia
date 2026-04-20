@@ -59,27 +59,7 @@ export default async function SuscripcionPage({
     orderBy: { createdAt: "desc" },
   })
 
-  // ── Auto-expire / auto-delete ─────────────────────────────────────────────
   const now = new Date()
-
-  if (membership?.currentPeriodEnd) {
-    const periodEnd = membership.currentPeriodEnd
-    const sevenDaysAfterExpiry = new Date(periodEnd)
-    sevenDaysAfterExpiry.setDate(sevenDaysAfterExpiry.getDate() + 7)
-
-    if (sevenDaysAfterExpiry < now) {
-      // Grace period over — delete the lawyer account entirely
-      await prisma.lawyer.delete({ where: { id: session.user.id } })
-      redirect("/registro?motivo=cuenta-eliminada")
-    } else if (membership.status === "TRIAL" && periodEnd < now) {
-      // Trial just expired — mark as PAST_DUE
-      membership = await prisma.membership.update({
-        where: { id: membership.id },
-        data: { status: "PAST_DUE" },
-        include: { plan: true },
-      })
-    }
-  }
 
   const planName   = membership?.plan.name ?? "Premium"
   const planPrice  = membership?.plan.price ? Number(membership.plan.price) : 599
@@ -324,30 +304,19 @@ export default async function SuscripcionPage({
             </div>
             <button className="text-xs border border-slate-200 hover:border-slate-400 text-slate-600 px-3 py-1.5 rounded-lg transition-colors">Actualizar</button>
           </div>
-        ) : isTrial && daysLeft > 10 ? (
-          <p className="text-sm text-slate-400">
-            No se requiere pago durante el periodo gratuito. Podrás agregar tu tarjeta cuando esté por vencer.
-          </p>
         ) : (
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-400">Sin método de pago registrado.</p>
-            <Link
-              href="/planes"
-              className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] px-3 py-1.5 rounded-lg transition-colors"
-            >
-              <CreditCard className="w-3.5 h-3.5" />
-              Agregar
-            </Link>
-          </div>
+          <p className="text-sm text-slate-400">
+            No se requiere pago en este momento. El registro es gratuito por tiempo indefinido.
+          </p>
         )}
       </div>
 
-      {/* ── Nota Stripe ────────────────────────────────────────────────────── */}
+      {/* ── Nota gratuidad ─────────────────────────────────────────────────── */}
       <div className="flex gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm">
         <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
         <div className="text-amber-800">
-          Los pagos serán procesados de forma segura por <strong>Stripe</strong>. Lexia no almacena datos de tarjeta.
-          La integración de pagos estará disponible próximamente.
+          El registro en Lexia es <strong>gratuito por tiempo indefinido</strong>. Te avisaremos con anticipación
+          antes de que se aplique cualquier cambio en los planes.
         </div>
       </div>
     </div>

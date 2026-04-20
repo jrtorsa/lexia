@@ -110,6 +110,50 @@ export const CIUDADES: Record<string, CiudadData> = {
     contextoEconomico:
       "El turismo en torno a Paquimé genera contratos de hospedaje, servicios guiados y artesanías, con implicaciones en derecho de autor y propiedad intelectual para los artistas de Mata Ortiz. La producción de manzana genera contratos de compraventa a cadenas comerciales y litigios por calidad de la cosecha. La ganadería extensiva del noroeste de Chihuahua requiere asesoría en contratos de arrendamiento de agostaderos y certificados de sanidad para exportación.",
   },
+  "nuevo-casas-grandes": {
+    slug: "nuevo-casas-grandes",
+    nombre: "Nuevo Casas Grandes",
+    nombreCompleto: "Nuevo Casas Grandes",
+    estado: "Chihuahua",
+    poblacion: "70,000 habitantes",
+    contexto:
+      "Nuevo Casas Grandes es la ciudad más poblada del noroeste de Chihuahua y el principal centro comercial y de servicios de salud de la región del Valle de Casas Grandes. Ubicada a escasos kilómetros del sitio arqueológico de Paquimé —Patrimonio de la Humanidad de la UNESCO— y próxima a la frontera con Sonora y Arizona, la ciudad articula la economía de los municipios serranos y valles del noroeste del estado. Su crecimiento como polo regional ha generado una demanda creciente de servicios jurídicos en materia mercantil, civil y laboral para empresas y particulares de toda la zona.",
+    contextoEconomico:
+      "La economía de Nuevo Casas Grandes se sustenta en el comercio regional, la agroindustria —producción de manzana, leche y carne de res— y los servicios que atienden municipios vecinos del noroeste chihuahuense. La actividad frutícola genera contratos de compraventa con empacadoras y litigios por calidad de cosecha. El sector ganadero, con exportaciones certificadas hacia Estados Unidos, involucra trámites sanitarios, contratos de engorda y compraventas internacionales que requieren asesoría legal especializada.",
+  },
+  jimenez: {
+    slug: "jimenez",
+    nombre: "Jiménez",
+    nombreCompleto: "Jiménez",
+    estado: "Chihuahua",
+    poblacion: "35,000 habitantes",
+    contexto:
+      "Jiménez es un municipio del sur de Chihuahua ubicado en la cuenca del río Florido, con una vocación agrícola y ganadera bien establecida desde la época colonial. La ciudad es cabecera de un municipio con fuerte presencia de ejidos y pequeña propiedad dedicada al algodón, la alfalfa y la ganadería bovina de carne. Su posición en el corredor entre Parral y Camargo la convierte en un centro de servicios jurídicos, notariales y administrativos para comunidades rurales del sur del estado, con juzgado de primera instancia propio.",
+    contextoEconomico:
+      "La economía de Jiménez gira en torno a los cultivos de algodón y alfalfa en tierras de riego, la ganadería extensiva y la pequeña empresa comercial que atiende a la región. Los trámites de regularización agraria, los conflictos por derechos de agua de los distritos de riego y los problemas sucesorios de predios ejidales son las necesidades jurídicas más recurrentes. El comercio local y las pequeñas industrias generan también asuntos mercantiles y fiscales para personas físicas con actividad empresarial.",
+  },
+  guerrero: {
+    slug: "guerrero",
+    nombre: "Guerrero",
+    nombreCompleto: "Guerrero",
+    estado: "Chihuahua",
+    poblacion: "12,000 habitantes",
+    contexto:
+      "Guerrero es la cabecera de uno de los municipios más extensos del occidente de Chihuahua, situado en la transición entre la llanura y la Sierra Madre Occidental. Fue un importante centro político y comercial del estado durante el siglo XIX, sede histórica de operaciones militares y comerciales de la región serrana. Hoy es un polo de servicios para comunidades serranas, ejidos forestales y ranchos ganaderos del occidente chihuahuense. La explotación maderable, la ganadería extensiva y la agricultura de temporal definen el perfil económico del municipio.",
+    contextoEconomico:
+      "La economía de Guerrero descansa en la ganadería bovina de carne, el aprovechamiento forestal de pino-encino en ejidos de la sierra y la agricultura de temporal. Los conflictos por permisos de aprovechamiento forestal ante la SEMARNAT, las disputas de linderos entre ejidos y la regularización de predios son los asuntos jurídicos más recurrentes. La actividad comercial y de servicios locales genera necesidades en materia mercantil, laboral y fiscal que demandan asesoría jurídica accesible en la región.",
+  },
+  madera: {
+    slug: "madera",
+    nombre: "Madera",
+    nombreCompleto: "Madera",
+    estado: "Chihuahua",
+    poblacion: "35,000 habitantes",
+    contexto:
+      "Madera es un municipio del noroeste de Chihuahua enclavado en la Sierra Madre Occidental, reconocido como una de las regiones madereras más importantes del estado. Los bosques de pino-encino del municipio son aprovechados por ejidos forestales que producen madera en rollo y productos derivados para la industria de la construcción regional y nacional. La ciudad de Madera es también punto de acceso a la Reserva de la Biosfera Janos y a destinos de ecoturismo serrano, lo que diversifica su perfil económico y genera nuevas necesidades jurídicas.",
+    contextoEconomico:
+      "La industria forestal en Madera involucra permisos de aprovechamiento otorgados por la SEMARNAT, contratos de aserrío, compraventa de madera en rollo y conflictos por uso de terrenos de uso común en ejidos. La ganadería extensiva y algunas concesiones mineras activas complementan la economía local. El ecoturismo creciente genera contratos de prestación de servicios turísticos, permisos de uso de áreas naturales protegidas y regulaciones ambientales que requieren asesoría jurídica especializada en derecho ambiental y administrativo.",
+  },
 }
 
 export const ESPECIALIDADES: Record<string, EspecialidadData> = {
@@ -176,13 +220,17 @@ export const CITY_SLUGS: Set<string> = new Set(Object.keys(CIUDADES))
 // Nearby cities map for cross-linking
 const CIUDADES_CERCANAS: Record<string, string[]> = {
   chihuahua: ["cuauhtemoc", "delicias", "camargo"],
-  "ciudad-juarez": ["chihuahua", "casas-grandes", "ojinaga"],
-  delicias: ["chihuahua", "camargo", "parral"],
-  cuauhtemoc: ["chihuahua", "casas-grandes", "ciudad-juarez"],
-  parral: ["chihuahua", "delicias", "camargo"],
-  camargo: ["delicias", "parral", "chihuahua"],
-  ojinaga: ["chihuahua", "parral", "ciudad-juarez"],
-  "casas-grandes": ["cuauhtemoc", "ciudad-juarez", "chihuahua"],
+  "ciudad-juarez": ["chihuahua", "casas-grandes", "nuevo-casas-grandes"],
+  delicias: ["chihuahua", "camargo", "jimenez"],
+  cuauhtemoc: ["chihuahua", "casas-grandes", "guerrero"],
+  parral: ["chihuahua", "jimenez", "camargo"],
+  camargo: ["delicias", "jimenez", "parral"],
+  ojinaga: ["chihuahua", "parral", "delicias"],
+  "casas-grandes": ["nuevo-casas-grandes", "cuauhtemoc", "ciudad-juarez"],
+  "nuevo-casas-grandes": ["casas-grandes", "cuauhtemoc", "ciudad-juarez"],
+  jimenez: ["parral", "camargo", "delicias"],
+  guerrero: ["cuauhtemoc", "madera", "chihuahua"],
+  madera: ["guerrero", "casas-grandes", "cuauhtemoc"],
 }
 
 export function getCiudadesCercanas(ciudadSlug: string): CiudadData[] {
@@ -196,6 +244,29 @@ export function getCiudadesCercanas(ciudadSlug: string): CiudadData[] {
 type ComboKey = `${string}|${string}`
 
 const COMBO_OVERRIDES: Partial<Record<ComboKey, ComboContent>> = {
+  "delicias|derecho-laboral": {
+    intro:
+      "Delicias es el centro agroindustrial más activo del Valle de Chihuahua, donde trabajadores del campo, la industria empacadora y el comercio regional tienen acceso a asesoría laboral en Delicias de calidad. Los despidos en empresas agroindustriales, empacadoras y agronegocios locales generan una demanda constante de abogados laborales en Delicias, Chihuahua con experiencia en el mercado de trabajo agrícola y agroindustrial.",
+    detalle:
+      "Los abogados de despido en Delicias Chihuahua atienden casos ante el Centro de Conciliación Laboral del estado —conocido localmente como Integra Delicias Laboral— y, cuando se trata de trabajadores agrícolas con contratos estacionales de jurisdicción federal, ante los Tribunales Laborales Federales. La etapa de conciliación prejudicial es obligatoria antes de demandar; un abogado laboral en Delicias puede acompañarte en esa audiencia para negociar desde una posición informada y sin renunciar a derechos. La asesoría laboral en Delicias es especialmente relevante para jornaleros, trabajadores de empaque y operadores de maquinaria agrícola que frecuentemente ignoran sus derechos de liquidación y prestaciones proporcionales.",
+    faqs: [
+      {
+        pregunta: "¿Cómo encuentro un abogado laboral en Delicias, Chihuahua?",
+        respuesta:
+          "Puedes buscar abogados laborales en Delicias en el directorio de Lexia, donde encontrarás perfiles verificados con especialidad en derecho laboral. También puedes acudir directamente al Centro de Conciliación Laboral en Delicias para recibir orientación gratuita antes de iniciar cualquier trámite. Es recomendable contratar un abogado laboral en Delicias con experiencia en el sector agroindustrial, ya que los contratos de temporada y los esquemas de pago en el campo tienen particularidades que no todos los abogados dominan.",
+      },
+      {
+        pregunta: "Me despidieron de una empresa agroindustrial en Delicias. ¿Qué hago?",
+        respuesta:
+          "Si sufriste un despido en Delicias Chihuahua sin recibir tu liquidación completa, tienes derecho a 3 meses de salario integrado más 20 días por año trabajado, además de partes proporcionales de aguinaldo, vacaciones y prima vacacional. El primer paso es acudir al Centro de Conciliación Laboral (Integra Delicias Laboral) para la etapa prejudicial obligatoria. Un abogado de despido en Delicias puede ayudarte a calcular el monto correcto de tu liquidación y a negociar o demandar para obtenerla.",
+      },
+      {
+        pregunta: "¿Cuánto cuesta la asesoría laboral en Delicias y cómo funciona?",
+        respuesta:
+          "La asesoría laboral en Delicias varía según el despacho: algunos cobran una consulta inicial de entre $500 y $1,500 pesos, mientras que otros trabajan a éxito —sin cobrar honorarios por anticipado— llevándose un porcentaje de la liquidación obtenida (generalmente entre el 20% y el 30%). La etapa de conciliación en el Centro de Conciliación Laboral de Delicias es gratuita. Lo más importante es actuar dentro del plazo de 2 años desde el despido para no perder tu derecho a demandar.",
+      },
+    ],
+  },
   "ciudad-juarez|derecho-laboral": {
     intro:
       "Ciudad Juárez concentra la mayor actividad maquiladora del país bajo el programa IMMEX, lo que convierte al derecho laboral en la especialidad jurídica de mayor demanda en la ciudad. Cientos de miles de trabajadores de la manufactura de exportación enfrentan despidos, recortes de personal y conflictos por prestaciones derivados de la operación de empresas multinacionales.",

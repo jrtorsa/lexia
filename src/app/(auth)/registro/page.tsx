@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -11,13 +11,10 @@ import {
   User,
   FileText,
   Briefcase,
-  CreditCard,
   Eye,
   EyeOff,
 } from "lucide-react"
 import { registrarAbogado } from "@/app/actions/registro"
-import { PROMO } from "@/lib/promo"
-import { getLugaresRestantes } from "@/app/actions/getLugares"
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -47,7 +44,6 @@ const STEPS = [
   { label: "Cuenta", icon: User },
   { label: "Perfil", icon: FileText },
   { label: "Especialidades", icon: Briefcase },
-  { label: "Plan", icon: CreditCard },
 ]
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -94,11 +90,6 @@ const displayFont = { fontFamily: "var(--font-cormorant)" }
 
 export default function RegistroPage() {
   const [step, setStep] = useState(0)
-  const [lugaresRestantes, setLugaresRestantes] = useState(PROMO.lugaresTotal)
-
-  useEffect(() => {
-    getLugaresRestantes().then(setLugaresRestantes)
-  }, [])
   const [form, setForm] = useState<FormData>(initial)
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -283,13 +274,11 @@ export default function RegistroPage() {
               {step === 0 && "Crear cuenta"}
               {step === 1 && "Tu perfil profesional"}
               {step === 2 && "Especialidades"}
-              {step === 3 && "Elige tu plan"}
             </h2>
             <p className="text-[#0C0D10]/40 text-xs text-center mt-1">
               {step === 0 && "Ingresa tus datos de acceso"}
               {step === 1 && "La información que verán tus clientes"}
               {step === 2 && "Selecciona las áreas en las que practicas"}
-              {step === 3 && "Puedes cambiar de plan en cualquier momento"}
             </p>
           </div>
 
@@ -583,106 +572,41 @@ export default function RegistroPage() {
                   </p>
                 </div>
               )}
-            </div>
-          )}
-
-          {/* ── Step 3: Plan ── */}
-          {step === 3 && (
-            <div className="space-y-3">
-              {/* Premium — active & selectable */}
-              <div className="rounded-xl p-4 border-2 border-[#C49A3C] bg-[rgba(196,154,60,0.04)] relative overflow-hidden">
-                {/* Promo glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#C49A3C]/5 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 w-4 h-4 rounded-full border-2 border-[#C49A3C] bg-[#C49A3C] flex items-center justify-center flex-shrink-0">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-[#0C0D10] text-sm">Premium</span>
-                      {PROMO.activa ? (
-                        <>
-                          <span className="font-semibold text-sm text-[#C49A3C]" style={displayFont}>
-                            Gratis
-                            <span className="text-xs text-[#0C0D10]/40 font-normal"> por {PROMO.mesesGratis} meses</span>
-                          </span>
-                          <span className="text-[10px] bg-[#C49A3C] text-white font-bold px-2 py-0.5 rounded-full tracking-widest uppercase">
-                            {PROMO.badge}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="font-semibold text-sm text-[#C49A3C]" style={displayFont}>
-                            {PROMO.precioOriginal}<span className="text-xs text-[#0C0D10]/40 font-normal">{PROMO.periodo}</span>
-                          </span>
-                          <span className="text-[10px] bg-[#C49A3C] text-white font-bold px-2 py-0.5 rounded-full tracking-widest uppercase">
-                            Recomendado
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <p className="text-[#0C0D10]/55 text-xs mt-1 leading-relaxed">
-                      Posición preferente, WhatsApp directo, estadísticas de visitas y badge verificado.
-                    </p>
-                    {PROMO.activa && (
-                      <p className="text-[#C49A3C] text-[11px] font-semibold mt-2">
-                        ¡Solo quedan {lugaresRestantes} lugares! · Después {PROMO.precioOriginal}{PROMO.periodo}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Básico — disabled */}
-              <div className="rounded-xl p-4 border-2 border-[#EAE4D9] bg-[#FAF7F2]/50 opacity-50 cursor-not-allowed select-none">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 w-4 h-4 rounded-full border-2 border-[#EAE4D9] flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-[#0C0D10]/40 text-sm">Básico</span>
-                      <span className="text-sm text-[#0C0D10]/30" style={displayFont}>Gratis</span>
-                      <span className="text-[10px] border border-[#0C0D10]/15 text-[#0C0D10]/30 font-medium px-2 py-0.5 rounded-full tracking-widest uppercase">
-                        No disponible
-                      </span>
-                    </div>
-                    <p className="text-[#0C0D10]/30 text-xs mt-1 leading-relaxed">
-                      Perfil básico en el directorio. No disponible durante el periodo de lanzamiento.
-                    </p>
-                  </div>
-                </div>
-              </div>
 
               {/* Terms */}
-              <div className="pt-2">
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <button
-                    type="button"
-                    role="checkbox"
-                    aria-checked={form.acceptTerms}
-                    onClick={() => set("acceptTerms", !form.acceptTerms)}
-                    className={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                      form.acceptTerms
-                        ? "bg-[#C49A3C] border-[#C49A3C]"
-                        : "border-[#EAE4D9] group-hover:border-[#C49A3C]/50"
-                    }`}
-                  >
-                    {form.acceptTerms && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
-                  </button>
-                  <span className="text-xs text-[#0C0D10]/55 leading-relaxed">
-                    Acepto los{" "}
-                    <Link href="/terminos" className="text-[#C49A3C] hover:text-[#E2B865] transition-colors">
-                      términos de uso
-                    </Link>{" "}
-                    y la{" "}
-                    <Link href="/privacidad" className="text-[#C49A3C] hover:text-[#E2B865] transition-colors">
-                      política de privacidad
-                    </Link>{" "}
-                    de Lexia.
-                  </span>
-                </label>
-              </div>
+              {form.specialties.length > 0 && (
+                <div className="pt-2">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={form.acceptTerms}
+                      onClick={() => set("acceptTerms", !form.acceptTerms)}
+                      className={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        form.acceptTerms
+                          ? "bg-[#C49A3C] border-[#C49A3C]"
+                          : "border-[#EAE4D9] group-hover:border-[#C49A3C]/50"
+                      }`}
+                    >
+                      {form.acceptTerms && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+                    </button>
+                    <span className="text-xs text-[#0C0D10]/55 leading-relaxed">
+                      Acepto los{" "}
+                      <Link href="/terminos" className="text-[#C49A3C] hover:text-[#E2B865] transition-colors">
+                        términos de uso
+                      </Link>{" "}
+                      y la{" "}
+                      <Link href="/privacidad" className="text-[#C49A3C] hover:text-[#E2B865] transition-colors">
+                        política de privacidad
+                      </Link>{" "}
+                      de Lexia.
+                    </span>
+                  </label>
+                </div>
+              )}
             </div>
           )}
+
 
           {/* Server error */}
           {serverError && (
@@ -707,8 +631,7 @@ export default function RegistroPage() {
               type="submit"
               disabled={
                 loading ||
-                (step === 2 && form.specialties.length === 0) ||
-                (step === 3 && (!form.acceptTerms || form.specialties.length === 0))
+                (step === 2 && (form.specialties.length === 0 || !form.acceptTerms))
               }
               className="flex-1 flex items-center justify-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] disabled:opacity-40 disabled:cursor-not-allowed text-[#0C0D10] font-semibold text-sm py-2.5 px-5 rounded-lg transition-colors"
             >

@@ -1104,6 +1104,880 @@ export const POSTS: BlogPost[] = [
 </div>
 `,
   },
+  // ─── NEW ARTICLES ────────────────────────────────────────────────────────────
+
+  {
+    slug: "tabla-liquidacion-laboral-2025",
+    title: "Tabla de liquidación laboral en México 2025: montos por antigüedad",
+    metaTitle: "Tabla de liquidación laboral México 2025: cuánto te corresponde | Lexia",
+    metaDescription:
+      "Tabla completa de liquidación laboral en México 2025. Consulta cuánto te corresponde según tu salario y años trabajados. Incluye ejemplos con salarios de $8,000, $15,000 y $25,000 mensuales.",
+    category: "Derecho Laboral",
+    specialtySlug: "laboral",
+    specialtyLabel: "Derecho Laboral",
+    publishedAt: "2025-04-20",
+    readingTime: 8,
+    excerpt:
+      "¿Cuánto te corresponde de liquidación según tu salario y antigüedad? Esta tabla te da los montos aproximados para los escenarios más comunes en México en 2025.",
+    content: `
+<h2>¿Para qué sirve esta tabla?</h2>
+<p>Calcular una liquidación laboral requiere aplicar varias fórmulas simultáneamente. Esta guía condensa los resultados en tablas de referencia rápida para los rangos salariales más comunes en México, tomando como base la <strong>Ley Federal del Trabajo vigente en 2025</strong> y el salario mínimo actualizado.</p>
+<p>Recuerda que los montos mostrados son aproximaciones. El monto exacto depende del salario diario integrado (que incluye partes proporcionales de aguinaldo y prima vacacional), la fecha exacta del despido y las prestaciones adicionales del contrato colectivo.</p>
+
+<h2>Componentes de la liquidación por despido injustificado</h2>
+<p>Antes de ver las tablas, repasemos qué incluye una liquidación completa según el artículo 50 de la LFT:</p>
+<ul>
+  <li><strong>3 meses de salario integrado</strong> (indemnización constitucional — Art. 123 CPEUM)</li>
+  <li><strong>20 días de salario integrado por cada año trabajado</strong> (prima de antigüedad — Art. 50 LFT)</li>
+  <li><strong>Aguinaldo proporcional:</strong> 15 días de salario por año, pagadero en la proporción del tiempo trabajado en el año</li>
+  <li><strong>Vacaciones proporcionales</strong> no gozadas según la tabla del Art. 76 LFT</li>
+  <li><strong>Prima vacacional proporcional:</strong> 25% sobre el valor de los días de vacaciones</li>
+  <li><strong>Salarios caídos</strong> si hay juicio (topados a 12 meses desde la reforma de 2019)</li>
+</ul>
+
+<h2>Tabla 1: Liquidación por despido injustificado — Salario $8,000/mes</h2>
+<p><em>Salario diario: $266.67 | Salario diario integrado estimado: ~$280</em></p>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Antigüedad</th><th class="border border-slate-200 px-3 py-2 text-right">3 meses</th><th class="border border-slate-200 px-3 py-2 text-right">20 días/año</th><th class="border border-slate-200 px-3 py-2 text-right">Proporcionales</th><th class="border border-slate-200 px-3 py-2 text-right font-bold">Total estimado</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">1 año</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$5,600</td><td class="border border-slate-200 px-3 py-2 text-right">~$2,500</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$33,300</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">3 años</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$16,800</td><td class="border border-slate-200 px-3 py-2 text-right">~$2,800</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$44,800</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">5 años</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$28,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$3,000</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$56,200</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">10 años</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$56,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$3,200</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$84,400</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">15 años</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$84,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$3,500</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$112,700</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">20 años</td><td class="border border-slate-200 px-3 py-2 text-right">$25,200</td><td class="border border-slate-200 px-3 py-2 text-right">$112,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$3,800</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$141,000</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Tabla 2: Liquidación por despido injustificado — Salario $15,000/mes</h2>
+<p><em>Salario diario: $500 | Salario diario integrado estimado: ~$525</em></p>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Antigüedad</th><th class="border border-slate-200 px-3 py-2 text-right">3 meses</th><th class="border border-slate-200 px-3 py-2 text-right">20 días/año</th><th class="border border-slate-200 px-3 py-2 text-right">Proporcionales</th><th class="border border-slate-200 px-3 py-2 text-right font-bold">Total estimado</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">1 año</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$10,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$4,700</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$62,450</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">3 años</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$31,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$5,200</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$83,950</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">5 años</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$52,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$5,600</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$105,350</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">10 años</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$105,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$6,000</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$158,250</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">15 años</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$157,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$6,500</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$211,250</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">20 años</td><td class="border border-slate-200 px-3 py-2 text-right">$47,250</td><td class="border border-slate-200 px-3 py-2 text-right">$210,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$7,000</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$264,250</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Tabla 3: Liquidación por despido injustificado — Salario $25,000/mes</h2>
+<p><em>Salario diario: $833.33 | Salario diario integrado estimado: ~$875</em></p>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Antigüedad</th><th class="border border-slate-200 px-3 py-2 text-right">3 meses</th><th class="border border-slate-200 px-3 py-2 text-right">20 días/año</th><th class="border border-slate-200 px-3 py-2 text-right">Proporcionales</th><th class="border border-slate-200 px-3 py-2 text-right font-bold">Total estimado</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">1 año</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$17,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$7,800</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$104,050</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">3 años</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$52,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$8,600</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$139,850</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">5 años</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$87,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$9,300</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$175,550</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">10 años</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$175,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$10,000</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$263,750</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">15 años</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$262,500</td><td class="border border-slate-200 px-3 py-2 text-right">~$10,800</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$352,050</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">20 años</td><td class="border border-slate-200 px-3 py-2 text-right">$78,750</td><td class="border border-slate-200 px-3 py-2 text-right">$350,000</td><td class="border border-slate-200 px-3 py-2 text-right">~$11,500</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">~$440,250</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Importante: Estas tablas son orientativas. El salario diario integrado real puede ser mayor si tu empresa te otorga prestaciones superiores a la ley (vales, fondo de ahorro, bonos). Un abogado laboral puede hacer el cálculo exacto con tu recibo de nómina.</p></div>
+
+<h2>Tabla de vacaciones por antigüedad (Art. 76 LFT, reforma 2023)</h2>
+<p>La reforma al artículo 76 LFT, vigente desde 2023, aumentó significativamente los días de vacaciones mínimos:</p>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Año trabajado</th><th class="border border-slate-200 px-3 py-2 text-right">Días de vacaciones (antes de 2023)</th><th class="border border-slate-200 px-3 py-2 text-right font-bold">Días de vacaciones (desde 2023)</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">1er año</td><td class="border border-slate-200 px-3 py-2 text-right">6</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">12</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">2do año</td><td class="border border-slate-200 px-3 py-2 text-right">8</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">14</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">3er año</td><td class="border border-slate-200 px-3 py-2 text-right">10</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">16</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">4to año</td><td class="border border-slate-200 px-3 py-2 text-right">12</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">18</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">5to año</td><td class="border border-slate-200 px-3 py-2 text-right">14</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">20</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Del 6to al 10mo</td><td class="border border-slate-200 px-3 py-2 text-right">+2 días cada 5 años</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">+2 días cada año</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>¿Qué pasa con el tope de salario?</h2>
+<p>La LFT establece que la prima de antigüedad de 20 días por año se calcula sobre el salario integrado, pero con un tope: no puede exceder el <strong>doble del salario mínimo</strong> vigente en la zona geográfica correspondiente. En 2025, el salario mínimo general es de <strong>$278.80 diarios</strong> en la zona libre de la frontera norte y <strong>$248.93</strong> en el resto del país.</p>
+<p>Esto significa que la prima de antigüedad tiene un tope de ~$497.86 diarios para la mayor parte del país. Los trabajadores con salarios muy altos pueden verse afectados por este tope en el cálculo de los 20 días por año, aunque no en la indemnización constitucional de 3 meses.</p>
+
+<h2>El plazo para reclamar: actúa antes de 2 meses</h2>
+<p>El artículo 518 LFT fija un plazo de prescripción de <strong>2 meses</strong> para demandar el pago de la liquidación por despido injustificado. Este plazo corre a partir del día siguiente al despido. Si dejas pasar este tiempo, pierdes el derecho a demandar aunque el despido haya sido completamente injusto.</p>
+
+<div class="cta-block">
+  <h3>¿Necesitas calcular tu liquidación exacta?</h3>
+  <p>En Lexia tenemos abogados laborales verificados que pueden calcular tu liquidación real y acompañarte en el proceso de reclamación. Consúltalos directamente.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "cuanto-cobra-abogado-chihuahua",
+    title: "¿Cuánto cobra un abogado en Chihuahua en 2025?",
+    metaTitle: "Cuánto cobra un abogado en Chihuahua 2025: guía de honorarios | Lexia",
+    metaDescription:
+      "Guía actualizada de honorarios de abogados en Chihuahua 2025. Cuánto cuesta un abogado laboral, familiar, penal o mercantil. Consulta inicial, honorarios por éxito y cuotas fijas.",
+    category: "Derecho Laboral",
+    specialtySlug: "laboral",
+    specialtyLabel: "Derecho Laboral",
+    publishedAt: "2025-04-20",
+    readingTime: 7,
+    excerpt:
+      "Los honorarios de un abogado en Chihuahua varían enormemente según la especialidad, la complejidad del caso y el perfil del despacho. Esta guía te da rangos reales para que sepas qué esperar.",
+    content: `
+<h2>¿Por qué varían tanto los honorarios de los abogados?</h2>
+<p>Contratar a un abogado en Chihuahua puede costarte desde $500 pesos por una consulta hasta $200,000 o más por un litigio complejo. Esta diferencia se explica por varios factores: la especialidad del abogado, su experiencia y reputación, la complejidad del asunto, si se cobra por hora o por resultado, y si es un despacho boutique o un abogado independiente.</p>
+<p>En México no existe un arancel obligatorio para abogados como en otros países. Los honorarios son libres y se pactan entre las partes. Sin embargo, hay rangos razonables según el tipo de caso que te ayudarán a comparar propuestas y detectar cobros fuera de lo común.</p>
+
+<h2>Honorarios por especialidad en Chihuahua</h2>
+
+<h3>Derecho Laboral</h3>
+<p>Es una de las especialidades más activas en Chihuahua dada la actividad industrial y maquiladora de la entidad. Los esquemas de cobro más comunes son:</p>
+<ul>
+  <li><strong>Consulta inicial:</strong> $500 – $1,500 pesos (muchos abogados laborales la ofrecen gratis)</li>
+  <li><strong>Honorarios a éxito:</strong> 20% – 35% de lo recuperado (sin cobro previo). Es el modelo más común para demandas de liquidación.</li>
+  <li><strong>Cuota fija por etapa:</strong> $8,000 – $15,000 por la etapa de conciliación; $20,000 – $60,000 por juicio completo ante el Tribunal Laboral.</li>
+  <li><strong>Representación en conciliación prejudicial (solo):</strong> $3,000 – $8,000</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Consejo: Si buscas un abogado laboral en Chihuahua para demandar una liquidación, el modelo a éxito es el más conveniente cuando el monto a recuperar es significativo. Así el abogado solo gana si tú ganas.</p></div>
+
+<h3>Derecho Familiar</h3>
+<p>Los divorcios, custodias y pensiones alimenticias son los asuntos más frecuentes. Los rangos en Chihuahua son:</p>
+<ul>
+  <li><strong>Divorcio por mutuo acuerdo sin hijos ni bienes:</strong> $8,000 – $20,000 (honorarios totales del despacho)</li>
+  <li><strong>Divorcio con custodia y pensión en disputa:</strong> $25,000 – $80,000 dependiendo de la duración del juicio</li>
+  <li><strong>Pensión alimenticia (demanda inicial):</strong> $6,000 – $15,000</li>
+  <li><strong>Modificación de convenio de custodia:</strong> $8,000 – $20,000</li>
+  <li><strong>Juicio de intestado (sucesión sin testamento):</strong> $15,000 – $50,000 según el patrimonio</li>
+</ul>
+
+<h3>Derecho Penal</h3>
+<p>Los honorarios en materia penal en Chihuahua son los que mayor variación presentan, ya que dependen del fuero (común o federal), la etapa procesal y la gravedad del delito:</p>
+<ul>
+  <li><strong>Audiencia inicial (control de detención):</strong> $5,000 – $20,000</li>
+  <li><strong>Defensa en etapa de investigación:</strong> $15,000 – $50,000</li>
+  <li><strong>Juicio oral completo (fuero común):</strong> $40,000 – $150,000</li>
+  <li><strong>Juicio oral completo (fuero federal):</strong> $80,000 – $300,000+</li>
+  <li><strong>Amparo contra auto de vinculación:</strong> $10,000 – $30,000</li>
+</ul>
+<p>Si no puedes pagar un defensor particular, tienes derecho a un <strong>defensor público gratuito</strong> asignado por el Instituto de Defensoría Pública del estado de Chihuahua.</p>
+
+<h3>Derecho Civil</h3>
+<ul>
+  <li><strong>Cobro de deuda (juicio ejecutivo mercantil):</strong> 15% – 25% de lo recuperado, o cuota fija de $10,000 – $30,000</li>
+  <li><strong>Desahucio (lanzamiento de arrendatario):</strong> $10,000 – $25,000</li>
+  <li><strong>Controversia de contrato:</strong> $15,000 – $60,000 según complejidad</li>
+  <li><strong>Regularización de inmueble (prescripción adquisitiva):</strong> $20,000 – $50,000</li>
+</ul>
+
+<h3>Derecho Mercantil</h3>
+<ul>
+  <li><strong>Constitución de sociedad (SA de CV o SAS):</strong> $5,000 – $15,000 (más gastos notariales de $3,000 – $8,000)</li>
+  <li><strong>Contrato comercial (elaboración):</strong> $3,000 – $10,000</li>
+  <li><strong>Juicio ejecutivo mercantil:</strong> 15% – 25% del monto demandado</li>
+  <li><strong>Concurso mercantil (quiebra):</strong> $50,000 – $200,000+</li>
+</ul>
+
+<h3>Derecho Fiscal</h3>
+<ul>
+  <li><strong>Asesoría en carta invitación del SAT:</strong> $3,000 – $8,000</li>
+  <li><strong>Recurso de revocación:</strong> $10,000 – $30,000</li>
+  <li><strong>Juicio de nulidad (TFJA):</strong> $20,000 – $80,000</li>
+  <li><strong>Amparo fiscal:</strong> $25,000 – $100,000</li>
+  <li><strong>Planeación fiscal anual (persona moral):</strong> $8,000 – $30,000</li>
+</ul>
+
+<h3>Amparo</h3>
+<ul>
+  <li><strong>Amparo indirecto (con suspensión):</strong> $15,000 – $50,000</li>
+  <li><strong>Amparo directo contra sentencia:</strong> $20,000 – $80,000</li>
+  <li><strong>Suspensión provisional urgente:</strong> $5,000 – $15,000 adicionales</li>
+</ul>
+
+<h2>¿Cómo se cobra: pago adelantado vs. honorarios a éxito?</h2>
+<p>Existen dos grandes modelos de cobro que debes conocer antes de contratar:</p>
+<h3>Pago adelantado (retainer o cuota fija)</h3>
+<p>El abogado cobra un monto inicial al comenzar y puede cobrar pagos adicionales según avance el caso. Este modelo es común en materia penal, civil y mercantil, donde el resultado del juicio no siempre implica cobro de dinero.</p>
+<h3>Honorarios condicionales o a éxito</h3>
+<p>El abogado trabaja sin cobrar por adelantado y recibe un porcentaje de lo que se recupere. Es el modelo predominante en derecho laboral y en cobro de deudas. El porcentaje típico en Chihuahua es del 20% al 35% del monto recuperado.</p>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Siempre firma un contrato de prestación de servicios jurídicos que especifique: los honorarios exactos, el alcance de los servicios, cómo se manejan los gastos adicionales (como actuaciones, copias, notario) y las condiciones de terminación del contrato.</p></div>
+
+<h2>Gastos adicionales que debes considerar</h2>
+<p>Además de los honorarios del abogado, pueden existir gastos adicionales que corren por tu cuenta:</p>
+<ul>
+  <li><strong>Gastos notariales:</strong> $3,000 – $15,000 según el acto</li>
+  <li><strong>Actuaciones y diligencias:</strong> $500 – $2,000 por actuación</li>
+  <li><strong>Peritajes:</strong> $5,000 – $30,000 dependiendo de la especialidad</li>
+  <li><strong>Inscripciones registrales:</strong> $1,500 – $5,000</li>
+  <li><strong>Traducción de documentos:</strong> $500 – $3,000 por documento</li>
+</ul>
+
+<div class="cta-block">
+  <h3>Encuentra abogados verificados en Chihuahua</h3>
+  <p>En Lexia puedes consultar los perfiles de abogados en Chihuahua con sus especialidades y contactarlos directamente para obtener un presupuesto sin compromiso.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "como-demandar-empresa-mexico",
+    title: "Cómo demandar a una empresa en México: guía paso a paso 2025",
+    metaTitle: "Cómo demandar a una empresa en México 2025: guía completa | Lexia",
+    metaDescription:
+      "Guía práctica para demandar a una empresa en México en 2025. Pasos, plazos, documentos necesarios, costos y qué esperar en cada etapa del proceso laboral, civil o mercantil.",
+    category: "Derecho Laboral",
+    specialtySlug: "laboral",
+    specialtyLabel: "Derecho Laboral",
+    publishedAt: "2025-04-20",
+    readingTime: 9,
+    excerpt:
+      "Demandar a una empresa en México parece complicado, pero el proceso tiene etapas claras. Esta guía te explica cómo hacerlo dependiendo del tipo de conflicto: laboral, civil o mercantil.",
+    content: `
+<h2>¿Qué tipo de demanda necesitas?</h2>
+<p>El primer paso para demandar a una empresa en México es identificar qué tipo de conflicto tienes, porque eso determina ante qué autoridad debes acudir, qué ley aplica y cuáles son los plazos:</p>
+<ul>
+  <li><strong>Conflicto laboral:</strong> Si fuiste trabajador de la empresa (despido, falta de pago de salario, negativa de prestaciones, acoso laboral). Ley Federal del Trabajo → Tribunales Laborales.</li>
+  <li><strong>Conflicto civil:</strong> Si tienes un contrato de prestación de servicios, arrendamiento, o sufres daños por negligencia de la empresa. Código Civil → Juzgados Civiles.</li>
+  <li><strong>Conflicto mercantil:</strong> Si tienes una relación comercial (facturas impagadas, incumplimiento de contrato entre empresas, pagarés). Código de Comercio → Juzgados Mercantiles o Mixtos.</li>
+  <li><strong>Conflicto de consumidor:</strong> Si eres cliente final y la empresa te causó un perjuicio. Ley Federal de Protección al Consumidor → PROFECO.</li>
+</ul>
+
+<h2>Guía paso a paso: demanda laboral</h2>
+<p>Las demandas laborales contra empresas son las más comunes en México. Aquí el proceso completo después de la reforma de 2019:</p>
+
+<h3>Paso 1: Reúne tu documentación</h3>
+<p>Antes de acudir a cualquier instancia, necesitas:</p>
+<ul>
+  <li>Recibos de nómina de los últimos 6-12 meses</li>
+  <li>Contrato individual de trabajo (o prueba de que existió relación laboral)</li>
+  <li>Carta de despido, mensaje de WhatsApp, correo electrónico, cualquier comunicación</li>
+  <li>Credencial de empleado, uniformes, gafetes como prueba de la relación laboral</li>
+  <li>Datos de compañeros que puedan ser testigos</li>
+  <li>Identificación oficial (INE)</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Si la empresa operaba informalmente y no tienes recibos de nómina, aún puedes demandar. La carga de la prueba sobre la relación laboral puede acreditarse con testigos, mensajes, transferencias bancarias y otros medios.</p></div>
+
+<h3>Paso 2: Conciliación prejudicial obligatoria</h3>
+<p>Desde la reforma laboral de 2019, antes de presentar una demanda formal debes acudir al <strong>Centro de Conciliación Laboral</strong> de tu estado (en Chihuahua, el Centro de Justicia Laboral). Este trámite es:</p>
+<ul>
+  <li><strong>Gratuito</strong> para el trabajador</li>
+  <li><strong>Obligatorio</strong> como requisito previo a la demanda</li>
+  <li>Tiene un plazo de <strong>45 días naturales</strong> para resolverse</li>
+  <li>Puedes ir acompañado de un abogado (recomendado)</li>
+</ul>
+<p>Si la empresa no se presenta o no hay acuerdo, el Centro emite una <strong>constancia de no conciliación</strong> que habilita la demanda ante el Tribunal Laboral.</p>
+
+<h3>Paso 3: Presentación de la demanda</h3>
+<p>Con la constancia de no conciliación, tu abogado presenta la demanda ante el Tribunal Laboral del Poder Judicial del Estado (para jurisdicción local) o ante el Tribunal Laboral Federal (para empresas de industrias de jurisdicción federal: textil, minería, transporte, energía, etc.).</p>
+<p>La demanda debe incluir: datos del trabajador y la empresa, prestaciones reclamadas con montos calculados, hechos y fundamentos legales, ofrecimiento de pruebas (testigos, documentos, inspecciones).</p>
+
+<h3>Paso 4: Audiencia preliminar</h3>
+<p>El juez cita a ambas partes a una audiencia preliminar donde se intenta una última conciliación, se depuran los hechos y se admiten las pruebas. Si la empresa no se presenta, puede darse por confesa.</p>
+
+<h3>Paso 5: Audiencia de juicio oral</h3>
+<p>En la audiencia de juicio se desahogan las pruebas (testigos, documentos, peritajes), se presentan alegatos y el juez puede dictar sentencia en la misma audiencia o dentro de los días siguientes. En tribunales de Chihuahua, los juicios laborales suelen resolverse en <strong>6 a 18 meses</strong> dependiendo de la carga del juzgado.</p>
+
+<h3>Paso 6: Ejecución de sentencia</h3>
+<p>Si ganas, el juez ordena a la empresa pagar la liquidación. Si la empresa no paga voluntariamente, puedes solicitar la ejecución forzada: embargo de cuentas bancarias, bienes muebles o inmuebles de la empresa hasta cubrir el monto de la condena más intereses.</p>
+
+<h2>Guía paso a paso: demanda mercantil (deuda comercial)</h2>
+<p>Si una empresa te debe dinero por facturas impagadas o incumplimiento de contrato, el proceso mercantil es diferente:</p>
+
+<h3>Opción A: Juicio ejecutivo mercantil</h3>
+<p>Si tienes un <strong>título de crédito</strong> (pagaré, letra de cambio, cheque) o documento que hace líquida la deuda, puedes tramitar un juicio ejecutivo mercantil que es más rápido:</p>
+<ul>
+  <li><strong>Plazo para resolverse:</strong> 3 – 8 meses si no hay controversia compleja</li>
+  <li><strong>Ventaja:</strong> El juez puede ordenar embargo precautorio desde el inicio, antes de que la empresa distraiga sus bienes</li>
+  <li><strong>Costo:</strong> Gastos judiciales (copias, actuaciones) más honorarios del abogado</li>
+</ul>
+
+<h3>Opción B: Juicio ordinario mercantil</h3>
+<p>Para contratos complejos donde hay que probar la obligación y los daños. Es más largo (1 – 3 años) pero permite reclamar daños y perjuicios además del monto principal.</p>
+
+<h2>Demanda ante PROFECO: para conflictos de consumidor</h2>
+<p>Si eres consumidor final (no empresa) y una empresa te vendió un producto defectuoso, te cobró de más o incumplió una garantía, puedes:</p>
+<ul>
+  <li>Presentar una queja ante PROFECO (gratuito, sin abogado)</li>
+  <li>PROFECO puede mediar, imponer multas a la empresa y ordenar la devolución del dinero</li>
+  <li>El proceso puede resolverse en <strong>30 – 90 días</strong></li>
+  <li>Si PROFECO no resuelve, puedes acudir al juzgado civil</li>
+</ul>
+
+<h2>¿Cuánto cuesta demandar a una empresa?</h2>
+<p>Los costos dependen del tipo de juicio:</p>
+<ul>
+  <li><strong>Demanda laboral:</strong> La conciliación es gratuita. El juicio puede ser a honorarios a éxito (el abogado cobra 20-35% de lo recuperado) o con honorarios anticipados de $15,000 – $60,000.</li>
+  <li><strong>Demanda mercantil:</strong> Honorarios de abogado ($10,000 – $50,000+) más gastos del juicio. Muchos abogados cobran porcentaje (15-25%) sobre lo recuperado.</li>
+  <li><strong>PROFECO:</strong> Completamente gratuito.</li>
+</ul>
+
+<h2>El plazo más importante: no lo dejes pasar</h2>
+<p>Cada tipo de conflicto tiene un plazo de prescripción diferente:</p>
+<ul>
+  <li><strong>Laboral por despido:</strong> <strong>2 meses</strong> desde el despido (Art. 518 LFT)</li>
+  <li><strong>Laboral por falta de pago:</strong> <strong>1 año</strong> desde que fue exigible</li>
+  <li><strong>Mercantil:</strong> <strong>10 años</strong> para contratos; <strong>3 años</strong> para pagarés y letras</li>
+  <li><strong>Civil:</strong> <strong>10 años</strong> como regla general para acciones personales</li>
+  <li><strong>PROFECO:</strong> No hay plazo fijo, pero conviene actuar pronto</li>
+</ul>
+
+<div class="cta-block">
+  <h3>¿Necesitas asesoría para demandar a una empresa?</h3>
+  <p>En Lexia tenemos abogados verificados especializados en derecho laboral, mercantil y civil en todo México. Contáctalos directamente para evaluar tu caso.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "diferencia-finiquito-liquidacion-laboral",
+    title: "Finiquito vs liquidación: diferencias clave que debes conocer",
+    metaTitle: "Diferencia entre finiquito y liquidación laboral en México 2025 | Lexia",
+    metaDescription:
+      "¿Te ofrecen finiquito o liquidación? No son lo mismo. Conoce exactamente qué incluye cada uno, cuándo te corresponde cada pago y por qué aceptar solo el finiquito puede costarte mucho.",
+    category: "Derecho Laboral",
+    specialtySlug: "laboral",
+    specialtyLabel: "Derecho Laboral",
+    publishedAt: "2025-04-20",
+    readingTime: 6,
+    excerpt:
+      "Muchos trabajadores aceptan un finiquito creyendo que es lo mismo que una liquidación. Error costoso: la diferencia puede ser de decenas o cientos de miles de pesos.",
+    content: `
+<h2>El error más caro que cometen los trabajadores</h2>
+<p>Cuando termina una relación laboral, muchas empresas entregan un documento llamado "finiquito" y piden al trabajador que lo firme. El problema es que miles de trabajadores firman sin entender que están renunciando a derechos adicionales — especialmente a la liquidación — que en muchos casos suma decenas o cientos de miles de pesos.</p>
+<p>Entender la diferencia entre finiquito y liquidación es uno de los conocimientos más valiosos para cualquier trabajador en México.</p>
+
+<h2>¿Qué es el finiquito?</h2>
+<p>El <strong>finiquito</strong> es el pago de las prestaciones devengadas (ganadas pero no pagadas) que todo trabajador tiene derecho a recibir al terminar su relación laboral, <em>sin importar la causa de la terminación</em>. Se paga siempre: ya sea que renunciaste, te jubilaste, terminó tu contrato por tiempo determinado o te despidieron.</p>
+<p>El finiquito incluye:</p>
+<ul>
+  <li><strong>Salarios pendientes:</strong> Los días trabajados del último período que aún no se han pagado</li>
+  <li><strong>Aguinaldo proporcional:</strong> La parte del aguinaldo que ganaste en el año (15 días de salario por año completo, proporcional al tiempo trabajado)</li>
+  <li><strong>Vacaciones proporcionales no disfrutadas:</strong> Los días de vacaciones que acumulaste y no tomaste</li>
+  <li><strong>Prima vacacional proporcional:</strong> El 25% sobre los días de vacaciones que no disfrutaste</li>
+  <li><strong>Prima de antigüedad (en algunos casos):</strong> 12 días de salario por año trabajado cuando hay 15 o más años de servicio, o cuando el trabajador se retira voluntariamente</li>
+</ul>
+
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">El finiquito NO es opcional para el patrón. Tiene la obligación de pagarlo en cualquier terminación de la relación laboral. Si se niega, puedes demandar su pago ante el Centro de Conciliación Laboral.</p></div>
+
+<h2>¿Qué es la liquidación?</h2>
+<p>La <strong>liquidación</strong> es una indemnización adicional que aplica <em>exclusivamente</em> cuando el patrón termina la relación laboral de forma injustificada, es decir, sin invocar ninguna de las causas legales del artículo 47 LFT. La liquidación es, en pocas palabras, la "pena" que la ley impone al patrón por despedir sin causa.</p>
+<p>La liquidación incluye, además del finiquito:</p>
+<ul>
+  <li><strong>3 meses de salario integrado</strong> (indemnización constitucional — Art. 123, fracción XXII)</li>
+  <li><strong>20 días de salario integrado por cada año de servicio</strong> (Art. 50 LFT)</li>
+  <li><strong>Salarios caídos</strong> si la empresa no pagó en los 15 días siguientes al despido y hubo juicio (limitados a 12 meses desde la reforma de 2019)</li>
+</ul>
+
+<h2>Tabla comparativa: finiquito vs liquidación</h2>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Concepto</th><th class="border border-slate-200 px-3 py-2 text-center">Finiquito</th><th class="border border-slate-200 px-3 py-2 text-center">Liquidación</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">¿Cuándo aplica?</td><td class="border border-slate-200 px-3 py-2 text-center">Siempre</td><td class="border border-slate-200 px-3 py-2 text-center">Solo en despido injustificado</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Salarios pendientes</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">Aguinaldo proporcional</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Vacaciones proporcionales</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">Prima vacacional proporcional</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">3 meses de salario integrado</td><td class="border border-slate-200 px-3 py-2 text-center">✗</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">20 días por año trabajado</td><td class="border border-slate-200 px-3 py-2 text-center">✗</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Salarios caídos (si hay juicio)</td><td class="border border-slate-200 px-3 py-2 text-center">✗</td><td class="border border-slate-200 px-3 py-2 text-center">✓</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>El riesgo de firmar un finiquito sin revisar</h2>
+<p>Las empresas frecuentemente presentan al trabajador un documento de "finiquito" que en realidad incluye una cláusula como: <em>"el trabajador manifiesta haber recibido a su entera satisfacción el pago de todas y cada una de las prestaciones a las que tuvo derecho derivadas de la relación laboral, sin que quede pendiente ningún adeudo".</em></p>
+<p>Firmar ese documento <strong>sin antes verificar que se pagó la liquidación completa</strong> puede significar que renuncias a reclamar la indemnización constitucional y los 20 días por año, que en casos de varios años de antigüedad pueden sumar fácilmente $100,000 o más.</p>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Regla de oro: nunca firmes ningún documento de la empresa el mismo día que te notifican el despido. Pide 24-48 horas para revisar el documento con un abogado. Una empresa seria no puede negarse a esto.</p></div>
+
+<h2>¿Qué hacer si solo te ofrecen el finiquito?</h2>
+<ol>
+  <li><strong>No firmes nada</strong> hasta consultar con un abogado laboral.</li>
+  <li><strong>Calcula tu liquidación completa</strong> usando tu recibo de nómina y tus años de antigüedad.</li>
+  <li><strong>Negocia:</strong> Muchas empresas ofrecen un monto inicial bajo esperando que el trabajador no sepa sus derechos. Con la cifra correcta en mano, tienes poder de negociación.</li>
+  <li><strong>Si no llegan a un acuerdo:</strong> Acude al Centro de Conciliación Laboral. La etapa prejudicial es gratuita y puede resolver el conflicto en semanas.</li>
+  <li><strong>Si tampoco hay acuerdo en conciliación:</strong> Presenta demanda ante el Tribunal Laboral. Tienes <strong>2 meses desde el despido</strong> para hacerlo.</li>
+</ol>
+
+<h2>¿Cuándo el finiquito es suficiente?</h2>
+<p>El finiquito sin liquidación adicional es suficiente cuando:</p>
+<ul>
+  <li>Renuncias voluntariamente (a menos que puedas probar despido indirecto)</li>
+  <li>Tu contrato era por tiempo determinado y venció naturalmente</li>
+  <li>Fuiste despedido por causa justificada que queda debidamente documentada</li>
+  <li>Acordaste una separación voluntaria con compensación adicional negociada</li>
+</ul>
+
+<div class="cta-block">
+  <h3>¿Te ofrecieron solo el finiquito y crees que te corresponde más?</h3>
+  <p>Consulta con un abogado laboral en Lexia para calcular cuánto te corresponde realmente y decidir si vale la pena negociar o demandar.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "abogado-oficio-chihuahua",
+    title: "Abogado de oficio en Chihuahua: cómo conseguirlo gratis en 2025",
+    metaTitle: "Abogado de oficio en Chihuahua 2025: cómo solicitarlo y qué esperar | Lexia",
+    metaDescription:
+      "Cómo obtener un defensor público o abogado de oficio en Chihuahua. Quiénes tienen derecho, dónde solicitarlo, qué casos cubren y cuáles son las diferencias con un abogado particular.",
+    category: "Derecho Penal",
+    specialtySlug: "penal",
+    specialtyLabel: "Derecho Penal",
+    publishedAt: "2025-04-20",
+    readingTime: 7,
+    excerpt:
+      "En México tienes derecho constitucional a una defensa jurídica gratuita si no puedes pagar un abogado. En Chihuahua existen varias instituciones que brindan este servicio. Te explicamos cómo acceder.",
+    content: `
+<h2>El derecho a la defensa gratuita en México</h2>
+<p>El artículo 17 de la Constitución Política de los Estados Unidos Mexicanos establece que toda persona tiene derecho a que se le administre justicia de manera gratuita. Más específicamente, el artículo 20, apartado B, fracción VIII, garantiza a toda persona imputada el <strong>derecho a una defensa técnica adecuada desde el momento de su detención</strong>, incluyendo el derecho a que se le asigne un defensor público si no cuenta con uno.</p>
+<p>Esto significa que en México nadie puede quedar sin representación jurídica por falta de recursos económicos, al menos en materia penal. Para otras materias (civil, laboral, familiar), existen también servicios de asesoría jurídica gratuita aunque con menor cobertura.</p>
+
+<h2>Instituciones que dan asesoría jurídica gratuita en Chihuahua</h2>
+
+<h3>1. Instituto de Defensoría Pública del Estado de Chihuahua</h3>
+<p>Es el organismo principal de defensa pública en el estado. Sus defensores públicos representan a personas imputadas en el sistema acusatorio (fuero común) que no pueden pagar un abogado particular.</p>
+<p><strong>Qué cubre:</strong> Defensa en audiencias iniciales, etapa de investigación formalizada, etapa intermedia y juicio oral en materia penal del fuero común.</p>
+<p><strong>Cómo solicitarlo:</strong> Al momento de la detención, la policía y el Ministerio Público están obligados a informarte de tu derecho a un defensor. Si no tienes uno, el juez de control asigna uno del Instituto de manera automática antes de cualquier audiencia.</p>
+<p><strong>Oficinas en Chihuahua:</strong> Tienen presencia en Chihuahua capital, Ciudad Juárez, Parral, Cuauhtémoc y otras ciudades del estado.</p>
+
+<h3>2. Defensoría Pública Federal (IFDP)</h3>
+<p>El <strong>Instituto Federal de Defensoría Pública</strong>, dependiente del Poder Judicial de la Federación, atiende asuntos del fuero federal: delitos federales, amparos, y representación ante el Tribunal Federal de Justicia Administrativa en materia fiscal.</p>
+<p><strong>Cómo solicitarlo:</strong> Acudir personalmente a las oficinas del IFDP en el Palacio Federal de Chihuahua o Ciudad Juárez, o solicitarlo ante el Juzgado de Distrito correspondiente al ser presentado ante autoridad federal.</p>
+<p><strong>Servicios adicionales:</strong> Asesoría jurídica gratuita a personas de escasos recursos en materia de amparo, incluso si no hay proceso penal.</p>
+
+<h3>3. Procuraduría de la Defensa del Trabajo (PROFEDET)</h3>
+<p>Dependencia de la STPS que brinda asesoría y representación jurídica gratuita a trabajadores en conflictos laborales. Muy útil si no puedes pagar un abogado laboral particular.</p>
+<p><strong>Qué cubre:</strong> Asesoría sobre derechos laborales, cálculo de liquidaciones, acompañamiento en conciliación prejudicial y representación en juicios ante los Tribunales Laborales.</p>
+<p><strong>Cómo solicitarlo:</strong> Acudir a las oficinas de PROFEDET en Chihuahua o Ciudad Juárez. El servicio es completamente gratuito para trabajadores.</p>
+<p><strong>Requisito:</strong> Ser trabajador (no empresa). No hay límite de ingresos para acceder al servicio.</p>
+
+<h3>4. Procuraduría Agraria</h3>
+<p>Para conflictos relacionados con tierras ejidales, sucesiones de parcelas y derechos agrarios, la Procuraduría Agraria brinda representación jurídica gratuita a ejidatarios y comuneros.</p>
+
+<h3>5. DIF Chihuahua — Orientación Jurídica</h3>
+<p>El Sistema DIF del Estado de Chihuahua ofrece asesoría jurídica en materia familiar para personas de escasos recursos: divorcios, pensiones alimenticias, custodia de menores, adopciones.</p>
+
+<h3>6. Clínicas Jurídicas de la UACH</h3>
+<p>La Universidad Autónoma de Chihuahua (UACH) opera clínicas jurídicas donde estudiantes de derecho bajo supervisión de profesores brindan asesoría gratuita en diversas materias. Es una buena opción para asuntos no urgentes de mediana complejidad.</p>
+
+<h2>¿Defensor público o abogado particular: cuál es mejor?</h2>
+<p>Esta es una pregunta frecuente. La respuesta honesta:</p>
+
+<h3>Fortalezas del defensor público</h3>
+<ul>
+  <li>Es completamente gratuito</li>
+  <li>Conoce bien el sistema judicial local y las prácticas del Ministerio Público y los jueces</li>
+  <li>Tiene obligación de representarte aunque el caso sea complejo</li>
+  <li>En estados con sistemas bien organizados como Chihuahua, muchos defensores públicos son muy capaces</li>
+</ul>
+
+<h3>Limitaciones del defensor público</h3>
+<ul>
+  <li>Alta carga de trabajo: cada defensor puede tener decenas de casos simultáneos</li>
+  <li>Menos tiempo para revisar a fondo tu expediente antes de cada audiencia</li>
+  <li>No puedes elegir quién te representa; se asigna por turno</li>
+  <li>La comunicación puede ser más difícil (no siempre responden llamadas entre audiencias)</li>
+</ul>
+
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">En casos penales graves (homicidio, secuestro, delitos federales con penas altas), si tienes cualquier posibilidad de pagar un abogado particular especializado en materia penal, vale la pena hacerlo. La diferencia en dedicación y estrategia puede impactar significativamente el resultado.</p></div>
+
+<h2>Cómo aprovechar al máximo tu defensor público</h2>
+<p>Si te asignan un defensor público, estos consejos te ayudarán a tener una mejor defensa:</p>
+<ul>
+  <li><strong>Comunícate desde el principio:</strong> Explícale todo lo que sabes sobre el caso con la mayor cantidad de detalles posible. No ocultes información a tu defensor.</li>
+  <li><strong>Pide explicaciones:</strong> Tienes derecho a que te expliquen cada paso del proceso. Si no entiendes algo, pregunta.</li>
+  <li><strong>Proporciona contactos de testigos:</strong> Si hay personas que pueden declarar a tu favor, dáselos a tu defensor lo antes posible.</li>
+  <li><strong>Asiste a todas las audiencias:</strong> Tu presencia es necesaria y demuestra interés en tu defensa.</li>
+  <li><strong>Si no estás satisfecho:</strong> Tienes derecho a solicitar un cambio de defensor al Instituto de Defensoría Pública o al juez.</li>
+</ul>
+
+<h2>¿Qué pasa si el defensor público no te defiende bien?</h2>
+<p>Si consideras que tu defensor público no está cumpliendo adecuadamente con su función, puedes:</p>
+<ul>
+  <li>Presentar una queja ante el <strong>Instituto de Defensoría Pública del Estado de Chihuahua</strong></li>
+  <li>Solicitar al juez que se te asigne un nuevo defensor</li>
+  <li>En casos extremos de violación al derecho de defensa, interponer un amparo por violación al artículo 20 constitucional</li>
+</ul>
+
+<div class="cta-block">
+  <h3>¿Buscas un abogado penalista en Chihuahua?</h3>
+  <p>En Lexia puedes encontrar abogados particulares especializados en materia penal en Chihuahua, con sus especialidades verificadas. Si el caso lo requiere, muchos ofrecen consulta inicial gratuita.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "ley-federal-trabajo-2025-cambios",
+    title: "Ley Federal del Trabajo 2025: los cambios más importantes que debes conocer",
+    metaTitle: "Ley Federal del Trabajo 2025: cambios y reformas importantes | Lexia",
+    metaDescription:
+      "Resumen de los cambios más importantes a la Ley Federal del Trabajo vigentes en 2025. Reforma de vacaciones, salario mínimo, plataformas digitales, outsourcing y más.",
+    category: "Derecho Laboral",
+    specialtySlug: "laboral",
+    specialtyLabel: "Derecho Laboral",
+    publishedAt: "2025-04-20",
+    readingTime: 10,
+    excerpt:
+      "La LFT ha sufrido reformas significativas entre 2019 y 2025. Aquí resumimos los cambios más importantes que afectan tanto a trabajadores como a empresas: vacaciones, outsourcing, sindicatos y plataformas digitales.",
+    content: `
+<h2>Una ley en constante evolución</h2>
+<p>La Ley Federal del Trabajo (LFT), publicada originalmente en 1970, ha sido objeto de reformas profundas en los últimos años que han cambiado fundamentalmente las reglas del trabajo en México. Conocer estas reformas es esencial para trabajadores que quieren defender sus derechos y para empresas que necesitan cumplir con sus obligaciones.</p>
+<p>A continuación, un resumen de los cambios más importantes vigentes en 2025, organizados por tema.</p>
+
+<h2>1. Reforma de vacaciones 2023: duplicación de días mínimos</h2>
+<p>Esta es quizás la reforma más impactante para los trabajadores en los últimos años. En <strong>enero de 2023</strong>, se publicó la reforma al artículo 76 LFT que duplicó los días mínimos de vacaciones:</p>
+<ul>
+  <li><strong>Antes:</strong> 6 días el primer año, aumentando 2 días cada 5 años de antigüedad</li>
+  <li><strong>Ahora:</strong> 12 días el primer año, aumentando 2 días por cada año adicional hasta los primeros 5 años, y luego cada 5 años</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Si tienes trabajadores y no actualizaste su tabla de vacaciones a partir de 2023, estás incumpliendo la ley. Todos los trabajadores activos tienen derecho a los nuevos días mínimos, incluyendo quienes ya tenían varios años de antigüedad.</p></div>
+<p>Esta reforma también impacta los cálculos de finiquito y liquidación: al haber más días de vacaciones, el valor de las vacaciones proporcionales no gozadas y la prima vacacional proporcional son mayores en cada liquidación.</p>
+
+<h2>2. Reforma de outsourcing 2021: prohibición y subcontratación especializada</h2>
+<p>La reforma del <strong>23 de abril de 2021</strong> fue una de las más profundas en décadas. Prohibió el esquema de outsourcing tradicional y creó un nuevo marco para la subcontratación:</p>
+<h3>Lo que quedó prohibido</h3>
+<ul>
+  <li>El outsourcing de personal en el que una empresa ponía trabajadores a disposición de otra empresa para desarrollar el objeto social de esta última</li>
+  <li>Los esquemas donde la empresa "empleadora" era solo una prestanombres sin actividad real</li>
+</ul>
+<h3>Lo que sí está permitido ahora</h3>
+<ul>
+  <li><strong>Subcontratación especializada:</strong> Una empresa puede contratar a otra para que realice servicios especializados o ejecute obras que no forman parte del objeto social o actividad preponderante de la contratante</li>
+  <li>La empresa subcontratista debe estar inscrita en el <strong>Registro de Prestadoras de Servicios Especializados u Obras Especializadas (REPSE)</strong> ante la STPS</li>
+</ul>
+<h3>Implicaciones prácticas</h3>
+<p>Muchas empresas tuvieron que migrar a sus trabajadores de "outsourcing" a nómina propia. Esto tuvo impacto directo en el PTU (reparto de utilidades), ya que los trabajadores ahora son contratados directamente por la empresa beneficiaria y tienen derecho al 10% de la utilidad fiscal de esta empresa.</p>
+
+<h2>3. Reforma laboral 2019: nuevo sistema de justicia del trabajo</h2>
+<p>La reforma de 2019 (y su implementación gradual concluida en 2023) transformó radicalmente el sistema de justicia laboral:</p>
+<h3>Fin de las Juntas de Conciliación y Arbitraje</h3>
+<p>Las antiguas Juntas de Conciliación y Arbitraje, que dependían del Poder Ejecutivo, fueron sustituidas por:</p>
+<ul>
+  <li><strong>Centros de Conciliación Laboral</strong> (federal y estatales): instancias administrativas autónomas donde se realiza la conciliación prejudicial obligatoria antes de cualquier demanda</li>
+  <li><strong>Tribunales Laborales:</strong> juzgados dentro del Poder Judicial que resuelven los conflictos cuando la conciliación falla, con juicios orales</li>
+</ul>
+<h3>Conciliación prejudicial obligatoria</h3>
+<p>Antes de demandar, el trabajador debe agotar una etapa de conciliación gratuita ante el Centro de Conciliación Laboral. El plazo es de 45 días naturales. Si no hay acuerdo, el Centro emite la constancia que habilita la demanda.</p>
+<h3>Sindicatos y transparencia</h3>
+<p>La reforma exigió la democratización de los sindicatos: elecciones de dirigencia por voto libre, secreto y directo de los trabajadores, y la revisión de todos los contratos colectivos existentes mediante consulta directa a los trabajadores.</p>
+
+<h2>4. Trabajo de plataformas digitales 2021</h2>
+<p>La reforma de abril de 2021 reconoció expresamente en la LFT a los trabajadores que prestan servicios a través de plataformas digitales (como Rappi, Uber, DiDi, etc.):</p>
+<ul>
+  <li>Se reconoce que pueden ser trabajadores dependientes si cumplen con los elementos de subordinación</li>
+  <li>Tienen derecho a IMSS, AFORE y prestaciones si trabajan más de cierto número de horas semanales</li>
+  <li>Las empresas de plataformas deben registrarlos ante el IMSS según su nivel de ingresos y horas trabajadas</li>
+  <li>Las plataformas no pueden imponerles los mismos requisitos de exclusividad que a empleados formales</li>
+</ul>
+
+<h2>5. Teletrabajo: regulación del home office</h2>
+<p>La pandemia de COVID-19 aceleró la regulación del teletrabajo. En <strong>enero de 2021</strong> entró en vigor la reforma al Capítulo XII Bis de la LFT que regula el trabajo a distancia:</p>
+<ul>
+  <li>Se aplica cuando el trabajo se realiza fuera del establecimiento del patrón usando TIC de forma regular</li>
+  <li>El patrón debe proporcionar o cubrir el costo de equipos y conexión a internet</li>
+  <li>Debe existir un contrato de teletrabajo que especifique horarios, mecanismos de supervisión y garantías de desconexión</li>
+  <li>Los trabajadores tienen <strong>derecho a la desconexión digital</strong> fuera del horario laboral</li>
+  <li>El patrón debe cubrir proporcional el costo de servicios de telecomunicaciones y energía eléctrica</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Si trabajas desde casa y tu empresa no te proporciona equipo ni paga una parte de tu internet y luz, está incumpliendo la LFT. Puedes reclamarlo.</p></div>
+
+<h2>6. Salario mínimo: aumentos históricos 2019-2025</h2>
+<p>México ha experimentado aumentos históricos del salario mínimo en los últimos años, como parte de la política de recuperación del poder adquisitivo:</p>
+<ul>
+  <li><strong>2019:</strong> $102.68/día (zona general)</li>
+  <li><strong>2020:</strong> $123.22/día (+20%)</li>
+  <li><strong>2021:</strong> $141.70/día (+15%)</li>
+  <li><strong>2022:</strong> $172.87/día (+22%)</li>
+  <li><strong>2023:</strong> $207.44/día (+20%)</li>
+  <li><strong>2024:</strong> $248.93/día (+20%)</li>
+  <li><strong>2025:</strong> $278.80/día zona libre frontera norte; negociación pendiente para el resto del país</li>
+</ul>
+<p>Estos aumentos impactan directamente el cálculo de liquidaciones, el tope de la prima de antigüedad y las multas por violaciones laborales.</p>
+
+<h2>7. Violencia y acoso laboral (NOM-035)</h2>
+<p>Aunque no es una reforma a la LFT en sentido estricto, la <strong>NOM-035-STPS-2018</strong>, obligatoria desde 2019, exige a todas las empresas:</p>
+<ul>
+  <li>Identificar, analizar y prevenir factores de riesgo psicosocial</li>
+  <li>Establecer políticas contra el acoso y hostigamiento laboral</li>
+  <li>Implementar mecanismos de denuncia internos</li>
+  <li>Promover el entorno organizacional favorable</li>
+</ul>
+<p>El incumplimiento puede generar multas de hasta 5,000 UMAs (~$505,000 pesos en 2025).</p>
+
+<h2>Pendientes en la agenda legislativa 2025</h2>
+<p>Para 2025, se discuten o están en proceso reformas adicionales:</p>
+<ul>
+  <li><strong>Semana laboral de 40 horas:</strong> Reducción de la jornada máxima de 48 a 40 horas semanales, con ajustes en el pago de horas extra</li>
+  <li><strong>Regulación más amplia del trabajo por plataformas:</strong> Para cubrir a más tipos de trabajadores informales</li>
+  <li><strong>Reforma al PTU:</strong> Se discute modificar el tope actual de 3 meses de salario en el reparto de utilidades para algunos sectores</li>
+</ul>
+
+<div class="cta-block">
+  <h3>¿Tienes dudas sobre cómo aplica la LFT a tu situación?</h3>
+  <p>Los abogados laborales verificados en Lexia pueden asesorarte sobre tus derechos según las reformas vigentes en 2025. Consúltalos directamente.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "divorcio-express-chihuahua",
+    title: "Divorcio express en Chihuahua: requisitos, pasos y costos en 2025",
+    metaTitle: "Divorcio express en Chihuahua 2025: requisitos y costos | Lexia",
+    metaDescription:
+      "Guía completa del divorcio express (incausado) en Chihuahua 2025. Requisitos, documentos, juzgados competentes, cuánto tarda y cuánto cuesta. Con y sin acuerdo de los cónyuges.",
+    category: "Derecho Familiar",
+    specialtySlug: "familiar",
+    specialtyLabel: "Derecho Familiar",
+    publishedAt: "2025-04-20",
+    readingTime: 8,
+    excerpt:
+      "El divorcio express o incausado en Chihuahua permite disolver el matrimonio sin dar ninguna razón. Te explicamos exactamente cómo funciona, cuánto cuesta y cuánto tarda en 2025.",
+    content: `
+<h2>¿Qué es el divorcio express o incausado?</h2>
+<p>El <strong>divorcio incausado</strong>, popularmente conocido como "divorcio express", es el procedimiento que permite a cualquiera de los cónyuges solicitar la disolución del matrimonio <em>sin necesidad de expresar causa o motivo</em>. Este tipo de divorcio está reconocido en el <strong>Código Civil del Estado de Chihuahua</strong> y en la jurisprudencia de la Suprema Corte de Justicia de la Nación.</p>
+<p>Antes de su adopción, divorciarse en México requería demostrar una "causal" específica (adulterio, maltrato, abandono de hogar, etc.), lo que hacía los procesos más largos y conflictivos. El divorcio incausado elimina esa exigencia: basta con querer divorciarse.</p>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Importante: el derecho a pedir el divorcio sin causa es individual. Cualquiera de los dos cónyuges puede iniciarlo, aunque el otro se oponga. El matrimonio no puede mantenerse en contra de la voluntad de uno de los cónyuges.</p></div>
+
+<h2>Modalidades del divorcio en Chihuahua</h2>
+<p>En Chihuahua existen principalmente dos modalidades para iniciar el divorcio:</p>
+<h3>A) Divorcio por mutuo consentimiento (ambos están de acuerdo)</h3>
+<p>Cuando ambos cónyuges están de acuerdo en divorciarse y en todos los términos del convenio (bienes, hijos, pensiones), el proceso es más rápido y menos costoso. Pueden acudir juntos ante un juez familiar o incluso ante notario público si no tienen hijos menores de edad ni bienes en disputa.</p>
+<h3>B) Divorcio incausado unilateral (uno lo pide, el otro no quiere o no hay acuerdo)</h3>
+<p>Cuando solo uno de los cónyuges desea divorciarse o no hay acuerdo sobre los términos, se tramita ante el Juzgado de lo Familiar. El cónyuge que pide el divorcio no necesita la firma ni el consentimiento del otro.</p>
+
+<h2>¿Qué tan "express" es realmente?</h2>
+<p>El término "express" es relativo y depende de las circunstancias del caso:</p>
+<ul>
+  <li><strong>Sin hijos menores, sin bienes que dividir, mutuo acuerdo:</strong> Puede resolverse en <strong>1 a 3 meses</strong>. Algunos juzgados en Chihuahua lo han resuelto en 30 días.</li>
+  <li><strong>Con hijos menores pero acuerdo sobre custodia y pensión:</strong> <strong>2 a 4 meses</strong>.</li>
+  <li><strong>Con bienes (casa, autos, cuentas bancarias) y acuerdo:</strong> <strong>3 a 6 meses</strong> (requiere liquidación de sociedad conyugal).</li>
+  <li><strong>Sin acuerdo en custodia, pensión o bienes:</strong> <strong>6 meses a 2 años</strong>, dependiendo de la complejidad y la carga del juzgado.</li>
+</ul>
+
+<h2>Requisitos y documentos necesarios</h2>
+<p>Para iniciar el trámite de divorcio en Chihuahua necesitas:</p>
+<ul>
+  <li><strong>Acta de matrimonio:</strong> Original y copia certificada por el Registro Civil (vigente, máximo 6 meses de expedición)</li>
+  <li><strong>Identificaciones oficiales</strong> de ambos cónyuges (INE o pasaporte)</li>
+  <li><strong>CURP</strong> de ambos cónyuges</li>
+  <li><strong>Actas de nacimiento de los hijos</strong> si los hay (originales certificados)</li>
+  <li><strong>Comprobante de domicilio</strong> en Chihuahua (para acreditar competencia del juzgado)</li>
+  <li><strong>Inventario de bienes</strong> si hay sociedad conyugal que liquidar (escrituras, facturas de vehículos, estados de cuenta)</li>
+  <li><strong>Convenio regulador</strong> (acuerdo de custodia, visitas, pensión, división de bienes) si hay acuerdo entre cónyuges</li>
+</ul>
+
+<h2>¿Ante quién se tramita?</h2>
+<h3>Juzgado de lo Familiar de Chihuahua</h3>
+<p>La vía judicial es la más común. El expediente se turna a uno de los Juzgados de lo Familiar con sede en la ciudad de Chihuahua, Ciudad Juárez, Parral, Cuauhtémoc o la cabecera distrital más cercana según el domicilio de los cónyuges.</p>
+<h3>Divorcio ante Notario Público</h3>
+<p>El <strong>Código Civil de Chihuahua</strong> permite el divorcio ante notario público cuando se cumplen todos estos requisitos simultáneamente:</p>
+<ul>
+  <li>Mutuo consentimiento de ambos cónyuges</li>
+  <li>No hay hijos menores de edad o mayores que dependan económicamente</li>
+  <li>No existe controversia sobre bienes</li>
+  <li>Ambos son mayores de edad</li>
+</ul>
+<p>El divorcio notarial es más rápido (puede resolverse en 1 a 4 semanas) y evita acudir al juzgado. Sin embargo, los honorarios notariales suelen ser más altos.</p>
+
+<h2>¿Qué pasa con los hijos en un divorcio express?</h2>
+<p>El divorcio en sí se puede otorgar incluso sin resolver los temas de hijos, pero el juez <strong>siempre</strong> debe pronunciarse sobre:</p>
+<ul>
+  <li><strong>Custodia:</strong> ¿Con quién vivirán los hijos? La ley de Chihuahua contempla custodia monoparental (con un padre) o custodia compartida.</li>
+  <li><strong>Régimen de convivencia:</strong> Días y horarios en que el padre no custodio tiene derecho a convivir con los hijos.</li>
+  <li><strong>Pensión alimenticia:</strong> Monto que el padre no custodio debe pagar mensualmente.</li>
+</ul>
+<p>Si los padres presentan un convenio de custodia firmado por ambos, el juez generalmente lo aprueba siempre que no contravenga el interés superior del menor. Si no hay acuerdo, el proceso se convierte en un juicio de custodia que alarga significativamente los tiempos.</p>
+
+<h2>Bienes y sociedad conyugal</h2>
+<p>El régimen patrimonial del matrimonio define cómo se dividen los bienes al divorciarse:</p>
+<h3>Sociedad conyugal</h3>
+<p>Si se casaron bajo sociedad conyugal, todos los bienes adquiridos durante el matrimonio (con excepciones) pertenecen a ambos al 50%. Al divorciarse, hay que liquidar la sociedad: tasar los bienes, determinar qué corresponde a cada uno y formalizar la transferencia ante notario.</p>
+<h3>Separación de bienes</h3>
+<p>Cada cónyuge conserva sus bienes propios. El divorcio no afecta el patrimonio de cada quien, aunque pueden existir reclamaciones por gastos del hogar o por bienes adquiridos conjuntamente sin formalización.</p>
+
+<h2>Costos del divorcio en Chihuahua 2025</h2>
+<p>Los costos varían según la vía elegida y la complejidad:</p>
+<ul>
+  <li><strong>Honorarios del abogado — mutuo acuerdo sin hijos ni bienes:</strong> $8,000 – $18,000</li>
+  <li><strong>Honorarios del abogado — mutuo acuerdo con hijos y bienes:</strong> $15,000 – $35,000</li>
+  <li><strong>Honorarios del abogado — divorcio contencioso (sin acuerdo):</strong> $25,000 – $80,000+</li>
+  <li><strong>Divorcio notarial (sin hijos ni bienes):</strong> $5,000 – $15,000 (honorarios notariales)</li>
+  <li><strong>Gastos de notario para liquidar sociedad conyugal:</strong> $5,000 – $20,000 según el valor de los bienes</li>
+  <li><strong>Certificación de actas del Registro Civil:</strong> $300 – $600 por acta</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Si no tienen acuerdo sobre la pensión alimenticia y la custodia, los costos y tiempos pueden aumentar significativamente. Muchos abogados recomiendan intentar la mediación familiar antes del juicio contencioso para ahorrar tiempo y dinero.</p></div>
+
+<h2>Pasos del divorcio judicial en Chihuahua</h2>
+<ol>
+  <li><strong>Contratar un abogado familiar</strong> (o gestionar el caso personalmente si ambos están de acuerdo)</li>
+  <li><strong>Redactar el convenio regulador</strong> si hay acuerdo, incluyendo custodia, pensión y bienes</li>
+  <li><strong>Presentar la demanda</strong> ante el Juzgado de lo Familiar competente en Chihuahua</li>
+  <li><strong>Notificación al cónyuge</strong> (si es unilateral, debe notificarse personalmente o por edictos)</li>
+  <li><strong>Audiencia principal:</strong> El juez revisa el convenio o da oportunidad a ambas partes de argumentar</li>
+  <li><strong>Sentencia de divorcio:</strong> El juez decreta el divorcio y aprueba o modifica el convenio</li>
+  <li><strong>Inscripción en el Registro Civil:</strong> La sentencia debe anotarse en el acta de matrimonio para que tenga efectos legales</li>
+  <li><strong>Liquidación notarial de bienes</strong> (si aplica): Una vez dictada la sentencia, se formalizan las transferencias de bienes ante notario</li>
+</ol>
+
+<div class="cta-block">
+  <h3>¿Necesitas un abogado familiar en Chihuahua?</h3>
+  <p>En Lexia tenemos abogados verificados especializados en derecho familiar en Chihuahua, Ciudad Juárez, Cuauhtémoc, Parral y más ciudades del estado. Contáctalos directamente.</p>
+</div>
+`,
+  },
+
+  {
+    slug: "registrar-empresa-chihuahua",
+    title: "Cómo registrar una empresa en Chihuahua en 2025: guía paso a paso",
+    metaTitle: "Cómo registrar una empresa en Chihuahua 2025: guía completa | Lexia",
+    metaDescription:
+      "Guía actualizada para constituir y registrar una empresa en Chihuahua en 2025. Tipos de sociedad, notarios, Registro Público, trámites fiscales en el SAT y municipio. Costos reales.",
+    category: "Derecho Mercantil",
+    specialtySlug: "mercantil",
+    specialtyLabel: "Derecho Mercantil",
+    publishedAt: "2025-04-20",
+    readingTime: 9,
+    excerpt:
+      "Abrir una empresa en Chihuahua requiere cumplir con trámites federales, estatales y municipales. Esta guía te lleva paso a paso, con costos actualizados y consejos para evitar los errores más comunes.",
+    content: `
+<h2>¿Por qué formalizar tu empresa?</h2>
+<p>Operar como empresa formal en Chihuahua te da acceso a créditos bancarios, contratos con el gobierno, facturación electrónica, protección legal ante socios y clientes, y la posibilidad de crecer con una estructura sólida. Aunque la informalidad parece más sencilla al inicio, los riesgos legales y financieros la hacen costosa a largo plazo.</p>
+<p>En 2025, los trámites para constituir una empresa en Chihuahua se han simplificado gracias a la digitalización. Algunas sociedades pueden constituirse en días, aunque en la práctica el proceso completo tarda entre 2 y 8 semanas según el tipo de sociedad y los trámites municipales.</p>
+
+<h2>Paso 1: Elige el tipo de sociedad</h2>
+<p>El primer paso es decidir qué tipo de persona jurídica es más conveniente para tu negocio. Las opciones más comunes en México son:</p>
+<h3>Sociedad Anónima de Capital Variable (SA de CV)</h3>
+<ul>
+  <li><strong>Para quién:</strong> Empresas medianas o grandes con varios socios que necesitan estructura corporativa formal</li>
+  <li><strong>Capital mínimo:</strong> $50,000 pesos (más capital variable)</li>
+  <li><strong>Ventajas:</strong> Estructura reconocida internacionalmente, facilita créditos y contratos institucionales</li>
+  <li><strong>Desventaja:</strong> Más costosa de constituir y mantener; requiere órgano de administración formal</li>
+</ul>
+<h3>Sociedad de Responsabilidad Limitada (SRL o S de RL de CV)</h3>
+<ul>
+  <li><strong>Para quién:</strong> Empresas familiares o de pocos socios que no quieren cotizar en bolsa</li>
+  <li><strong>Ventajas:</strong> Responsabilidad limitada al capital aportado; más sencilla que la SA</li>
+  <li><strong>Límite de socios:</strong> Máximo 50</li>
+</ul>
+<h3>Sociedad por Acciones Simplificada (SAS)</h3>
+<ul>
+  <li><strong>Para quién:</strong> Emprendedores individuales o parejas de socios que buscan constitución rápida</li>
+  <li><strong>Capital mínimo:</strong> Sin mínimo</li>
+  <li><strong>Constitución:</strong> Completamente en línea a través del sistema Tuempresa.gob.mx, en 1 día hábil</li>
+  <li><strong>Límite:</strong> Ingresos anuales no mayores a 5 millones de pesos; máximo 50% de participación extranjera</li>
+  <li><strong>Ventaja principal:</strong> Sin gastos notariales para la constitución</li>
+</ul>
+<h3>Persona Física con Actividad Empresarial</h3>
+<ul>
+  <li><strong>Para quién:</strong> Negocios unipersonales de tamaño pequeño o mediano</li>
+  <li><strong>Ventaja:</strong> No requiere acta constitutiva ni notario; solo alta en SAT</li>
+  <li><strong>Desventaja:</strong> Responsabilidad ilimitada: tu patrimonio personal responde por las deudas del negocio</li>
+</ul>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg"><p class="text-amber-800 text-sm font-medium">Si tienes socios, siempre usa una persona moral (SA, SRL o SAS). La persona física con actividad empresarial no permite socios formales, lo que genera conflictos cuando el negocio crece.</p></div>
+
+<h2>Paso 2: Permiso de denominación ante la Secretaría de Economía</h2>
+<p>Para SA de CV y SRL, antes de acudir al notario debes obtener el <strong>permiso para uso de denominación social</strong> ante la Secretaría de Economía. Este trámite es en línea (compranet.hacienda.gob.mx) y tiene un costo de <strong>$1,114 pesos (2025)</strong>.</p>
+<p>La denominación no puede ser idéntica ni similar a la de otra empresa ya registrada. El sistema te permite buscar disponibilidad antes de solicitar el permiso. En la SAS, el sistema Tuempresa hace esta verificación automáticamente.</p>
+
+<h2>Paso 3: Escritura constitutiva ante Notario Público en Chihuahua</h2>
+<p>Para SA de CV y SRL, es obligatorio acudir a un notario público para protocolizar el acta constitutiva. Este documento establece:</p>
+<ul>
+  <li>Nombre, objeto social y duración de la sociedad</li>
+  <li>Domicilio social (puede ser en Chihuahua capital u otra ciudad del estado)</li>
+  <li>Capital social y distribución de acciones/partes sociales</li>
+  <li>Nombre y datos de los socios fundadores</li>
+  <li>Estructura de administración (consejo de administración, gerente, comisario)</li>
+  <li>Reglas para distribución de utilidades y salida de socios</li>
+</ul>
+<p><strong>Costos notariales en Chihuahua (2025):</strong></p>
+<ul>
+  <li>Constitución de SA de CV o SRL: $5,000 – $12,000 pesos (varía por capital social y extensión del acta)</li>
+  <li>Inscripción en el Registro Público de Comercio: incluida generalmente en los honorarios notariales, o $1,500 – $3,000 adicionales</li>
+</ul>
+<p><strong>Notarios en Chihuahua capital</strong> hay varios en el centro de la ciudad y en la zona empresarial del Periférico. En Ciudad Juárez también existen múltiples notarías. El tiempo para obtener cita y recibir las escrituras varía de 5 a 15 días hábiles.</p>
+
+<h2>Paso 4: Inscripción en el Registro Público de Comercio</h2>
+<p>El acta constitutiva debe inscribirse en el <strong>Registro Público de Comercio</strong> del estado de Chihuahua para que la sociedad tenga existencia legal y sea oponible a terceros. Este trámite generalmente lo gestiona el mismo notario como parte del paquete de constitución.</p>
+<p>El Registro Público en Chihuahua opera bajo el sistema SIGER (Sistema Integral de Gestión Registral) del gobierno federal. El tiempo de inscripción varía de <strong>3 a 15 días hábiles</strong> dependiendo de la carga del registro.</p>
+
+<h2>Paso 5: Alta en el SAT (RFC de persona moral)</h2>
+<p>Una vez inscrita la sociedad en el Registro Público, debes darla de alta ante el <strong>Servicio de Administración Tributaria (SAT)</strong> para obtener el RFC (Registro Federal de Contribuyentes) de la persona moral.</p>
+<p><strong>Documentos necesarios para el alta en SAT:</strong></p>
+<ul>
+  <li>Acta constitutiva original o testimonio notarial</li>
+  <li>Comprobante de domicilio fiscal (en Chihuahua)</li>
+  <li>Identificación oficial del representante legal</li>
+  <li>Correo electrónico para el buzón tributario</li>
+  <li>Número de teléfono celular para autenticación de 2 factores</li>
+</ul>
+<p>El trámite puede hacerse en línea o en las oficinas del SAT en Chihuahua (Av. Universidad o la Administración Desconcentrada de Chihuahua). El RFC se otorga de manera inmediata en línea si los documentos están correctos.</p>
+
+<h2>Paso 6: Selección del régimen fiscal</h2>
+<p>Al darte de alta en el SAT, debes elegir el régimen fiscal según la actividad de tu empresa. Las personas morales tributan principalmente bajo:</p>
+<ul>
+  <li><strong>Régimen General de Ley Personas Morales:</strong> Para la mayoría de las empresas comerciales, industriales y de servicios. ISR del 30% sobre utilidades.</li>
+  <li><strong>Régimen de Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras:</strong> Para empresas del sector primario con beneficios fiscales específicos.</li>
+  <li><strong>Régimen de Coordinados:</strong> Para empresas de autotransporte terrestre.</li>
+</ul>
+
+<h2>Paso 7: Licencia de funcionamiento municipal en Chihuahua</h2>
+<p>Para operar físicamente en la ciudad de Chihuahua, Ciudad Juárez u otros municipios, necesitas obtener la <strong>licencia de funcionamiento</strong> (o licencia de uso de suelo) ante el Ayuntamiento correspondiente.</p>
+<p><strong>Trámite en el municipio de Chihuahua:</strong></p>
+<ul>
+  <li>Solicitud en línea a través del portal de trámites del Ayuntamiento de Chihuahua</li>
+  <li>Documentos: acta constitutiva, RFC, comprobante de domicilio del local, plano del local</li>
+  <li>En algunos giros (alimentos, espectáculos, servicios médicos) requiere inspección previa</li>
+  <li>Costo: variable según el giro comercial ($500 – $5,000 anuales)</li>
+  <li>Tiempo de resolución: 5 – 20 días hábiles</li>
+</ul>
+
+<h2>Paso 8: Apertura de cuenta bancaria empresarial</h2>
+<p>Para operar legalmente y separar finanzas personales y empresariales, debes abrir una cuenta bancaria a nombre de la empresa. Los bancos más utilizados por empresas en Chihuahua son BBVA, Banorte, Santander, HSBC e Inbursa.</p>
+<p><strong>Documentos requeridos por los bancos:</strong></p>
+<ul>
+  <li>Acta constitutiva debidamente inscrita en el RPC</li>
+  <li>RFC de la empresa</li>
+  <li>Comprobante de domicilio fiscal</li>
+  <li>Identificaciones oficiales y RFC personales del representante legal y firmantes autorizados</li>
+  <li>Carta de usos y costumbres del SAT o carátula de situación fiscal</li>
+</ul>
+
+<h2>Costos totales estimados para constituir una empresa en Chihuahua (2025)</h2>
+<div class="overflow-x-auto my-4">
+<table class="w-full text-sm border-collapse border border-slate-200">
+  <thead><tr class="bg-slate-100"><th class="border border-slate-200 px-3 py-2 text-left">Trámite</th><th class="border border-slate-200 px-3 py-2 text-right">Costo estimado</th></tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-200 px-3 py-2">Permiso de denominación (SE)</td><td class="border border-slate-200 px-3 py-2 text-right">$1,114</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Honorarios notariales (SA o SRL)</td><td class="border border-slate-200 px-3 py-2 text-right">$5,000 – $12,000</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">Inscripción Registro Público de Comercio</td><td class="border border-slate-200 px-3 py-2 text-right">$1,500 – $3,000</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Alta SAT</td><td class="border border-slate-200 px-3 py-2 text-right">Gratuito</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2">Licencia de funcionamiento municipal</td><td class="border border-slate-200 px-3 py-2 text-right">$500 – $5,000</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2">Honorarios de abogado (asesoría)</td><td class="border border-slate-200 px-3 py-2 text-right">$3,000 – $8,000</td></tr>
+    <tr><td class="border border-slate-200 px-3 py-2 font-bold">Total estimado SA/SRL</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">$11,000 – $29,000</td></tr>
+    <tr class="bg-slate-50"><td class="border border-slate-200 px-3 py-2 font-bold">Total estimado SAS (sin notario)</td><td class="border border-slate-200 px-3 py-2 text-right font-bold">$1,500 – $6,000</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Errores comunes al constituir una empresa en Chihuahua</h2>
+<ul>
+  <li><strong>No definir bien el objeto social:</strong> El objeto social debe ser lo suficientemente amplio para cubrir todas tus actividades actuales y futuras, pero no tan genérico que cause problemas con el SAT.</li>
+  <li><strong>No tener contrato de socios:</strong> El acta constitutiva define la estructura de la empresa, pero un contrato privado entre socios aclara detalles de operación y resolución de conflictos. Es especialmente importante cuando hay más de 2 socios.</li>
+  <li><strong>Elegir domicilio fiscal sin pensar:</strong> El domicilio fiscal determina qué administración desconcentrada del SAT te corresponde y puede afectar la facilidad para hacer trámites.</li>
+  <li><strong>No registrar la marca:</strong> Muchos emprendedores en Chihuahua invierten en branding antes de registrar su marca ante el IMPI. El registro de marca tiene vigencia de 10 años y es fundamental antes de que el negocio crezca.</li>
+</ul>
+
+<div class="cta-block">
+  <h3>¿Necesitas un abogado mercantil en Chihuahua?</h3>
+  <p>Los abogados mercantiles verificados en Lexia pueden acompañarte en el proceso de constitución de tu empresa en Chihuahua, desde el diseño corporativo hasta la inscripción final. Contáctalos directamente.</p>
+</div>
+`,
+  },
 ]
 
 export function getPost(slug: string): BlogPost | undefined {

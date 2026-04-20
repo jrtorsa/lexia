@@ -100,13 +100,7 @@ export async function registrarAbogado(input: RegistroInput) {
       memberships: {
         create: {
           planId: planRecord.id,
-          status: input.plan === "free" ? "ACTIVE" : "TRIAL",
-          ...(input.plan !== "free" && (() => {
-            const start = new Date()
-            const end   = new Date(start)
-            end.setMonth(end.getMonth() + 3)
-            return { currentPeriodStart: start, currentPeriodEnd: end }
-          })()),
+          status: "ACTIVE",
         },
       },
     },

@@ -40,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: base + url,
       lastModified: now,
       changeFrequency: "monthly" as const,
-      priority: 0.7,
+      priority: 0.8,
     })),
   ]
 }

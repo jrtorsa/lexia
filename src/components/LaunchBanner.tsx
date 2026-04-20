@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { X } from "lucide-react"
-import { PROMO } from "@/lib/promo"
 
 const STORAGE_KEY = "lexia_launch_banner_closed"
 
-export default function LaunchBanner({ lugaresRestantes }: { lugaresRestantes: number }) {
+export default function LaunchBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -31,18 +30,8 @@ export default function LaunchBanner({ lugaresRestantes }: { lugaresRestantes: n
         {/* Main message */}
         <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-center sm:text-left min-w-0">
           <span className="text-[#0C0D10] text-sm font-medium leading-snug">
-            🎉 {PROMO.mesesGratis} meses Premium gratis para los primeros{" "}
-            <strong>{PROMO.lugaresTotal} abogados</strong> registrados.{" "}
-            <span className="text-[#5C3D0A] font-semibold">
-              ¡Solo quedan {lugaresRestantes} lugares!
-            </span>
-          </span>
-
-          <span className="hidden sm:inline text-[#0C0D10]/40 font-light">·</span>
-
-          <span className="text-[#0C0D10]/70 text-xs sm:text-sm">
-            <del className="text-[#5C3D0A]/70">{PROMO.precioOriginal}/mes</del>
-            <span className="ml-1.5 font-semibold text-[#0C0D10]">→ Gratis por {PROMO.mesesGratis} meses</span>
+            El registro en Lexia es <strong>gratuito por tiempo indefinido</strong>.
+            Te avisaremos con anticipación antes de que se aplique cualquier cambio en los planes.
           </span>
 
           <Link

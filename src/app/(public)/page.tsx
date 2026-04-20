@@ -6,8 +6,8 @@ import {
   CheckCircle2, MapPin, ChevronRight, Phone,
 } from "lucide-react"
 import { prisma } from "@/lib/prisma"
-import { PROMO } from "@/lib/promo"
-import { getLugaresRestantes } from "@/app/actions/getLugares"
+// import { PROMO } from "@/lib/promo"
+// import { getLugaresRestantes } from "@/app/actions/getLugares"
 
 const df = { fontFamily: "var(--font-cormorant)" }
 
@@ -95,10 +95,7 @@ async function getFeaturedLawyers() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function HomePage() {
-  const [lawyers, lugaresRestantes] = await Promise.all([
-    getFeaturedLawyers(),
-    getLugaresRestantes(),
-  ])
+  const lawyers = await getFeaturedLawyers()
 
   return (
     <div className="bg-[#FAF7F2]">
@@ -109,7 +106,7 @@ export default async function HomePage() {
       <CiudadesSection />
       {lawyers.length > 0 && <AbogadosDestacados lawyers={lawyers} />}
       <ParaAbogados />
-      <PlanesSection lugaresRestantes={lugaresRestantes} />
+      {/* <PlanesSection /> */}
       <CTAFinal />
     </div>
   )
@@ -553,7 +550,7 @@ function ParaAbogados() {
 }
 
 // ─── Planes ───────────────────────────────────────────────────────────────────
-function PlanesSection({ lugaresRestantes }: { lugaresRestantes: number }) {
+/* function PlanesSection({ lugaresRestantes }: { lugaresRestantes: number }) {
   return (
     <section id="planes" className="py-20 bg-[#FAF7F2]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -638,7 +635,7 @@ function PlanesSection({ lugaresRestantes }: { lugaresRestantes: number }) {
       </div>
     </section>
   )
-}
+} */
 
 // ─── CTA Final ────────────────────────────────────────────────────────────────
 function CTAFinal() {

@@ -72,11 +72,11 @@ export default function Footer() {
                   Crear perfil
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/planes" className="hover:text-cream transition-colors">
                   Planes y precios
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/login" className="hover:text-cream transition-colors">
                   Iniciar sesión

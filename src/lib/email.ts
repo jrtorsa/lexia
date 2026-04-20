@@ -26,8 +26,9 @@ export async function sendWelcomeEmail({
         <div style="background: #FAF7F2; padding: 36px; border: 1px solid #EAE4D9; border-top: 0; border-radius: 0 0 12px 12px;">
           <h2 style="font-size: 22px; color: #0C0D10; margin-top: 0;">Bienvenido, ${name}</h2>
           <p style="color: #555; line-height: 1.7;">
-            Tu perfil de abogado ya está registrado en Lexia. Durante los próximos
-            <strong>3 meses tienes acceso gratuito</strong> a todas las funciones Premium:
+            Tu perfil de abogado ya está registrado en Lexia.
+            El registro en Lexia es <strong>gratuito por tiempo indefinido</strong>. Te avisaremos con anticipación
+            antes de que se aplique cualquier cambio en los planes.
           </p>
           <ul style="color: #555; line-height: 2;">
             <li>Posición preferente en búsquedas</li>
