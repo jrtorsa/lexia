@@ -13,7 +13,22 @@ const ASUNTOS: Record<string, string> = {
   otro:        "Otro",
 }
 
+// Detecta strings aleatorios: solo consonantes o sin vocales reales
+function pareceRandom(str: string): boolean {
+  const sinEspacios = str.replace(/\s/g, "")
+  const vocales = (sinEspacios.match(/[aeiouáéíóú]/gi) ?? []).length
+  const ratio = vocales / sinEspacios.length
+  return sinEspacios.length > 8 && ratio < 0.15
+}
+
 export async function enviarContacto(formData: FormData) {
+  // ── Honeypot: si viene lleno, es bot ──
+  const honeypot = (formData.get("website") as string)?.trim()
+  if (honeypot) {
+    // Respondemos "ok" para no alertar al bot
+    return { ok: true }
+  }
+
   const nombre  = (formData.get("nombre")  as string)?.trim()
   const email   = (formData.get("email")   as string)?.trim()
   const asunto  = (formData.get("asunto")  as string)?.trim()
@@ -21,6 +36,19 @@ export async function enviarContacto(formData: FormData) {
 
   if (!nombre || !email || !mensaje) {
     return { error: "Por favor completa todos los campos requeridos." }
+  }
+
+  // ── Validaciones anti-spam ──
+  if (pareceRandom(nombre)) {
+    return { ok: true } // silencioso
+  }
+
+  if (mensaje.length < 10) {
+    return { error: "El mensaje es demasiado corto." }
+  }
+
+  if (pareceRandom(mensaje)) {
+    return { ok: true } // silencioso
   }
 
   const asuntoLabel = ASUNTOS[asunto] ?? asunto ?? "Sin asunto"
