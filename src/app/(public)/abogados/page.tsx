@@ -289,9 +289,9 @@ export default async function AbogadosPage({ searchParams }: PageProps) {
               <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {sorted.flatMap((lawyer, i) => {
                   const items = [<LawyerCard key={lawyer.id} lawyer={lawyer} />]
-                  if ((i + 1) % PROMO_INTERVAL === 0 && i < sorted.length - 1) {
-                    items.push(<PromoCard key={`promo-${i}`} ciudad={estado !== "Todos" ? estado : undefined} />)
-                  }
+                  // if ((i + 1) % PROMO_INTERVAL === 0 && i < sorted.length - 1) {
+                  //   items.push(<PromoCard key={`promo-${i}`} ciudad={estado !== "Todos" ? estado : undefined} />)
+                  // }
                   return items
                 })}
               </div>

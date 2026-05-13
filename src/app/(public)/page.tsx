@@ -515,12 +515,12 @@ function ParaAbogados() {
                 Crear mi perfil gratis
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
+              {/* <Link
                 href="/registro?plan=premium"
                 className="inline-flex items-center gap-2 border border-white/20 text-white text-sm px-6 py-3 rounded-xl hover:bg-white/8 transition-colors"
               >
                 Ver planes
-              </Link>
+              </Link> */}
             </div>
           </div>
 
