@@ -1978,6 +1978,151 @@ export const POSTS: BlogPost[] = [
 </div>
 `,
   },
+  {
+    slug: "divorcio-incausado-mexico",
+    title: "¿Puedes divorciarte sin el permiso de tu pareja?",
+    metaTitle: "¿Puedes divorciarte sin el permiso de tu pareja? | Lexia",
+    metaDescription:
+      "En México existe el divorcio incausado. No necesitas dar explicaciones ni el acuerdo de tu pareja. Conoce cómo funciona y encuentra tu abogado en Lexia.",
+    category: "Derecho Familiar",
+    specialtySlug: "derecho-familiar",
+    specialtyLabel: "Derecho Familiar",
+    publishedAt: "2026-05-23",
+    readingTime: 5,
+    excerpt:
+      "Muchas personas aguantan un matrimonio que ya no funciona porque creen que necesitan el permiso de su pareja. Eso ya no es así en México. El divorcio incausado te da el control.",
+    content: `
+<div style="position:relative;width:100%;padding-bottom:56.25%;margin-bottom:2.5rem;border-radius:0.75rem;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.12)">
+  <iframe
+    src="https://www.youtube.com/embed/ODtIebvfoYE"
+    title="Divorcio incausado en México | Lexia"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    style="position:absolute;inset:0;width:100%;height:100%;border:0"
+  ></iframe>
+</div>
+
+<p>
+  Muchas personas aguantan un matrimonio que ya no funciona porque creen que necesitan
+  el permiso de su pareja, o que deben demostrar una causa ante un juez. Eso ya no es
+  así en México.
+</p>
+
+<h2>¿Qué es el divorcio incausado?</h2>
+<p>
+  El divorcio incausado es una figura legal que te permite disolver tu matrimonio
+  <strong>sin necesidad de dar explicaciones ni probar ninguna causa</strong>. Solo debes
+  manifestar tu voluntad de no continuar en el matrimonio, y un juez puede decretarlo
+  aunque tu pareja se oponga.
+</p>
+<p>
+  Esta figura fue introducida progresivamente en los estados de la República a partir
+  de la reforma al Código Civil del Distrito Federal en 2008 y hoy está vigente en la
+  mayor parte del país, incluyendo Chihuahua. El razonamiento detrás es claro: nadie
+  puede ser obligado a permanecer en un matrimonio que no desea.
+</p>
+
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 my-6 rounded-r-lg">
+  <p class="text-amber-800 text-sm font-medium">
+    Importante: El divorcio incausado no elimina las obligaciones derivadas del
+    matrimonio (pensión alimenticia, custodia, división de bienes). Esas se resuelven
+    en el mismo proceso.
+  </p>
+</div>
+
+<h2>¿Qué necesitas para tramitarlo?</h2>
+<ul>
+  <li>Ser mayor de edad</li>
+  <li>Estar casado legalmente en México</li>
+  <li>Acta de matrimonio original</li>
+  <li>Identificación oficial vigente</li>
+  <li>Un abogado familiar que lleve el proceso ante el juzgado competente</li>
+</ul>
+<p>
+  No necesitas el consentimiento de tu cónyuge ni acreditar causa alguna. Basta con
+  presentar la demanda expresando tu voluntad de divorciarte.
+</p>
+
+<h2>¿Cómo es el proceso?</h2>
+<p>
+  Tu abogado presenta la demanda de divorcio incausado ante el Juzgado de lo Familiar.
+  El juez notifica a tu cónyuge, quien tiene derecho a presentar sus propias
+  pretensiones sobre temas accesorios: alimentos, custodia, régimen de visitas y
+  liquidación de la sociedad conyugal, si aplica.
+</p>
+<p>
+  <strong>Lo que el cónyuge no puede hacer es bloquear el divorcio en sí.</strong>
+  Puede litigar los temas accesorios, pero el divorcio procede de todas formas. Si hay
+  acuerdo en los puntos secundarios, el proceso es mucho más rápido y menos costoso.
+</p>
+
+<h2>¿Cuánto tiempo tarda?</h2>
+<p>
+  El tiempo varía dependiendo de si hay o no acuerdo entre las partes:
+</p>
+<ul>
+  <li>
+    <strong>Con acuerdo (divorcio de mutuo consentimiento):</strong> puede resolverse
+    en pocas semanas, especialmente si se presenta un convenio firmado por ambas partes
+    que regule los efectos del divorcio.
+  </li>
+  <li>
+    <strong>Sin acuerdo:</strong> el proceso puede durar de 6 meses a más de un año,
+    dependiendo de la carga del juzgado y los puntos en disputa. El divorcio igual
+    procede; lo que toma tiempo es resolver los temas accesorios.
+  </li>
+</ul>
+
+<h2>¿Qué pasa con los hijos, los bienes y los alimentos?</h2>
+<p>
+  Estos temas se resuelven dentro del mismo juicio de divorcio:
+</p>
+<ul>
+  <li>
+    <strong>Custodia y régimen de visitas:</strong> el juez decide con base en el
+    interés superior del menor. En la mayoría de los casos se busca la custodia
+    compartida o la guarda física con uno de los padres y visitas amplias para el otro.
+  </li>
+  <li>
+    <strong>Pensión alimenticia:</strong> se fija a favor de los hijos menores y, en
+    algunos casos, del cónyuge que queda en situación económica desventajosa.
+  </li>
+  <li>
+    <strong>División de bienes:</strong> si el matrimonio fue bajo sociedad conyugal,
+    se liquida la parte que corresponde a cada uno. Si fue bajo separación de bienes,
+    cada quien conserva lo suyo.
+  </li>
+</ul>
+
+<h2>Preguntas frecuentes</h2>
+
+<h3>¿Mi pareja puede negarse al divorcio?</h3>
+<p>
+  No puede bloquear el divorcio, pero sí puede litigar los efectos (alimentos, bienes,
+  custodia). El divorcio mismo procede aunque no quiera.
+</p>
+
+<h3>¿Se necesita ir a juicio?</h3>
+<p>
+  El proceso es judicial, pero eso no significa que haya un juicio largo y contencioso.
+  Si hay acuerdo en todo, el trámite puede ser rápido y sin audiencias complicadas.
+</p>
+
+<h3>¿Cuánto cuesta?</h3>
+<p>
+  Los costos incluyen honorarios del abogado (que varían según el caso y el estado) y
+  los gastos del juzgado (relativamente bajos en México). Un caso sin disputa es
+  significativamente más barato que uno contencioso.
+</p>
+
+<h3>¿Funciona igual en Chihuahua?</h3>
+<p>
+  Sí. El Código Civil del Estado de Chihuahua contempla el divorcio incausado. El
+  proceso se tramita ante los Juzgados de lo Familiar en Chihuahua o Ciudad Juárez,
+  según el domicilio conyugal.
+</p>
+`,
+  },
 ]
 
 export function getPost(slug: string): BlogPost | undefined {
