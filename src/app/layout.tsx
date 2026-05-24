@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     google: "o4OSbbUGPVshzIXUFuHPiuOnS58yZEImIK5FsuiK6Rs",
   },
   other: {
+    "facebook-domain-verification": "zb0vjdgp8937yp90m8r33ukmybrdz7",
     "color-scheme": "light",
   },
 };
