@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Geist_Mono } from "next/font/google";
 import Providers from "@/components/Providers";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import FacebookPixel from "@/app/components/FacebookPixel";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -46,6 +48,8 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
+        <GoogleAnalytics gaId="G-PX5YCRM2PQ" />
+        <FacebookPixel />
       </body>
     </html>
   );
