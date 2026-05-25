@@ -82,6 +82,11 @@ export default function Footer() {
                   Iniciar sesión
                 </Link>
               </li>
+              <li>
+                <Link href="/herramientas/jurisprudencias" className="hover:text-cream transition-colors">
+                  Buscar jurisprudencias
+                </Link>
+              </li>
             </ul>
           </div>
 
