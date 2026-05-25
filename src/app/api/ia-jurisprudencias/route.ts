@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   if (!anthropicRes.ok) {
     const errBody = await anthropicRes.json().catch(() => ({}))
     console.error('[ia-jurisprudencias] Anthropic error:', anthropicRes.status, errBody)
-    return NextResponse.json({ error: 'Error en el servicio de IA. Intenta de nuevo.' }, { status: 502 })
+    return NextResponse.json({ error: `Anthropic ${anthropicRes.status}: ${JSON.stringify(errBody)}` }, { status: 502 })
   }
 
   const anthropicData = await anthropicRes.json()
