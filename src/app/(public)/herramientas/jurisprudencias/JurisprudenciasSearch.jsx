@@ -2,59 +2,72 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, ExternalLink, ChevronRight, BookOpen, Info } from 'lucide-react'
+import {
+  BookOpen, ChevronRight, Sparkles, Loader2,
+  AlertCircle, Search, ExternalLink,
+} from 'lucide-react'
 
 const df = { fontFamily: 'var(--font-cormorant)' }
 
-const MATERIAS = [
-  { label: 'Todas las materias', value: '' },
-  { label: 'Constitucional',     value: '1' },
-  { label: 'Administrativa',     value: '2' },
-  { label: 'Civil',              value: '3' },
-  { label: 'Penal',              value: '4' },
-  { label: 'Laboral',            value: '5' },
-  { label: 'Fiscal',             value: '7' },
-]
+const MATERIA_CODES = {
+  Constitucional: '1',
+  Administrativa:  '2',
+  Civil:           '3',
+  Penal:           '4',
+  Laboral:         '5',
+  Fiscal:          '7',
+}
 
-const TIPOS = [
-  { label: 'Jurisprudencias y Tesis Aisladas', value: '' },
-  { label: 'Jurisprudencia',                   value: '1' },
-  { label: 'Tesis Aislada',                    value: '2' },
-]
-
-const EPOCAS = [
-  { label: 'Todas las épocas', value: '' },
-  { label: '11a Época',        value: '11' },
-  { label: '10a Época',        value: '10' },
-  { label: '9a Época',         value: '9' },
-]
-
-const selectClass =
-  'w-full px-3.5 py-2.5 border border-[#EAE4D9] rounded-lg text-sm text-[#0C0D10] ' +
-  'focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] ' +
-  'transition-colors bg-white'
+const TIPO_CODES = {
+  'Jurisprudencia': '1',
+  'Tesis Aislada':  '2',
+}
 
 export default function JurisprudenciasSearch() {
-  const [query,   setQuery]   = useState('')
-  const [materia, setMateria] = useState('')
-  const [tipo,    setTipo]    = useState('')
-  const [epoca,   setEpoca]   = useState('')
+  const [caso,      setCaso]      = useState('')
+  const [loading,   setLoading]   = useState(false)
+  const [error,     setError]     = useState('')
+  const [resultado, setResultado] = useState(null)
 
-  function handleBuscar(e) {
+  async function handleAnalizar(e) {
     e.preventDefault()
-    if (!query.trim()) return
+    if (!caso.trim()) return
 
+    setLoading(true)
+    setError('')
+    setResultado(null)
+
+    try {
+      const res = await fetch('/api/ia-jurisprudencias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caso: caso.trim() }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || data.error) {
+        setError(data.error ?? 'Ocurrió un error al analizar tu caso. Intenta de nuevo.')
+        return
+      }
+
+      setResultado(data)
+    } catch {
+      setError('No se pudo conectar con el servidor. Verifica tu conexión e intenta de nuevo.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function buildSJFUrl() {
+    if (!resultado) return '#'
     const params = new URLSearchParams()
-    params.set('searchField', query.trim())
-    if (tipo)    params.set('tipoTesis', tipo)
-    if (materia) params.set('materia',   materia)
-    if (epoca)   params.set('epoca',     epoca)
-
-    window.open(
-      `https://sjf2.scjn.gob.mx/busqueda-principal-tesis?${params.toString()}`,
-      '_blank',
-      'noopener,noreferrer'
-    )
+    params.set('searchField', resultado.palabrasClave)
+    const materiaCode = MATERIA_CODES[resultado.materia]
+    if (materiaCode) params.set('materia', materiaCode)
+    const tipoCode = TIPO_CODES[resultado.tipo]
+    if (tipoCode) params.set('tipoTesis', tipoCode)
+    return `https://sjf2.scjn.gob.mx/busqueda-principal-tesis?${params.toString()}`
   }
 
   return (
@@ -79,102 +92,133 @@ export default function JurisprudenciasSearch() {
             </h1>
           </div>
           <p className="text-[#FAF7F2]/50 text-sm mt-2 max-w-xl">
-            Consulta tesis y jurisprudencias del Semanario Judicial de la Federación
-            directamente desde Lexia.
+            Describe tu caso y la IA identifica las palabras clave, materia y tipo
+            de criterio para buscar en el Semanario Judicial de la Federación.
           </p>
         </div>
       </div>
 
-      {/* Form */}
-      <div className="max-w-3xl mx-auto px-6 lg:px-8 py-12">
-        <div className="bg-white border border-[#EAE4D9] rounded-2xl p-7 shadow-sm">
-          <form onSubmit={handleBuscar} className="space-y-5">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8 py-12 space-y-5">
 
-            {/* Search input */}
+        {/* Input card */}
+        <div className="bg-white border border-[#EAE4D9] rounded-2xl p-7 shadow-sm">
+          <form onSubmit={handleAnalizar} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-[#0C0D10]/60 uppercase tracking-widest block mb-1.5">
-                Palabras clave *
+                Describe tu caso
               </label>
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0C0D10]/30 pointer-events-none" />
-                <input
-                  type="text"
-                  required
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder='Ej: "derecho a la salud", "presunción de inocencia"'
-                  className={
-                    'w-full pl-10 pr-4 py-3 border border-[#EAE4D9] rounded-xl text-sm text-[#0C0D10] ' +
-                    'placeholder-slate-300 focus:outline-none focus:border-[#C49A3C] ' +
-                    'focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors'
-                  }
-                />
-              </div>
+              <textarea
+                required
+                rows={5}
+                value={caso}
+                onChange={(e) => setCaso(e.target.value)}
+                placeholder={
+                  'Describe tu caso o lo que necesitas encontrar...\n' +
+                  'Ejemplo: Busco jurisprudencia sobre pensión alimenticia cuando el padre es trabajador independiente'
+                }
+                className={
+                  'w-full px-4 py-3 border border-[#EAE4D9] rounded-xl text-sm text-[#0C0D10] ' +
+                  'placeholder-slate-300 focus:outline-none focus:border-[#C49A3C] ' +
+                  'focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors resize-none'
+                }
+              />
             </div>
 
-            {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-[#0C0D10]/60 uppercase tracking-widest block mb-1.5">
-                  Materia
-                </label>
-                <select value={materia} onChange={(e) => setMateria(e.target.value)} className={selectClass}>
-                  {MATERIAS.map((m) => (
-                    <option key={m.value} value={m.value}>{m.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-[#0C0D10]/60 uppercase tracking-widest block mb-1.5">
-                  Tipo
-                </label>
-                <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={selectClass}>
-                  {TIPOS.map((t) => (
-                    <option key={t.value} value={t.value}>{t.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-[#0C0D10]/60 uppercase tracking-widest block mb-1.5">
-                  Época
-                </label>
-                <select value={epoca} onChange={(e) => setEpoca(e.target.value)} className={selectClass}>
-                  {EPOCAS.map((ep) => (
-                    <option key={ep.value} value={ep.value}>{ep.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+              disabled={loading || !caso.trim()}
+              className="w-full bg-[#C49A3C] hover:bg-[#E2B865] disabled:opacity-50 disabled:cursor-not-allowed text-[#0C0D10] font-semibold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
             >
-              <Search className="w-4 h-4" />
-              Buscar en el SJF
-              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Analizando tu caso...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Analizar con IA
+                </>
+              )}
             </button>
           </form>
         </div>
 
-        {/* Footer note */}
-        <div className="flex items-start gap-2 mt-5 justify-center">
-          <Info className="w-3.5 h-3.5 text-[#0C0D10]/30 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-[#0C0D10]/40 text-center">
-            Los resultados se muestran en el portal oficial del{' '}
+        {/* Error */}
+        {error && (
+          <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5">
+            <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700 leading-relaxed">{error}</p>
+          </div>
+        )}
+
+        {/* Results */}
+        {resultado && (
+          <div className="bg-white border border-[#EAE4D9] rounded-2xl p-7 shadow-sm space-y-5">
+            {/* Section label */}
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#C49A3C]" />
+              <h2 className="text-xs font-bold text-[#0C0D10]/60 uppercase tracking-widest">
+                Análisis de la IA
+              </h2>
+            </div>
+
+            {/* Chips row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="bg-[#FAF7F2] border border-[#EAE4D9] rounded-xl p-4">
+                <p className="text-[10px] font-bold text-[#C49A3C]/80 uppercase tracking-widest mb-1.5">
+                  Materia
+                </p>
+                <p className="text-sm font-semibold text-[#0C0D10]">{resultado.materia}</p>
+              </div>
+              <div className="bg-[#FAF7F2] border border-[#EAE4D9] rounded-xl p-4">
+                <p className="text-[10px] font-bold text-[#C49A3C]/80 uppercase tracking-widest mb-1.5">
+                  Tipo de criterio
+                </p>
+                <p className="text-sm font-semibold text-[#0C0D10]">{resultado.tipo}</p>
+              </div>
+              <div className="bg-[#FAF7F2] border border-[#EAE4D9] rounded-xl p-4">
+                <p className="text-[10px] font-bold text-[#C49A3C]/80 uppercase tracking-widest mb-1.5">
+                  Palabras clave
+                </p>
+                <p className="text-sm font-semibold text-[#0C0D10]">{resultado.palabrasClave}</p>
+              </div>
+            </div>
+
+            {/* Explanation */}
+            <div className="bg-[#FAF7F2] border border-[#EAE4D9] rounded-xl p-4">
+              <p className="text-[10px] font-bold text-[#C49A3C]/80 uppercase tracking-widest mb-1.5">
+                Por qué estos parámetros
+              </p>
+              <p className="text-sm text-slate-600 leading-relaxed">{resultado.explicacion}</p>
+            </div>
+
+            {/* CTA */}
             <a
-              href="https://sjf2.scjn.gob.mx"
+              href={buildSJFUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#C49A3C] hover:text-[#E2B865] transition-colors"
+              className="flex items-center justify-center gap-2 w-full bg-[#0C0D10] hover:bg-[#1A1C26] text-[#FAF7F2] font-semibold py-3.5 rounded-xl transition-colors text-sm"
             >
-              Semanario Judicial de la Federación (SCJN)
+              <Search className="w-4 h-4" />
+              Buscar en el SJF
+              <ExternalLink className="w-3.5 h-3.5 opacity-60" />
             </a>
-          </p>
-        </div>
+          </div>
+        )}
+
+        {/* Footer note */}
+        <p className="text-center text-xs text-[#0C0D10]/40 pb-4">
+          Los resultados se muestran en el portal oficial del{' '}
+          <a
+            href="https://sjf2.scjn.gob.mx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#C49A3C] hover:text-[#E2B865] transition-colors"
+          >
+            Semanario Judicial de la Federación (SCJN)
+          </a>
+        </p>
       </div>
     </main>
   )
