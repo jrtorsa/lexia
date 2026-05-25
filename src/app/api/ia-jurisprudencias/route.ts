@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: caso }],
@@ -47,6 +47,8 @@ export async function POST(request: NextRequest) {
   }
 
   if (!anthropicRes.ok) {
+    const errBody = await anthropicRes.json().catch(() => ({}))
+    console.error('[ia-jurisprudencias] Anthropic error:', anthropicRes.status, errBody)
     return NextResponse.json({ error: 'Error en el servicio de IA. Intenta de nuevo.' }, { status: 502 })
   }
 
