@@ -49,16 +49,20 @@ export async function POST(request: NextRequest) {
   if (!anthropicRes.ok) {
     const errBody = await anthropicRes.json().catch(() => ({}))
     console.error('[ia-jurisprudencias] Anthropic error:', anthropicRes.status, errBody)
-    return NextResponse.json({ error: `Anthropic ${anthropicRes.status}: ${JSON.stringify(errBody)}` }, { status: 502 })
+    return NextResponse.json({ error: 'Error en el servicio de IA. Intenta de nuevo.' }, { status: 502 })
   }
 
   const anthropicData = await anthropicRes.json()
-  const text: string = anthropicData?.content?.[0]?.text ?? ''
+  const raw: string = anthropicData?.content?.[0]?.text ?? ''
+
+  // Strip markdown code fences if present (```json ... ``` or ``` ... ```)
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
   try {
     const result = JSON.parse(text)
     return NextResponse.json(result)
   } catch {
+    console.error('[ia-jurisprudencias] JSON parse failed. Raw response:', raw)
     return NextResponse.json({ error: 'La IA devolvió una respuesta inesperada. Intenta de nuevo.' }, { status: 500 })
   }
 }
