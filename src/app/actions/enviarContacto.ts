@@ -13,12 +13,16 @@ const ASUNTOS: Record<string, string> = {
   otro:        "Otro",
 }
 
-// Detecta strings aleatorios: solo consonantes o sin vocales reales
+// Detecta strings aleatorios por ratio de vocales Y rachas de consonantes
 function pareceRandom(str: string): boolean {
-  const sinEspacios = str.replace(/\s/g, "")
-  const vocales = (sinEspacios.match(/[aeiouáéíóú]/gi) ?? []).length
+  const sinEspacios = str.replace(/\s/g, "").toLowerCase()
+  if (sinEspacios.length <= 4) return false
+  const vocales = (sinEspacios.match(/[aeiouáéíóú]/g) ?? []).length
   const ratio = vocales / sinEspacios.length
-  return sinEspacios.length > 8 && ratio < 0.15
+  if (sinEspacios.length > 6 && ratio < 0.20) return true
+  // 4+ consonantes seguidas no ocurre en nombres/mensajes reales en español
+  if (/[bcdfghjklmnñpqrstvwxyz]{4,}/.test(sinEspacios)) return true
+  return false
 }
 
 export async function enviarContacto(formData: FormData) {
