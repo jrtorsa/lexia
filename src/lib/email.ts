@@ -259,6 +259,55 @@ export async function sendCedulaRejectedEmail({ to, name }: { to: string; name: 
   })
 }
 
+// ─── Admin: profile completion reminder ───────────────────────────────────────
+export async function sendProfileReminderEmail({
+  to,
+  name,
+}: {
+  to: string
+  name: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    replyTo: REPLY_TO,
+    subject: "Completa tu perfil en Lexia — te faltan pocos pasos",
+    html: `
+      <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #0C0D10;">
+        <div style="background: #0C0D10; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: #C49A3C; font-size: 22px; margin: 0;">LEXIA</h1>
+        </div>
+        <div style="background: #FAF7F2; padding: 32px; border: 1px solid #EAE4D9; border-top: 0; border-radius: 0 0 12px 12px;">
+          <h2 style="font-size: 18px; margin-top: 0; color: #0C0D10;">Hola ${name},</h2>
+          <p style="color: #555; line-height: 1.7;">
+            Notamos que tu perfil en Lexia está incompleto.
+            Un perfil completo recibe <strong>3x más contactos</strong>.
+            Agrégale foto, bio y especialidades para destacar.
+          </p>
+          <div style="background: white; border: 1px solid #EAE4D9; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
+            <p style="margin: 0 0 8px; font-size: 13px; color: #888;">Qué te falta completar:</p>
+            <ul style="margin: 0; padding-left: 18px; color: #555; font-size: 14px; line-height: 2;">
+              <li>Foto de perfil profesional</li>
+              <li>Descripción / bio</li>
+              <li>Especialidades de práctica</li>
+              <li>Cédula profesional</li>
+            </ul>
+          </div>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="https://lexiamx.com/mi-perfil/editar"
+               style="background: #C49A3C; color: #0C0D10; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">
+              Completar mi perfil
+            </a>
+          </div>
+          <p style="color: #999; font-size: 12px; margin: 0; border-top: 1px solid #EAE4D9; padding-top: 16px;">
+            ¿Dudas? <a href="mailto:hola@lexiamx.com" style="color: #C49A3C;">hola@lexiamx.com</a>
+          </p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 // ─── Cancellation confirmation ─────────────────────────────────────────────────
 export async function sendCancellationEmail({
   to,

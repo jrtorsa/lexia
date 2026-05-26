@@ -5,8 +5,11 @@ import Link from "next/link"
 import {
   Users, ShieldCheck, Clock, Star, Phone, MessageSquare,
   TrendingUp, AlertCircle, CheckCircle2, XCircle, Mail,
+  ImageOff, FileText, Tag, Hash, Zap,
 } from "lucide-react"
 import { makeToken } from "@/lib/cedula-token"
+import AdminSearch from "./components/AdminSearch"
+import { MarkPendingButton } from "./components/MarkPendingButton"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
@@ -28,7 +31,12 @@ export default async function AdminPage() {
   const session = await getServerSession(authOptions)
   const base = process.env.NEXTAUTH_URL ?? "https://lexiamx.com"
 
+  const startOfWeek = new Date()
+  startOfWeek.setDate(startOfWeek.getDate() - ((startOfWeek.getDay() + 6) % 7))
+  startOfWeek.setHours(0, 0, 0, 0)
+
   const [
+    // ── existing stats ──────────────────────────────────────────────────────────
     totalAbogados,
     verificados,
     pendientesVerificacion,
@@ -38,28 +46,28 @@ export default async function AdminPage() {
     cedulasPendientes,
     contactosRecientes,
     topEstados,
+    // ── new stats (feature 5) ───────────────────────────────────────────────────
+    abogadosSinFoto,
+    abogadosSinBio,
+    abogadosSinEspecialidad,
+    cedulasNull,
+    leadsEstaSemana,
+    // ── search + sin-status (features 1, 2) ────────────────────────────────────
+    todosAbogados,
+    cedulasSinStatus,
   ] = await Promise.all([
+    // existing
     prisma.lawyer.count({ where: { isActive: true } }),
     prisma.lawyer.count({ where: { isVerified: true } }),
     prisma.lawyer.count({ where: { cedulaStatus: "pending" } }),
-    prisma.lawyer.count({
-      where: {
-        createdAt: { gte: new Date(new Date().setDate(1)) },
-      },
-    }),
+    prisma.lawyer.count({ where: { createdAt: { gte: new Date(new Date().setDate(1)) } } }),
     prisma.membership.count({ where: { status: "ACTIVE" } }),
     prisma.lawyer.findMany({
       orderBy: { createdAt: "desc" },
       take: 12,
       select: {
-        id: true,
-        name: true,
-        email: true,
-        city: true,
-        state: true,
-        isVerified: true,
-        cedulaStatus: true,
-        createdAt: true,
+        id: true, name: true, email: true, city: true, state: true,
+        isVerified: true, cedulaStatus: true, createdAt: true,
         specialties: {
           where: { isPrimary: true },
           include: { specialty: { select: { name: true } } },
@@ -75,24 +83,13 @@ export default async function AdminPage() {
     prisma.lawyer.findMany({
       where: { cedulaStatus: "pending" },
       orderBy: { updatedAt: "desc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        cedula: true,
-        city: true,
-        state: true,
-        updatedAt: true,
-      },
+      select: { id: true, name: true, email: true, cedula: true, city: true, state: true, updatedAt: true },
     }),
     prisma.contact.findMany({
       orderBy: { createdAt: "desc" },
       take: 10,
       select: {
-        id: true,
-        name: true,
-        type: true,
-        createdAt: true,
+        id: true, name: true, type: true, createdAt: true,
         lawyer: { select: { name: true, city: true } },
       },
     }),
@@ -102,7 +99,47 @@ export default async function AdminPage() {
       orderBy: { _count: { state: "desc" } },
       take: 6,
     }),
+    // new stats
+    prisma.lawyer.count({ where: { photoUrl: null } }),
+    prisma.lawyer.count({ where: { bio: null } }),
+    prisma.lawyer.count({ where: { specialties: { none: {} } } }),
+    prisma.lawyer.count({ where: { cedula: null } }),
+    prisma.contact.count({ where: { createdAt: { gte: startOfWeek } } }),
+    // all lawyers for search
+    prisma.lawyer.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true, name: true, email: true, phone: true,
+        city: true, state: true, cedula: true,
+        isVerified: true, isActive: true, cedulaStatus: true,
+        memberships: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          include: { plan: { select: { name: true } } },
+        },
+      },
+    }),
+    // lawyers with cedula but no cedulaStatus
+    prisma.lawyer.findMany({
+      where: { cedulaStatus: null, cedula: { not: null } },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, email: true, cedula: true, city: true, state: true, createdAt: true },
+    }),
   ])
+
+  const lawyersForSearch = todosAbogados.map(l => ({
+    id: l.id,
+    name: l.name,
+    email: l.email,
+    phone: l.phone,
+    city: l.city,
+    state: l.state,
+    cedula: l.cedula,
+    isVerified: l.isVerified,
+    isActive: l.isActive,
+    cedulaStatus: l.cedulaStatus,
+    plan: l.memberships[0]?.plan.name ?? "Sin plan",
+  }))
 
   const contactIcon: Record<string, React.ReactNode> = {
     WHATSAPP: <MessageSquare className="w-3 h-3 text-green-500" />,
@@ -112,11 +149,19 @@ export default async function AdminPage() {
   }
 
   const stats = [
-    { label: "Total abogados", value: fmt(totalAbogados), icon: Users, color: "text-[#C49A3C]", bg: "bg-[rgba(196,154,60,0.08)]" },
-    { label: "Verificados", value: fmt(verificados), icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Pendientes verificación", value: fmt(pendientesVerificacion), icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-    { label: "Nuevos este mes", value: fmt(activosMes), icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Membresías activas", value: fmt(membresíasActivas), icon: Star, color: "text-violet-600", bg: "bg-violet-50" },
+    { label: "Total abogados",         value: fmt(totalAbogados),         icon: Users,      color: "text-[#C49A3C]",   bg: "bg-[rgba(196,154,60,0.08)]" },
+    { label: "Verificados",            value: fmt(verificados),           icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Pendientes verificación",value: fmt(pendientesVerificacion),icon: Clock,       color: "text-amber-600",   bg: "bg-amber-50" },
+    { label: "Nuevos este mes",        value: fmt(activosMes),            icon: TrendingUp,  color: "text-blue-600",    bg: "bg-blue-50" },
+    { label: "Membresías activas",     value: fmt(membresíasActivas),     icon: Star,        color: "text-violet-600",  bg: "bg-violet-50" },
+  ]
+
+  const statsExtra = [
+    { label: "Sin foto",          value: fmt(abogadosSinFoto),       icon: ImageOff,  color: "text-orange-500", bg: "bg-orange-50" },
+    { label: "Sin bio",           value: fmt(abogadosSinBio),        icon: FileText,  color: "text-rose-500",   bg: "bg-rose-50" },
+    { label: "Sin especialidad",  value: fmt(abogadosSinEspecialidad),icon: Tag,      color: "text-cyan-600",   bg: "bg-cyan-50" },
+    { label: "Sin cédula",        value: fmt(cedulasNull),            icon: Hash,      color: "text-slate-500",  bg: "bg-slate-50" },
+    { label: "Leads esta semana", value: fmt(leadsEstaSemana),        icon: Zap,       color: "text-teal-600",   bg: "bg-teal-50" },
   ]
 
   return (
@@ -136,7 +181,7 @@ export default async function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 space-y-8">
 
-        {/* Stats */}
+        {/* Stats — existing */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {stats.map((s) => (
             <div key={s.label} className="bg-white rounded-xl border border-[#EAE4D9] p-4">
@@ -148,6 +193,25 @@ export default async function AdminPage() {
             </div>
           ))}
         </div>
+
+        {/* Stats — completitud de perfiles (feature 5) */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-[#0C0D10]/40 mb-3">Completitud de perfiles</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {statsExtra.map((s) => (
+              <div key={s.label} className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+                <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mb-3`}>
+                  <s.icon className={`w-4 h-4 ${s.color}`} />
+                </div>
+                <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{s.value}</p>
+                <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Buscador de abogados (features 1 & 6) */}
+        <AdminSearch lawyers={lawyersForSearch} />
 
         <div className="grid lg:grid-cols-3 gap-6">
 
@@ -163,7 +227,6 @@ export default async function AdminPage() {
                 const specialty = l.specialties[0]?.specialty.name ?? "—"
                 return (
                   <div key={l.id} className="px-5 py-3 flex items-center gap-3 hover:bg-[#FAF7F2] transition-colors">
-                    {/* Avatar initials */}
                     <div className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[#EAE4D9] flex items-center justify-center flex-shrink-0">
                       <span className="text-xs font-semibold text-[#C49A3C]" style={displayFont}>
                         {l.name.replace(/^Lic\.\s*/i, "").split(" ").slice(0, 2).map((n) => n[0]).join("")}
@@ -198,7 +261,7 @@ export default async function AdminPage() {
           {/* Right column */}
           <div className="space-y-5">
 
-            {/* Cédulas pendientes */}
+            {/* Cédulas pendientes — unchanged */}
             <div className="bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden">
               <div className="px-5 py-4 border-b border-[#EAE4D9] flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-500" />
@@ -209,7 +272,6 @@ export default async function AdminPage() {
                   </span>
                 )}
               </div>
-
               {cedulasPendientes.length === 0 ? (
                 <div className="px-5 py-6 text-center">
                   <CheckCircle2 className="w-8 h-8 text-emerald-200 mx-auto mb-2" />
@@ -259,6 +321,53 @@ export default async function AdminPage() {
               )}
             </div>
 
+            {/* Sin status de cédula (feature 2) */}
+            {cedulasSinStatus.length > 0 && (
+              <div className="bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden">
+                <div className="px-5 py-4 border-b border-[#EAE4D9] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-slate-400" />
+                  <h2 className="font-semibold text-[#0C0D10] text-sm">Sin status de cédula</h2>
+                  <span className="ml-auto bg-slate-100 text-slate-600 text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
+                    {cedulasSinStatus.length}
+                  </span>
+                </div>
+                <div className="divide-y divide-[#EAE4D9]">
+                  {cedulasSinStatus.map((l) => {
+                    const aprobarUrl = `${base}/api/admin/cedula?id=${l.id}&action=aprobar&token=${makeToken(l.id, "aprobar")}`
+                    return (
+                      <div key={l.id} className="px-5 py-3.5">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div>
+                            <p className="text-xs font-medium text-[#0C0D10]">{l.name}</p>
+                            <p className="text-[11px] text-[#0C0D10]/40">{l.city}, {l.state}</p>
+                            <p className="text-[11px] text-[#0C0D10]/60 font-mono mt-0.5">Cédula: {l.cedula}</p>
+                          </div>
+                          <p className="text-[10px] text-[#0C0D10]/30 flex-shrink-0">{timeAgo(l.createdAt)}</p>
+                        </div>
+                        <a
+                          href={`https://www.buholegal.com/consultacedula/?cedula=${l.cedula}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-[#C49A3C] hover:underline block mb-2"
+                        >
+                          Verificar en SEP →
+                        </a>
+                        <div className="flex gap-2">
+                          <MarkPendingButton lawyerId={l.id} />
+                          <a
+                            href={aprobarUrl}
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium hover:bg-emerald-100 transition-colors"
+                          >
+                            <CheckCircle2 className="w-3 h-3" /> Aprobar directo
+                          </a>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Top estados */}
             <div className="bg-white rounded-2xl border border-[#EAE4D9] p-5">
               <h2 className="font-semibold text-[#0C0D10] text-sm mb-4">Por estado</h2>
@@ -272,10 +381,7 @@ export default async function AdminPage() {
                         <span className="text-xs font-medium text-[#0C0D10]">{e._count}</span>
                       </div>
                       <div className="h-1.5 bg-[#F5F0E8] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#C49A3C] rounded-full"
-                          style={{ width: `${pct}%` }}
-                        />
+                        <div className="h-full bg-[#C49A3C] rounded-full" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   )

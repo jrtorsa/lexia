@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import Image from "next/image"
-import { LayoutDashboard, User, MessageSquare, BarChart3, CreditCard } from "lucide-react"
+import { LayoutDashboard, User, MessageSquare, BarChart3, CreditCard, CalendarDays } from "lucide-react"
 import DashboardLogout from "@/components/DashboardLogout"
 import Toaster from "@/components/Toaster"
 
@@ -12,6 +12,7 @@ const NAV = [
   { href: "/mi-perfil/editar", label: "Mi perfil", icon: User },
   { href: "/mi-perfil/contactos", label: "Contactos", icon: MessageSquare },
   { href: "/mi-perfil/estadisticas", label: "Estadísticas", icon: BarChart3 },
+  { href: "/mi-perfil/citatorios", label: "Citatorios", icon: CalendarDays },
   { href: "/mi-perfil/suscripcion", label: "Suscripción", icon: CreditCard },
 ]
 

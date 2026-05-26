@@ -1,20 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { Scale, Eye, EyeOff, ArrowRight } from "lucide-react"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
+  )
+}
+
+function LoginContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+
+  useEffect(() => {
+    const urlError = searchParams.get("error")
+    if (urlError === "GoogleAccountNotFound") {
+      setError("No encontramos una cuenta con ese correo de Google. Regístrate primero.")
+    } else if (urlError) {
+      setError("Hubo un problema al iniciar sesión con Google. Intenta de nuevo.")
+    }
+  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -145,6 +163,20 @@ export default function LoginPage() {
             <span className="text-xs text-[#0C0D10]/30">o</span>
             <div className="flex-1 h-px bg-[#EAE4D9]" />
           </div>
+
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/mi-perfil" })}
+            className="w-full flex items-center justify-center gap-3 border border-[#EAE4D9] hover:border-[#C49A3C]/40 hover:bg-[#FAFAF8] text-[#0C0D10] text-sm font-medium py-2.5 rounded-lg transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.64 9.2045c0-.638-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9087C16.6582 14.0132 17.64 11.8259 17.64 9.2045z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.4673-.8059 5.9564-2.1818l-2.9087-2.2582c-.8059.54-1.8368.8591-3.0477.8591-2.3441 0-4.3282-1.5832-5.036-3.7105H.9574v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.71c-.18-.54-.2827-1.1168-.2827-1.71s.1023-1.17.2827-1.71V4.9582H.9574C.3477 6.1732 0 7.5477 0 9s.3477 2.8268.9574 4.0418L3.964 10.71z" fill="#FBBC05"/>
+              <path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5814C13.4632.8918 11.4259 0 9 0 5.4818 0 2.4382 2.0168.9574 4.9582L3.964 7.29C4.6718 5.1627 6.6559 3.5795 9 3.5795z" fill="#EA4335"/>
+            </svg>
+            Continuar con Google
+          </button>
 
           <p className="text-center text-sm text-[#0C0D10]/50">
             ¿No tienes cuenta?{" "}

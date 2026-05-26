@@ -52,6 +52,9 @@ model Lawyer {
   isActive          Boolean   @default(true)
   resetToken        String?
   resetTokenExpiry  DateTime?
+  googleId          String?   @unique
+  googleAccessToken  String?
+  googleRefreshToken String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -61,6 +64,7 @@ model Lawyer {
   reviews       Review[]
   contacts      Contact[]
   answers       Answer[]
+  citatorios    Citatorio[]
 
   @@index([city, state])
   @@index([slug])
@@ -198,4 +202,26 @@ model Answer {
 
   question Question @relation(fields: [questionId], references: [id])
   lawyer   Lawyer   @relation(fields: [lawyerId], references: [id])
+}
+
+// ─────────────────────────────────────────
+// CITATORIOS (hearings / calendar events)
+// ─────────────────────────────────────────
+model Citatorio {
+  id              String    @id @default(cuid())
+  lawyerId        String
+  titulo          String
+  expediente      String?
+  juzgado         String?
+  fecha           DateTime
+  notas           String?   @db.Text
+  googleEventId   String?   // ID del evento en Google Calendar
+  imageUrl        String?   // imagen de la cédula/citatorio (si se subió)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  lawyer Lawyer @relation(fields: [lawyerId], references: [id])
+
+  @@index([lawyerId])
+  @@index([fecha])
 }
