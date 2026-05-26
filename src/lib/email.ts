@@ -259,6 +259,58 @@ export async function sendCedulaRejectedEmail({ to, name }: { to: string; name: 
   })
 }
 
+// ─── Lawyer: cédula rejected with reason ──────────────────────────────────────
+export async function sendCedulaRejectedWithReasonEmail({
+  to,
+  name,
+}: {
+  to: string
+  name: string
+  reason?: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    replyTo: REPLY_TO,
+    subject: "Revisión de cédula — Lexia",
+    html: `
+      <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #0C0D10;">
+        <div style="background: #0C0D10; padding: 24px 32px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: #C49A3C; font-size: 22px; margin: 0;">LEXIA</h1>
+        </div>
+        <div style="background: #FAF7F2; padding: 32px; border: 1px solid #EAE4D9; border-top: 0; border-radius: 0 0 12px 12px;">
+          <p style="font-size: 16px; margin-top: 0;">Hola ${name},</p>
+          <p style="color: #555; line-height: 1.7; margin-bottom: 20px;">
+            Revisamos tu cédula profesional y no pudimos confirmarla con el registro oficial de la SEP.
+          </p>
+          <p style="color: #555; line-height: 1.7; margin-bottom: 10px;">Esto puede deberse a:</p>
+          <ul style="color: #555; line-height: 2; margin: 0 0 24px; padding-left: 20px;">
+            <li>El número de cédula fue ingresado con un error tipográfico</li>
+            <li>La cédula aún no aparece en el sistema de la SEP (puede tardar algunos meses en registrarse)</li>
+            <li>Los datos no coinciden con el nombre registrado</li>
+          </ul>
+          <p style="font-size: 15px; font-weight: bold; color: #0C0D10; margin-bottom: 8px;">¿Qué puedes hacer?</p>
+          <p style="color: #555; line-height: 1.7; margin-bottom: 24px;">
+            Verifica tu número de cédula en el portal de la SEP y actualízalo desde tu perfil en Lexia.
+            Si crees que hay un error o necesitas ayuda, escríbenos directamente a
+            <a href="mailto:hola@lexiamx.com" style="color: #C49A3C;">hola@lexiamx.com</a>
+            y con gusto lo revisamos contigo.
+          </p>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="https://lexiamx.com/mi-perfil/editar"
+               style="background: #C49A3C; color: #0C0D10; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">
+              Actualizar mi cédula
+            </a>
+          </div>
+          <p style="color: #999; font-size: 13px; margin: 0; border-top: 1px solid #EAE4D9; padding-top: 20px;">
+            El equipo de Lexia
+          </p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 // ─── Admin: profile completion reminder ───────────────────────────────────────
 export async function sendProfileReminderEmail({
   to,

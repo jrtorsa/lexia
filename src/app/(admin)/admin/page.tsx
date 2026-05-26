@@ -10,6 +10,7 @@ import {
 import { makeToken } from "@/lib/cedula-token"
 import AdminSearch from "./components/AdminSearch"
 import { MarkPendingButton } from "./components/MarkPendingButton"
+import { RejectCedulaButton } from "./components/RejectCedulaButton"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
 
@@ -281,7 +282,6 @@ export default async function AdminPage() {
                 <div className="divide-y divide-[#EAE4D9]">
                   {cedulasPendientes.map((l) => {
                     const aprobarUrl = `${base}/api/admin/cedula?id=${l.id}&action=aprobar&token=${makeToken(l.id, "aprobar")}`
-                    const rechazarUrl = `${base}/api/admin/cedula?id=${l.id}&action=rechazar&token=${makeToken(l.id, "rechazar")}`
                     return (
                       <div key={l.id} className="px-5 py-3.5">
                         <div className="flex items-start justify-between gap-2 mb-2">
@@ -293,7 +293,7 @@ export default async function AdminPage() {
                           <p className="text-[10px] text-[#0C0D10]/30 flex-shrink-0">{timeAgo(l.updatedAt)}</p>
                         </div>
                         <a
-                          href={`https://www.buholegal.com/consultacedula/?cedula=${l.cedula}`}
+                          href={`https://cedulaprofesional.sep.gob.mx/?cedula=${l.cedula}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] text-[#C49A3C] hover:underline block mb-2"
@@ -307,12 +307,7 @@ export default async function AdminPage() {
                           >
                             <CheckCircle2 className="w-3 h-3" /> Aprobar
                           </a>
-                          <a
-                            href={rechazarUrl}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg bg-red-50 border border-red-200 text-red-600 text-[11px] font-medium hover:bg-red-100 transition-colors"
-                          >
-                            <XCircle className="w-3 h-3" /> Rechazar
-                          </a>
+                          <RejectCedulaButton lawyerId={l.id} lawyerName={l.name} />
                         </div>
                       </div>
                     )
@@ -345,7 +340,7 @@ export default async function AdminPage() {
                           <p className="text-[10px] text-[#0C0D10]/30 flex-shrink-0">{timeAgo(l.createdAt)}</p>
                         </div>
                         <a
-                          href={`https://www.buholegal.com/consultacedula/?cedula=${l.cedula}`}
+                          href={`https://cedulaprofesional.sep.gob.mx/?cedula=${l.cedula}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] text-[#C49A3C] hover:underline block mb-2"
@@ -358,8 +353,9 @@ export default async function AdminPage() {
                             href={aprobarUrl}
                             className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium hover:bg-emerald-100 transition-colors"
                           >
-                            <CheckCircle2 className="w-3 h-3" /> Aprobar directo
+                            <CheckCircle2 className="w-3 h-3" /> Aprobar
                           </a>
+                          <RejectCedulaButton lawyerId={l.id} lawyerName={l.name} />
                         </div>
                       </div>
                     )
