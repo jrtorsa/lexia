@@ -5,15 +5,16 @@ import { authOptions } from "@/lib/auth"
 import Image from "next/image"
 import { LayoutDashboard, User, MessageSquare, BarChart3, CreditCard, CalendarDays } from "lucide-react"
 import DashboardLogout from "@/components/DashboardLogout"
+import MobileNav from "@/components/MobileNav"
 import Toaster from "@/components/Toaster"
 
 const NAV = [
-  { href: "/mi-perfil", label: "Resumen", icon: LayoutDashboard },
-  { href: "/mi-perfil/editar", label: "Mi perfil", icon: User },
-  { href: "/mi-perfil/contactos", label: "Contactos", icon: MessageSquare },
+  { href: "/mi-perfil",              label: "Resumen",      icon: LayoutDashboard },
+  { href: "/mi-perfil/editar",       label: "Mi perfil",    icon: User },
+  { href: "/mi-perfil/contactos",    label: "Contactos",    icon: MessageSquare },
   { href: "/mi-perfil/estadisticas", label: "Estadísticas", icon: BarChart3 },
-  { href: "/mi-perfil/citatorios", label: "Citatorios", icon: CalendarDays },
-  { href: "/mi-perfil/suscripcion", label: "Suscripción", icon: CreditCard },
+  { href: "/mi-perfil/citatorios",   label: "Citatorios",   icon: CalendarDays },
+  { href: "/mi-perfil/suscripcion",  label: "Suscripción",  icon: CreditCard },
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -31,8 +32,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] flex">
-      {/* Sidebar */}
-      <aside className="w-60 bg-[#1A1C26] flex flex-col fixed top-0 left-0 h-full z-40">
+      {/* Mobile nav (hamburger + slide-over) — hidden on md+ */}
+      <MobileNav firstName={firstName} initials={initials} plan={session.user.plan} />
+
+      {/* Sidebar — hidden on mobile, fixed on md+ */}
+      <aside className="w-60 bg-[#1A1C26] flex-col fixed top-0 left-0 h-full z-40 hidden md:flex">
         {/* Logo */}
         <div className="p-5 border-b border-white/8">
           <Link href="/">
@@ -79,8 +83,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 ml-60 min-h-screen">
+      {/* Main content — full width on mobile, offset on md+ */}
+      <main className="flex-1 md:ml-60 min-h-screen pt-14 md:pt-0">
         {children}
       </main>
       <Toaster />
