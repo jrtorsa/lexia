@@ -213,6 +213,8 @@ model Citatorio {
   titulo          String
   expediente      String?
   juzgado         String?
+  actor           String?
+  demandado       String?
   fecha           DateTime
   notas           String?   @db.Text
   googleEventId   String?   // ID del evento en Google Calendar

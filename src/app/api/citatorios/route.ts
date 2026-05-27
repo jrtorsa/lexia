@@ -19,14 +19,14 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  let body: { titulo?: string; expediente?: string; juzgado?: string; fecha?: string; notas?: string }
+  let body: { titulo?: string; expediente?: string; juzgado?: string; actor?: string; demandado?: string; fecha?: string; notas?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
   }
 
-  const { titulo, expediente, juzgado, fecha, notas } = body
+  const { titulo, expediente, juzgado, actor, demandado, fecha, notas } = body
   if (!titulo || !fecha) {
     return NextResponse.json({ error: 'Título y fecha son requeridos.' }, { status: 400 })
   }
@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
       titulo,
       expediente: expediente || null,
       juzgado: juzgado || null,
+      actor: actor || null,
+      demandado: demandado || null,
       fecha: new Date(fecha),
       notas: notas || null,
     },
@@ -54,6 +56,8 @@ export async function POST(request: NextRequest) {
       const description = [
         expediente && `Expediente: ${expediente}`,
         juzgado && `Juzgado: ${juzgado}`,
+        actor && `Actor: ${actor}`,
+        demandado && `Demandado: ${demandado}`,
         notas,
       ].filter(Boolean).join('\n')
 

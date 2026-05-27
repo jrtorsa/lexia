@@ -31,7 +31,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const firstName = session.user.name.replace(/^Lic\.\s*/i, "").split(" ")[0]
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex">
+    <div className="min-h-screen bg-[#FAF7F2] flex overflow-x-hidden">
       {/* Mobile nav (hamburger + slide-over) — hidden on md+ */}
       <MobileNav firstName={firstName} initials={initials} plan={session.user.plan} />
 

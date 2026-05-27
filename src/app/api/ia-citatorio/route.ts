@@ -5,8 +5,10 @@ const SYSTEM_PROMPT = `Eres un asistente legal mexicano. Analiza esta imagen de 
   "titulo": "string (tipo de audiencia o acto procesal, ej: Audiencia Preliminar, Desahogo de Pruebas, Junta de Conciliación)",
   "expediente": "string o null (número de expediente si aparece)",
   "juzgado": "string o null (nombre completo del juzgado, tribunal o sala)",
+  "actor": "string o null (nombre del actor o parte actora si aparece)",
+  "demandado": "string o null (nombre del demandado o parte demandada si aparece)",
   "fecha": "string o null (fecha y hora tal como aparece en el documento)",
-  "notas": "string o null (información adicional: sala, partes, domicilio, prevenciones)"
+  "notas": "string o null (información adicional: sala, domicilio, prevenciones)"
 }`
 
 export async function POST(request: NextRequest) {

@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { CalendarDays, Plus, X, Upload, Sparkles, Calendar, Building2, FileText, Clock, Trash2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { CalendarDays, Plus, X, Upload, Sparkles, Calendar, Building2, FileText, Clock, Trash2, CheckCircle2, AlertCircle, Users } from 'lucide-react'
 
 interface Citatorio {
   id: string
   titulo: string
   expediente: string | null
   juzgado: string | null
+  actor: string | null
+  demandado: string | null
   fecha: string
   notas: string | null
   googleEventId: string | null
@@ -18,11 +20,13 @@ interface FormState {
   titulo: string
   expediente: string
   juzgado: string
+  actor: string
+  demandado: string
   fecha: string
   notas: string
 }
 
-const EMPTY_FORM: FormState = { titulo: '', expediente: '', juzgado: '', fecha: '', notas: '' }
+const EMPTY_FORM: FormState = { titulo: '', expediente: '', juzgado: '', actor: '', demandado: '', fecha: '', notas: '' }
 
 function getDateStatus(iso: string): 'today' | 'upcoming' | 'past' {
   const d = new Date(iso)
@@ -109,6 +113,8 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
             titulo: data.titulo || prev.titulo,
             expediente: data.expediente || prev.expediente,
             juzgado: data.juzgado || prev.juzgado,
+            actor: data.actor || prev.actor,
+            demandado: data.demandado || prev.demandado,
             fecha: prev.fecha,
             notas: data.notas || prev.notas,
           }))
@@ -340,6 +346,21 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
                     className={inputClass} />
                 </Field>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Actor(a)">
+                    <input type="text" value={form.actor}
+                      onChange={(e) => setForm(p => ({ ...p, actor: e.target.value }))}
+                      placeholder="Nombre del actor"
+                      className={inputClass} />
+                  </Field>
+                  <Field label="Demandado(a)">
+                    <input type="text" value={form.demandado}
+                      onChange={(e) => setForm(p => ({ ...p, demandado: e.target.value }))}
+                      placeholder="Nombre del demandado"
+                      className={inputClass} />
+                  </Field>
+                </div>
+
                 <Field label="Notas adicionales">
                   <textarea value={form.notas}
                     onChange={(e) => setForm(p => ({ ...p, notas: e.target.value }))}
@@ -462,8 +483,16 @@ function CitatorioCard({ citatorio, onDelete, deletingId }: {
             </span>
           )}
         </div>
+        {(citatorio.actor || citatorio.demandado) && (
+          <div className="flex items-start gap-1 mt-1.5">
+            <Users className="w-3 h-3 text-[#0C0D10]/35 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-[#0C0D10]/45 line-clamp-1">
+              {[citatorio.actor && `Actor: ${citatorio.actor}`, citatorio.demandado && `Dem: ${citatorio.demandado}`].filter(Boolean).join(' · ')}
+            </p>
+          </div>
+        )}
         {citatorio.notas && (
-          <p className="text-xs text-[#0C0D10]/40 mt-1.5 line-clamp-2 sm:line-clamp-1">{citatorio.notas}</p>
+          <p className="text-xs text-[#0C0D10]/40 mt-1 line-clamp-1">{citatorio.notas}</p>
         )}
       </div>
     </div>
