@@ -260,7 +260,7 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
       {panelOpen && (
         <>
           <div className="fixed inset-0 bg-black/30 z-40 backdrop-blur-sm" onClick={closePanel} />
-          <div className="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto sm:w-full sm:max-w-lg bg-white z-50 shadow-2xl flex flex-col">
+          <div className="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto sm:w-full sm:max-w-lg bg-white z-50 shadow-2xl flex flex-col overflow-x-hidden">
             {/* Panel header */}
             <div className="p-4 sm:p-6 border-b border-[#EAE4D9] flex items-center justify-between flex-shrink-0">
               <h2 className="text-lg font-semibold text-[#0C0D10]" style={{ fontFamily: 'var(--font-cormorant)' }}>
@@ -329,7 +329,7 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
                 <Field label="Fecha y hora" required icon={<Clock className="w-3.5 h-3.5" />}>
                   <input type="datetime-local" required value={form.fecha}
                     onChange={(e) => setForm(p => ({ ...p, fecha: e.target.value }))}
-                    className={inputClass} />
+                    className={inputClass + ' max-w-full'} />
                 </Field>
 
                 <Field label="Juzgado / Tribunal" icon={<Building2 className="w-3.5 h-3.5" />}>
