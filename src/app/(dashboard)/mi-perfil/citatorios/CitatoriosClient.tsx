@@ -329,7 +329,8 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
                 <Field label="Fecha y hora" required icon={<Clock className="w-3.5 h-3.5" />}>
                   <input type="datetime-local" required value={form.fecha}
                     onChange={(e) => setForm(p => ({ ...p, fecha: e.target.value }))}
-                    className={inputClass + ' max-w-full'} />
+                    className={inputClass}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }} />
                 </Field>
 
                 <Field label="Juzgado / Tribunal" icon={<Building2 className="w-3.5 h-3.5" />}>
