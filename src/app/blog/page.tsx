@@ -30,8 +30,17 @@ function formatDate(dateStr: string): string {
   })
 }
 
-export default async function BlogPage() {
-  const posts = await getAllPosts()
+interface Props {
+  searchParams: { categoria?: string }
+}
+
+export default async function BlogPage({ searchParams }: Props) {
+  const allPosts = await getAllPosts()
+  const categoriaActiva = searchParams.categoria ?? "Todos"
+
+  const posts = categoriaActiva === "Todos"
+    ? allPosts
+    : allPosts.filter(p => p.category === categoriaActiva)
 
   return (
     <main className="min-h-screen bg-[#FAF7F2]">
@@ -65,7 +74,7 @@ export default async function BlogPage() {
           </p>
           <div className="flex items-center justify-center gap-8 mt-10 text-sm text-[#FAF7F2]/40">
             <span>
-              <strong className="text-[#C49A3C] text-lg font-semibold">{posts.length}</strong>{" "}
+              <strong className="text-[#C49A3C] text-lg font-semibold">{allPosts.length}</strong>{" "}
               artículos
             </span>
             <span className="h-4 w-px bg-white/10" />
@@ -82,24 +91,35 @@ export default async function BlogPage() {
       <section className="bg-white border-b border-[#EAE4D9] sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-3">
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
-            {CATEGORIES.map((cat, i) => (
-              <button
-                key={cat}
-                className={`flex-none text-xs font-medium px-4 py-2 rounded-full transition-colors whitespace-nowrap ${
-                  i === 0
-                    ? "bg-[#0C0D10] text-[#FAF7F2]"
-                    : "bg-[#FAF7F2] text-[#0C0D10]/60 border border-[#EAE4D9] hover:border-[#C49A3C]/40 hover:text-[#0C0D10]"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const isActive = cat === categoriaActiva
+              const href = cat === "Todos" ? "/blog" : `/blog?categoria=${encodeURIComponent(cat)}`
+              return (
+                <Link
+                  key={cat}
+                  href={href}
+                  className={`flex-none text-xs font-medium px-4 py-2 rounded-full transition-colors whitespace-nowrap ${
+                    isActive
+                      ? "bg-[#0C0D10] text-[#FAF7F2]"
+                      : "bg-[#FAF7F2] text-[#0C0D10]/60 border border-[#EAE4D9] hover:border-[#C49A3C]/40 hover:text-[#0C0D10]"
+                  }`}
+                >
+                  {cat}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* Article grid */}
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-14">
+        {posts.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-4xl mb-4">📂</p>
+            <p className="text-[#0C0D10]/50 text-sm">No hay artículos en esta categoría aún.</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
             <Link
