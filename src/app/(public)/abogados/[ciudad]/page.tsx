@@ -111,8 +111,83 @@ export default async function Page({ params }: Props) {
   const planName = lawyer.memberships[0]?.plan.name ?? "Básico"
   const isPremium = planName === "Premium" || planName === "Despacho"
 
+  const lawyerUrl = `https://lexiamx.com/abogados/${ciudad}`
+  const citySlug = Object.entries(CIUDADES).find(([, c]) => c.nombre === lawyer.city)?.[0]
+
+  const schemaAbogado = {
+    "@context": "https://schema.org",
+    "@type": "LegalService",
+    name: lawyer.name,
+    description:
+      lawyer.bio ??
+      `Abogado especialista en ${lawyer.specialties?.[0]?.specialty?.name ?? "derecho"} en ${lawyer.city}, ${lawyer.state}`,
+    url: lawyerUrl,
+    ...(lawyer.phone ? { telephone: lawyer.phone } : {}),
+    areaServed: {
+      "@type": "City",
+      name: lawyer.city,
+      containedInPlace: {
+        "@type": "State",
+        name: lawyer.state,
+        containedInPlace: { "@type": "Country", name: "México" },
+      },
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: lawyer.city,
+      addressRegion: lawyer.state,
+      addressCountry: "MX",
+      ...(lawyer.address ? { streetAddress: lawyer.address } : {}),
+    },
+    ...(lawyer.cedula
+      ? {
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "Cédula Profesional",
+            identifier: lawyer.cedula,
+          },
+        }
+      : {}),
+    knowsAbout: lawyer.specialties?.map((s) => s.specialty.name) ?? [],
+    ...(avg > 0 && lawyer.reviews.length > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avg.toFixed(1),
+            reviewCount: lawyer.reviews.length,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
+  }
+
+  const schemaBreadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://lexiamx.com" },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: citySlug ? `Abogados en ${lawyer.city}` : "Abogados",
+        item: citySlug ? `https://lexiamx.com/abogados/${citySlug}` : "https://lexiamx.com/abogados",
+      },
+      { "@type": "ListItem", position: 3, name: lawyer.name, item: lawyerUrl },
+    ],
+  }
+
   return (
-    <main className="min-h-screen bg-[#FAF7F2]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaAbogado) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumb) }}
+      />
+      <main className="min-h-screen bg-[#FAF7F2]">
       {/* Hero header */}
       <div className="bg-[#1A1C26] border-b border-white/8">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 py-8">
@@ -383,6 +458,7 @@ export default async function Page({ params }: Props) {
         </div>
       </div>
     </main>
+    </>
   )
 }
 

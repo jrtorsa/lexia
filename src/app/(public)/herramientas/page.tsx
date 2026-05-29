@@ -53,6 +53,27 @@ interface Resultado {
   desglose: { concepto: string; dias: number; importe: number; nota?: string }[]
 }
 
+const schemaCalculadora = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Calculadora de Finiquito México",
+  url: "https://lexiamx.com/herramientas/calculadora-finiquito",
+  description:
+    "Calcula tu finiquito o liquidación en México de forma gratuita. Ingresa tu salario, fecha de entrada y salida para conocer exactamente cuánto te corresponde por ley.",
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "MXN",
+  },
+  provider: {
+    "@type": "Organization",
+    name: "Lexia MX",
+    url: "https://lexiamx.com",
+  },
+}
+
 export default function HerramientasPage() {
   const [salarioMensual, setSalarioMensual] = useState("")
   const [fechaIngreso, setFechaIngreso] = useState("")
@@ -189,8 +210,13 @@ export default function HerramientasPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAF7F2]">
-      {/* Header */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCalculadora) }}
+      />
+      <main className="min-h-screen bg-[#FAF7F2]">
+        {/* Header */}
       <div className="bg-[#1A1C26] border-b border-white/8">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2 text-[#C49A3C]/60 text-xs mb-3">
@@ -388,5 +414,6 @@ export default function HerramientasPage() {
         </div>
       </div>
     </main>
+    </>
   )
 }

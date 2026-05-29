@@ -92,6 +92,44 @@ export default async function BlogArticlePage({ params }: Props) {
     url: `https://lexiamx.com/blog/${post.slug}`,
   }
 
+  const POST_FAQS: Record<string, { question: string; answer: string }[]> = {
+    "divorcio-incausado-mexico": [
+      {
+        question: "¿Qué es el divorcio incausado en México?",
+        answer:
+          "El divorcio incausado es una figura legal que permite disolver el matrimonio sin necesidad de dar explicaciones ni probar ninguna causa. Solo se requiere manifestar la voluntad de no continuar en el matrimonio ante un juez.",
+      },
+      {
+        question: "¿Necesito el acuerdo de mi pareja para divorciarme en México?",
+        answer:
+          "No. Con el divorcio incausado puedes divorciarte aunque tu pareja se oponga. Un juez puede decretar el divorcio con la solicitud de una sola de las partes.",
+      },
+      {
+        question: "¿Cuánto tiempo tarda un divorcio incausado en México?",
+        answer:
+          "Si hay acuerdo entre ambas partes puede resolverse en pocas semanas. Si no hay acuerdo, el proceso toma más tiempo pero igualmente procede.",
+      },
+      {
+        question: "¿En qué estados de México aplica el divorcio incausado?",
+        answer:
+          "El divorcio incausado aplica en todos los estados de México, incluyendo Chihuahua. Es una figura reconocida a nivel federal.",
+      },
+    ],
+  }
+
+  const postFaqs = POST_FAQS[post.slug]
+  const schemaFAQ = postFaqs
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: postFaqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }
+    : null
+
   return (
     <>
       {/* JSON-LD Schema */}
@@ -99,6 +137,12 @@ export default async function BlogArticlePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {schemaFAQ && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaFAQ) }}
+        />
+      )}
 
       <main className="min-h-screen bg-[#FAF7F2]">
         {/* Hero header */}

@@ -37,6 +37,32 @@ export const metadata: Metadata = {
   },
 };
 
+const schemaWebSite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Lexia",
+  url: "https://lexiamx.com",
+  description:
+    "Directorio de abogados verificados en México. Encuentra al abogado ideal para tu caso en Chihuahua y toda la república.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://lexiamx.com/abogados?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Lexia MX",
+    url: "https://lexiamx.com",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://lexiamx.com/icon-512.png",
+    },
+  },
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -48,6 +74,10 @@ export default function RootLayout({
       className={`${cormorant.variable} ${dmSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaWebSite) }}
+        />
         <Providers>{children}</Providers>
         <GoogleAnalytics gaId="G-PX5YCRM2PQ" />
         <FacebookPixel />
