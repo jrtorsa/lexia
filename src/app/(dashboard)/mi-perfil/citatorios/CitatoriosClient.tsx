@@ -330,7 +330,7 @@ export default function CitatoriosClient({ hasGoogle }: { hasGoogle: boolean }) 
                   <input type="datetime-local" required value={form.fecha}
                     onChange={(e) => setForm(p => ({ ...p, fecha: e.target.value }))}
                     className={inputClass}
-                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }} />
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', appearance: 'none', WebkitAppearance: 'none' }} />
                 </Field>
 
                 <Field label="Juzgado / Tribunal" icon={<Building2 className="w-3.5 h-3.5" />}>
@@ -414,7 +414,7 @@ function Field({ label, required, icon, children }: {
   label: string; required?: boolean; icon?: React.ReactNode; children: React.ReactNode
 }) {
   return (
-    <div>
+    <div style={{ width: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
       <label className="flex items-center gap-1.5 text-xs font-semibold text-[#0C0D10]/60 mb-1.5 tracking-wide uppercase">
         {icon}{label}{required && <span className="text-[#C49A3C]">*</span>}
       </label>
