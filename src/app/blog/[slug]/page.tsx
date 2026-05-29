@@ -1,46 +1,39 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { POSTS, getPost } from "@/lib/blog-posts"
+import { getAllPosts, getPostBySlug, getAllSlugs } from "@/lib/blog"
 import { Clock, Calendar, ChevronRight, ArrowRight, BookOpen } from "lucide-react"
-
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Props = { params: Promise<{ slug: string }> }
 
-// ─── Static params ────────────────────────────────────────────────────────────
-
 export async function generateStaticParams() {
-  return POSTS.map((post) => ({ slug: post.slug }))
+  const slugs = await getAllSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
-
-// ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPostBySlug(slug)
   if (!post) return { title: "Artículo no encontrado | Lexia" }
 
   return {
-    title: post.metaTitle,
-    description: post.metaDescription,
+    title: post.meta_title,
+    description: post.meta_description,
     openGraph: {
-      title: post.metaTitle,
-      description: post.metaDescription,
+      title: post.meta_title,
+      description: post.meta_description,
       type: "article",
-      publishedTime: post.publishedAt,
+      publishedTime: post.published_at,
       url: `https://lexiamx.com/blog/${post.slug}`,
       siteName: "Lexia",
     },
     twitter: {
       card: "summary_large_image",
-      title: post.metaTitle,
-      description: post.metaDescription,
+      title: post.meta_title,
+      description: post.meta_description,
     },
   }
 }
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number)
@@ -52,37 +45,35 @@ function formatDate(dateStr: string): string {
   })
 }
 
-function getRelatedPosts(currentSlug: string, currentCategory: string) {
-  return POSTS.filter(
-    (p) => p.slug !== currentSlug && p.category === currentCategory
-  ).slice(0, 3)
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default async function BlogArticlePage({ params }: Props) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPostBySlug(slug)
 
   if (!post) notFound()
 
-  const relatedPosts = getRelatedPosts(slug, post.category)
-  const otherPosts = relatedPosts.length < 3
-    ? [
-        ...relatedPosts,
-        ...POSTS.filter(
-          (p) => p.slug !== slug && !relatedPosts.some((r) => r.slug === p.slug)
-        ).slice(0, 3 - relatedPosts.length),
-      ]
-    : relatedPosts
+  // Artículos relacionados desde Supabase
+  const allPosts = await getAllPosts()
+  const relatedPosts = allPosts
+    .filter((p) => p.slug !== slug && p.category === post.category)
+    .slice(0, 3)
+
+  const otherPosts =
+    relatedPosts.length < 3
+      ? [
+          ...relatedPosts,
+          ...allPosts
+            .filter((p) => p.slug !== slug && !relatedPosts.some((r) => r.slug === p.slug))
+            .slice(0, 3 - relatedPosts.length),
+        ]
+      : relatedPosts
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description: post.metaDescription,
-    datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    description: post.meta_description,
+    datePublished: post.published_at,
+    dateModified: post.published_at,
     author: { "@type": "Organization", name: "Lexia" },
     publisher: {
       "@type": "Organization",
@@ -132,7 +123,6 @@ export default async function BlogArticlePage({ params }: Props) {
 
   return (
     <>
-      {/* JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -150,7 +140,6 @@ export default async function BlogArticlePage({ params }: Props) {
           className="relative py-16 px-6 lg:px-8 overflow-hidden"
           style={{ background: "linear-gradient(160deg, #0C0D10 0%, #1A1C26 100%)" }}
         >
-          {/* Subtle grid texture */}
           <div
             className="absolute inset-0 opacity-[0.025] pointer-events-none"
             style={{
@@ -158,45 +147,33 @@ export default async function BlogArticlePage({ params }: Props) {
                 "repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,1) 40px, rgba(255,255,255,1) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,1) 40px, rgba(255,255,255,1) 41px)",
             }}
           />
-
           <div className="relative max-w-4xl mx-auto">
-            {/* Breadcrumb */}
             <nav className="flex items-center gap-1.5 text-xs text-[#FAF7F2]/35 mb-8">
-              <Link href="/" className="hover:text-[#FAF7F2]/60 transition-colors">
-                Inicio
-              </Link>
+              <Link href="/" className="hover:text-[#FAF7F2]/60 transition-colors">Inicio</Link>
               <ChevronRight className="w-3 h-3" />
-              <Link href="/blog" className="hover:text-[#FAF7F2]/60 transition-colors">
-                Blog
-              </Link>
+              <Link href="/blog" className="hover:text-[#FAF7F2]/60 transition-colors">Blog</Link>
               <ChevronRight className="w-3 h-3" />
               <span className="text-[#FAF7F2]/50 truncate max-w-[200px]">{post.title}</span>
             </nav>
-
-            {/* Category badge */}
             <div className="mb-5">
               <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-[#C49A3C] bg-[#C49A3C]/10 border border-[#C49A3C]/20 px-3 py-1.5 rounded-full">
                 {post.category}
               </span>
             </div>
-
-            {/* Title */}
             <h1
               className="text-3xl md:text-4xl lg:text-5xl font-light text-[#FAF7F2] leading-tight mb-6"
               style={{ fontFamily: "var(--font-cormorant)" }}
             >
               {post.title}
             </h1>
-
-            {/* Meta */}
             <div className="flex items-center gap-6 text-sm text-[#FAF7F2]/45">
               <span className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                {post.readingTime} minutos de lectura
+                {post.reading_time} minutos de lectura
               </span>
               <span className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                {formatDate(post.publishedAt)}
+                {formatDate(post.published_at)}
               </span>
               <span className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
@@ -206,17 +183,13 @@ export default async function BlogArticlePage({ params }: Props) {
           </div>
         </header>
 
-        {/* Main content area */}
+        {/* Main content */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
           <div className="flex gap-10 lg:gap-14">
-            {/* Article body */}
             <article className="flex-1 min-w-0">
-              {/* Excerpt lead */}
               <p className="text-lg text-slate-600 leading-relaxed border-l-4 border-[#C49A3C] pl-5 mb-10 italic">
                 {post.excerpt}
               </p>
-
-              {/* Full HTML content */}
               <div
                 className="prose prose-slate max-w-none
                   prose-h2:font-light prose-h2:text-[#0C0D10] prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl prose-h2:border-b prose-h2:border-[#EAE4D9] prose-h2:pb-2
@@ -247,26 +220,21 @@ export default async function BlogArticlePage({ params }: Props) {
                 </h2>
                 <p className="text-[#FAF7F2]/50 text-sm mb-7 max-w-md mx-auto">
                   Conecta directamente con un abogado especializado en{" "}
-                  {post.specialtyLabel} sin intermediarios ni comisiones.
+                  {post.specialty_label} sin intermediarios ni comisiones.
                 </p>
                 <Link
-                  href={`/abogados/chihuahua/${post.specialtySlug}`}
+                  href={`/abogados/chihuahua/${post.specialty_slug}`}
                   className="inline-flex items-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold px-8 py-3 rounded-lg transition-colors text-sm"
                 >
-                  Ver abogados de {post.specialtyLabel}
+                  Ver abogados de {post.specialty_label}
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
 
-              {/* Breadcrumb bottom */}
               <nav className="flex items-center gap-1.5 text-xs text-slate-400 mt-10 pt-6 border-t border-[#EAE4D9]">
-                <Link href="/" className="hover:text-slate-600 transition-colors">
-                  Inicio
-                </Link>
+                <Link href="/" className="hover:text-slate-600 transition-colors">Inicio</Link>
                 <ChevronRight className="w-3 h-3" />
-                <Link href="/blog" className="hover:text-slate-600 transition-colors">
-                  Blog
-                </Link>
+                <Link href="/blog" className="hover:text-slate-600 transition-colors">Blog</Link>
                 <ChevronRight className="w-3 h-3" />
                 <span className="text-slate-500 truncate max-w-[240px]">{post.title}</span>
               </nav>
@@ -274,22 +242,20 @@ export default async function BlogArticlePage({ params }: Props) {
 
             {/* Sidebar */}
             <aside className="hidden lg:block w-72 flex-none space-y-6">
-              {/* Sticky wrapper */}
               <div className="sticky top-24 space-y-6">
-                {/* CTA card */}
                 <div className="bg-white border border-[#EAE4D9] rounded-xl p-6">
                   <div className="h-1 w-8 bg-gradient-to-r from-[#C49A3C] to-[#E2B865] rounded mb-4" />
                   <h3
                     className="text-lg font-light text-[#0C0D10] mb-2 leading-snug"
                     style={{ fontFamily: "var(--font-cormorant)" }}
                   >
-                    ¿Necesitas un abogado de {post.specialtyLabel}?
+                    ¿Necesitas un abogado de {post.specialty_label}?
                   </h3>
                   <p className="text-xs text-slate-500 leading-relaxed mb-5">
                     Encuentra abogados verificados y especializados. Sin intermediarios, sin comisiones.
                   </p>
                   <Link
-                    href={`/abogados/chihuahua/${post.specialtySlug}`}
+                    href={`/abogados/chihuahua/${post.specialty_slug}`}
                     className="flex items-center justify-center gap-2 w-full bg-[#0C0D10] hover:bg-[#1A1C26] text-[#FAF7F2] font-semibold text-xs px-4 py-3 rounded-lg transition-colors"
                   >
                     Ver abogados
@@ -303,7 +269,6 @@ export default async function BlogArticlePage({ params }: Props) {
                   </Link>
                 </div>
 
-                {/* Related articles */}
                 {otherPosts.length > 0 && (
                   <div className="bg-white border border-[#EAE4D9] rounded-xl p-6">
                     <h3 className="text-xs font-bold tracking-widest uppercase text-slate-400 mb-4">
@@ -312,10 +277,7 @@ export default async function BlogArticlePage({ params }: Props) {
                     <ul className="space-y-4">
                       {otherPosts.map((related) => (
                         <li key={related.slug}>
-                          <Link
-                            href={`/blog/${related.slug}`}
-                            className="group block"
-                          >
+                          <Link href={`/blog/${related.slug}`} className="group block">
                             <span className="text-[10px] font-semibold uppercase tracking-widest text-[#C49A3C] block mb-1">
                               {related.category}
                             </span>
@@ -324,7 +286,7 @@ export default async function BlogArticlePage({ params }: Props) {
                             </span>
                             <span className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
                               <Clock className="w-3 h-3" />
-                              {related.readingTime} min
+                              {related.reading_time} min
                             </span>
                           </Link>
                         </li>
@@ -340,7 +302,6 @@ export default async function BlogArticlePage({ params }: Props) {
                   </div>
                 )}
 
-                {/* Trust signal */}
                 <div className="bg-[#FAF7F2] border border-[#EAE4D9] rounded-xl p-5 text-center">
                   <p className="text-xs text-slate-500 leading-relaxed">
                     La información en este artículo es de carácter general. Cada caso es único —

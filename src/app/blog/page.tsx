@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { POSTS } from "@/lib/blog-posts"
+import { getAllPosts } from "@/lib/blog"
 import { Clock, Calendar, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -30,7 +30,9 @@ function formatDate(dateStr: string): string {
   })
 }
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getAllPosts()
+
   return (
     <main className="min-h-screen bg-[#FAF7F2]">
       {/* Hero header */}
@@ -38,16 +40,13 @@ export default function BlogPage() {
         className="relative py-20 px-6 lg:px-8 overflow-hidden"
         style={{ background: "linear-gradient(160deg, #0C0D10 0%, #1A1C26 100%)" }}
       >
-        {/* Subtle texture overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
             backgroundImage:
               "repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,1) 40px, rgba(255,255,255,1) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,1) 40px, rgba(255,255,255,1) 41px)",
           }}
         />
-
         <div className="relative max-w-7xl mx-auto text-center">
-          {/* Eyebrow */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="h-px w-10 bg-[#C49A3C]/50" />
             <span className="text-[#C49A3C] text-xs font-semibold tracking-widest uppercase">
@@ -55,7 +54,6 @@ export default function BlogPage() {
             </span>
             <span className="h-px w-10 bg-[#C49A3C]/50" />
           </div>
-
           <h1
             className="text-5xl md:text-6xl font-light text-[#FAF7F2] mb-5 leading-none"
             style={{ fontFamily: "var(--font-cormorant)" }}
@@ -65,11 +63,9 @@ export default function BlogPage() {
           <p className="text-lg text-[#FAF7F2]/55 max-w-xl mx-auto leading-relaxed">
             Guías prácticas sobre tus derechos en México, escritas por abogados verificados.
           </p>
-
-          {/* Stats row */}
           <div className="flex items-center justify-center gap-8 mt-10 text-sm text-[#FAF7F2]/40">
             <span>
-              <strong className="text-[#C49A3C] text-lg font-semibold">{POSTS.length}</strong>{" "}
+              <strong className="text-[#C49A3C] text-lg font-semibold">{posts.length}</strong>{" "}
               artículos
             </span>
             <span className="h-4 w-px bg-white/10" />
@@ -105,49 +101,40 @@ export default function BlogPage() {
       {/* Article grid */}
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {POSTS.map((post) => (
+          {posts.map((post) => (
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
               className="group bg-white border border-[#EAE4D9] rounded-xl overflow-hidden hover:border-[#C49A3C]/40 hover:shadow-lg hover:shadow-black/5 transition-all duration-300 flex flex-col"
             >
-              {/* Card header band */}
               <div
                 className="h-1.5 w-full"
                 style={{ background: "linear-gradient(90deg, #C49A3C 0%, #E2B865 100%)" }}
               />
-
               <div className="p-6 flex flex-col flex-1">
-                {/* Category badge */}
                 <div className="mb-4">
                   <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-[#C49A3C] bg-[#C49A3C]/8 px-3 py-1 rounded-full">
                     {post.category}
                   </span>
                 </div>
-
-                {/* Title */}
                 <h2
                   className="text-xl font-light text-[#0C0D10] leading-snug mb-3 group-hover:text-[#1A1C26] transition-colors"
                   style={{ fontFamily: "var(--font-cormorant)" }}
                 >
                   {post.title}
                 </h2>
-
-                {/* Excerpt */}
                 <p className="text-sm text-slate-500 leading-relaxed flex-1 mb-5">
                   {post.excerpt}
                 </p>
-
-                {/* Meta row */}
                 <div className="flex items-center justify-between pt-4 border-t border-[#EAE4D9]">
                   <div className="flex items-center gap-4 text-xs text-slate-400">
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
-                      {post.readingTime} min
+                      {post.reading_time} min
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
-                      {formatDate(post.publishedAt)}
+                      {formatDate(post.published_at)}
                     </span>
                   </div>
                   <span className="text-xs font-semibold text-[#C49A3C] flex items-center gap-1 group-hover:gap-2 transition-all">
