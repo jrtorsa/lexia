@@ -8,6 +8,7 @@ import {
   ImageOff, FileText, Tag, Hash, Zap,
 } from "lucide-react"
 import { makeToken } from "@/lib/cedula-token"
+import { createClient } from "@supabase/supabase-js"
 import AdminSearch from "./components/AdminSearch"
 import { MarkPendingButton } from "./components/MarkPendingButton"
 import { RejectCedulaButton } from "./components/RejectCedulaButton"
@@ -26,6 +27,28 @@ function timeAgo(date: Date) {
   if (hrs < 24) return `hace ${hrs}h`
   const days = Math.floor(hrs / 24)
   return `hace ${days}d`
+}
+
+function estadoBadgeClass(estado: string): string {
+  const map: Record<string, string> = {
+    prospecto:           "bg-slate-100 text-slate-600",
+    contactado:          "bg-blue-50 text-blue-700",
+    contactado_whatsapp: "bg-emerald-50 text-emerald-700",
+    registrado:          "bg-[rgba(196,154,60,0.12)] text-[#C49A3C]",
+    bounce:              "bg-red-50 text-red-600",
+  }
+  return map[estado] ?? "bg-slate-100 text-slate-500"
+}
+
+function estadoLabel(estado: string): string {
+  const map: Record<string, string> = {
+    prospecto:           "Prospecto",
+    contactado:          "Email enviado",
+    contactado_whatsapp: "WhatsApp",
+    registrado:          "Registrado",
+    bounce:              "Bounce",
+  }
+  return map[estado] ?? estado
 }
 
 export default async function AdminPage() {
@@ -126,6 +149,40 @@ export default async function AdminPage() {
       orderBy: { createdAt: "desc" },
       select: { id: true, name: true, email: true, cedula: true, city: true, state: true, createdAt: true },
     }),
+  ])
+
+  // ── Supabase: prospectos + artículos ──────────────────────────────────────
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!
+  )
+
+  const [
+    { count: totalProspectos },
+    { count: totalContactadosEmail },
+    { count: totalContactadosWA },
+    { data: ultimosProspectos },
+    { count: totalArticulosPublicados },
+    { data: ultimosArticulos },
+    { data: prospectosWA },
+  ] = await Promise.all([
+    supabase.from("prospectos").select("*", { count: "exact", head: true }),
+    supabase.from("prospectos").select("*", { count: "exact", head: true }).eq("estado", "contactado"),
+    supabase.from("prospectos").select("*", { count: "exact", head: true }).eq("estado", "contactado_whatsapp"),
+    supabase.from("prospectos")
+      .select("id, nombre, especialidad, ciudad, email, telefono, estado, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase.from("articulos").select("*", { count: "exact", head: true }).eq("estado", "publicado"),
+    supabase.from("articulos")
+      .select("id, title, category, estado, published_at, reading_time")
+      .order("published_at", { ascending: false })
+      .limit(10),
+    supabase.from("prospectos")
+      .select("id, nombre, telefono, ciudad, especialidad, contactado_at")
+      .eq("estado", "contactado_whatsapp")
+      .order("contactado_at", { ascending: false })
+      .limit(20),
   ])
 
   const lawyersForSearch = todosAbogados.map(l => ({
@@ -409,6 +466,205 @@ export default async function AdminPage() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* ─── PROSPECTOS ─────────────────────────────────────────────────────── */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-[#0C0D10]/40 mb-3">
+            Prospectos captados
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+            <div className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+              <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center mb-3">
+                <Users className="w-4 h-4 text-slate-500" />
+              </div>
+              <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{fmt(totalProspectos ?? 0)}</p>
+              <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">Total prospectos</p>
+            </div>
+            <div className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
+                <Mail className="w-4 h-4 text-blue-500" />
+              </div>
+              <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{fmt(totalContactadosEmail ?? 0)}</p>
+              <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">Contactados por email</p>
+            </div>
+            <div className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center mb-3">
+                <MessageSquare className="w-4 h-4 text-emerald-500" />
+              </div>
+              <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{fmt(totalContactadosWA ?? 0)}</p>
+              <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">Contactados por WhatsApp</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#EAE4D9] flex items-center justify-between">
+              <h2 className="font-semibold text-[#0C0D10] text-sm">Últimos prospectos captados</h2>
+              <span className="text-[11px] text-[#0C0D10]/40">Últimos 20</span>
+            </div>
+            {(ultimosProspectos ?? []).length === 0 ? (
+              <p className="px-5 py-6 text-xs text-[#0C0D10]/40 text-center">Sin prospectos registrados</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-[#EAE4D9] bg-[#FAF7F2]">
+                      <th className="text-left px-5 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Nombre</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Especialidad</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Ciudad</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Email</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Teléfono</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Estado</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EAE4D9]">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {(ultimosProspectos as any[] ?? []).map((p) => (
+                      <tr key={p.id} className="hover:bg-[#FAF7F2] transition-colors">
+                        <td className="px-5 py-3 font-medium text-[#0C0D10] max-w-[160px] truncate">{p.nombre}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 max-w-[140px] truncate">{p.especialidad}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 whitespace-nowrap">{p.ciudad}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 max-w-[160px] truncate">{p.email}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 whitespace-nowrap">{p.telefono ?? "—"}</td>
+                        <td className="px-3 py-3 whitespace-nowrap">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${estadoBadgeClass(p.estado)}`}>
+                            {estadoLabel(p.estado)}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-[#0C0D10]/40 whitespace-nowrap">
+                          {p.created_at ? timeAgo(new Date(p.created_at)) : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ─── ARTÍCULOS DEL BLOG ──────────────────────────────────────────────── */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-[#0C0D10]/40 mb-3">
+            Artículos del blog
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+            <div className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center mb-3">
+                <FileText className="w-4 h-4 text-emerald-600" />
+              </div>
+              <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{fmt(totalArticulosPublicados ?? 0)}</p>
+              <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">Artículos publicados</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#EAE4D9] flex items-center justify-between">
+              <h2 className="font-semibold text-[#0C0D10] text-sm">Últimos artículos</h2>
+              <span className="text-[11px] text-[#0C0D10]/40">Últimos 10</span>
+            </div>
+            {(ultimosArticulos ?? []).length === 0 ? (
+              <p className="px-5 py-6 text-xs text-[#0C0D10]/40 text-center">Sin artículos</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-[#EAE4D9] bg-[#FAF7F2]">
+                      <th className="text-left px-5 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Título</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Categoría</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Estado</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Publicado</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Lectura</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EAE4D9]">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {(ultimosArticulos as any[] ?? []).map((a) => (
+                      <tr key={a.id} className="hover:bg-[#FAF7F2] transition-colors">
+                        <td className="px-5 py-3 font-medium text-[#0C0D10] max-w-[280px]">
+                          <span className="line-clamp-1">{a.title}</span>
+                        </td>
+                        <td className="px-3 py-3 whitespace-nowrap">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(196,154,60,0.1)] text-[#C49A3C]">
+                            {a.category}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 whitespace-nowrap">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${a.estado === "publicado" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                            {a.estado === "publicado" ? "Publicado" : "Borrador"}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-[#0C0D10]/40 whitespace-nowrap">
+                          {a.published_at ? timeAgo(new Date(a.published_at)) : "—"}
+                        </td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 whitespace-nowrap">{a.reading_time} min</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ─── MENSAJES WHATSAPP ───────────────────────────────────────────────── */}
+        <div>
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-[#0C0D10]/40 mb-3">
+            Contactos por WhatsApp
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+            <div className="bg-white rounded-xl border border-[#EAE4D9] p-4">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center mb-3">
+                <MessageSquare className="w-4 h-4 text-emerald-500" />
+              </div>
+              <p className="text-2xl font-semibold text-[#0C0D10]" style={displayFont}>{fmt(totalContactadosWA ?? 0)}</p>
+              <p className="text-[11px] text-[#0C0D10]/45 mt-0.5">Contactados por WhatsApp</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#EAE4D9] flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-emerald-500" />
+              <h2 className="font-semibold text-[#0C0D10] text-sm">Prospectos contactados por WhatsApp</h2>
+              <span className="ml-auto text-[11px] text-[#0C0D10]/40">Últimos 20</span>
+            </div>
+            {(prospectosWA ?? []).length === 0 ? (
+              <p className="px-5 py-6 text-xs text-[#0C0D10]/40 text-center">Sin contactos por WhatsApp aún</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-[#EAE4D9] bg-[#FAF7F2]">
+                      <th className="text-left px-5 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Nombre</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Teléfono</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Ciudad</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Especialidad</th>
+                      <th className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#0C0D10]/40 uppercase tracking-wider">Contactado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EAE4D9]">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {(prospectosWA as any[] ?? []).map((p) => (
+                      <tr key={p.id} className="hover:bg-[#FAF7F2] transition-colors">
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 whitespace-nowrap">
+                              <MessageSquare className="w-2.5 h-2.5" /> WA
+                            </span>
+                            <span className="font-medium text-[#0C0D10] truncate max-w-[140px]">{p.nombre}</span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 whitespace-nowrap">{p.telefono ?? "—"}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 whitespace-nowrap">{p.ciudad}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/60 max-w-[140px] truncate">{p.especialidad}</td>
+                        <td className="px-3 py-3 text-[#0C0D10]/40 whitespace-nowrap">
+                          {p.contactado_at ? timeAgo(new Date(p.contactado_at)) : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
 
       </div>
