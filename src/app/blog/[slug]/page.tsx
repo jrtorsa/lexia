@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: post.published_at,
       url: `https://lexiamx.com/blog/${post.slug}`,
       siteName: "Lexia",
+      images: [`https://lexiamx.com/api/og?title=${encodeURIComponent(post.meta_title)}`],
     },
     twitter: {
       card: "summary_large_image",
