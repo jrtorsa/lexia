@@ -3,6 +3,8 @@ import Link from "next/link"
 import { getAllPosts } from "@/lib/blog"
 import { Clock, Calendar, ArrowRight } from "lucide-react"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Blog Legal — Guías sobre tus derechos | Lexia",
   description:
@@ -31,12 +33,13 @@ function formatDate(dateStr: string): string {
 }
 
 interface Props {
-  searchParams: { categoria?: string }
+  searchParams: Promise<{ categoria?: string }>
 }
 
 export default async function BlogPage({ searchParams }: Props) {
+  const { categoria } = await searchParams
   const allPosts = await getAllPosts()
-  const categoriaActiva = searchParams.categoria ?? "Todos"
+  const categoriaActiva = categoria ?? "Todos"
 
   const posts = categoriaActiva === "Todos"
     ? allPosts
