@@ -3,6 +3,8 @@ import Link from "next/link"
 import { getAllPosts } from "@/lib/blog"
 import { Clock, Calendar, ArrowRight } from "lucide-react"
 
+export const revalidate = 3600
+
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {

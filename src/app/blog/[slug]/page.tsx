@@ -4,6 +4,8 @@ import Link from "next/link"
 import { getAllPosts, getPostBySlug, getAllSlugs } from "@/lib/blog"
 import { Clock, Calendar, ChevronRight, ArrowRight, BookOpen } from "lucide-react"
 
+export const revalidate = 3600
+
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateStaticParams() {
