@@ -402,7 +402,10 @@ function AbogadosDestacados({ lawyers }: { lawyers: FeaturedLawyer[] }) {
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box" }}
+        >
           {lawyers.map((l) => {
             const avgRating = l.reviews.length > 0
               ? l.reviews.reduce((s, r) => s + r.rating, 0) / l.reviews.length
@@ -415,7 +418,8 @@ function AbogadosDestacados({ lawyers }: { lawyers: FeaturedLawyer[] }) {
               <Link
                 key={l.id}
                 href={`/abogados/${l.slug}`}
-                className={`group bg-white rounded-xl border p-5 hover:shadow-md transition-all flex flex-col gap-3 relative ${isPremium ? "border-[#C49A3C]/40" : "border-[#EAE4D9]"}`}
+                className={`group bg-white rounded-xl border p-5 hover:shadow-md transition-all flex flex-col gap-3 relative overflow-hidden ${isPremium ? "border-[#C49A3C]/40" : "border-[#EAE4D9]"}`}
+                style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box" }}
               >
                 {isPremium && (
                   <span className="absolute top-3 right-3 text-[10px] font-bold tracking-widest uppercase text-[#C49A3C] bg-[rgba(196,154,60,0.1)] px-2 py-0.5 rounded-full">
@@ -431,7 +435,7 @@ function AbogadosDestacados({ lawyers }: { lawyers: FeaturedLawyer[] }) {
                     {l.name.replace(/^Lic\.\s*/i, "").charAt(0)}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[#0C0D10] truncate">{l.name}</p>
+                    <p className="text-sm font-semibold text-[#0C0D10] truncate max-w-full">{l.name}</p>
                     <p className="text-xs text-slate-400">{l.city}, {l.state}</p>
                   </div>
                 </div>
