@@ -266,7 +266,7 @@ export default function HerramientasPage() {
               <p className="text-[10px] text-[#0C0D10]/35 mt-1">Salario diario = mensual ÷ 30</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", width: "100%", overflow: "hidden" }}>
               <div>
                 <label className="text-xs font-semibold text-[#0C0D10]/60 uppercase tracking-widest block mb-1.5">
                   Fecha de ingreso
@@ -276,7 +276,17 @@ export default function HerramientasPage() {
                   required
                   value={fechaIngreso}
                   onChange={(e) => { setFechaIngreso(e.target.value); setCalculado(false) }}
-                  className="w-full px-3 py-2.5 border border-[#EAE4D9] rounded-lg text-sm text-[#0C0D10] focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                  className="w-full border border-[#EAE4D9] rounded-lg text-[#0C0D10] focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                  style={{
+                    maxWidth: "100%",
+                    minHeight: "44px",
+                    boxSizing: "border-box",
+                    WebkitAppearance: "none",
+                    appearance: "none",
+                    fontSize: "16px",
+                    padding: "12px 16px",
+                    color: "inherit",
+                  }}
                 />
               </div>
               <div>
@@ -288,7 +298,17 @@ export default function HerramientasPage() {
                   required
                   value={fechaBaja}
                   onChange={(e) => { setFechaBaja(e.target.value); setCalculado(false) }}
-                  className="w-full px-3 py-2.5 border border-[#EAE4D9] rounded-lg text-sm text-[#0C0D10] focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                  className="w-full border border-[#EAE4D9] rounded-lg text-[#0C0D10] focus:outline-none focus:border-[#C49A3C] focus:ring-1 focus:ring-[rgba(196,154,60,0.2)] transition-colors"
+                  style={{
+                    maxWidth: "100%",
+                    minHeight: "44px",
+                    boxSizing: "border-box",
+                    WebkitAppearance: "none",
+                    appearance: "none",
+                    fontSize: "16px",
+                    padding: "12px 16px",
+                    color: "inherit",
+                  }}
                 />
               </div>
             </div>
