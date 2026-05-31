@@ -21,6 +21,9 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   estado: string;
+  imagen_url: string | null;        
+  publicado_facebook: boolean;      
+  publicado_facebook_at: string | null; 
 }
 
 // Todos los artículos publicados
