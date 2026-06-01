@@ -1,7 +1,25 @@
 import type { MetadataRoute } from "next"
 import { ESPECIALIDADES, CITY_SLUGS } from "@/lib/seo-data"
+import { createClient } from "@supabase/supabase-js"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function getArticulosPublicados(): Promise<{ slug: string; published_at: string }[]> {
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+    )
+    const { data } = await supabase
+      .from("articulos")
+      .select("slug, published_at")
+      .eq("estado", "publicado")
+      .order("published_at", { ascending: false })
+    return (data ?? []) as { slug: string; published_at: string }[]
+  } catch {
+    return []
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://lexiamx.com"
   const now = new Date()
 
@@ -16,6 +34,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/privacidad",    priority: 0.3, freq: "yearly"  },
     { url: "/terminos",      priority: 0.3, freq: "yearly"  },
   ]
+
+  const articulos = await getArticulosPublicados()
 
   const cityPages = Array.from(CITY_SLUGS).map((c) => `/abogados/${c}`)
 
@@ -40,6 +60,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: base + url,
       lastModified: now,
       changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...articulos.map(({ slug, published_at }) => ({
+      url: `https://www.lexiamx.com/blog/${slug}`,
+      lastModified: new Date(published_at),
+      changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
   ]
