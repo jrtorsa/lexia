@@ -75,7 +75,8 @@ export const authOptions: NextAuthOptions = {
           googleId: account.providerAccountId,
           googleAccessToken: account.access_token,
           ...(account.refresh_token ? { googleRefreshToken: account.refresh_token } : {}),
-          ...(user.image ? { photoUrl: user.image } : {}),
+          // Only set photoUrl from Google if the lawyer hasn't uploaded a custom photo
+          ...(user.image && !lawyer.photoUrl ? { photoUrl: user.image } : {}),
         },
       })
 
