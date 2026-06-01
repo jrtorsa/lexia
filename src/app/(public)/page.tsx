@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import {
   Search, Users, ShieldCheck, Star, ArrowRight,
   Home, Briefcase, Scale, FileText, Heart,
@@ -428,11 +429,23 @@ function AbogadosDestacados({ lawyers }: { lawyers: FeaturedLawyer[] }) {
                 )}
                 {/* Top */}
                 <div className="flex items-center gap-3 pr-16">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold text-[#C49A3C] flex-shrink-0"
-                    style={{ background: "rgba(196,154,60,0.10)", fontFamily: "var(--font-cormorant)" }}
-                  >
-                    {l.name.replace(/^Lic\.\s*/i, "").charAt(0)}
+                  <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-[#EAE4D9]">
+                    {l.photoUrl ? (
+                      <Image
+                        src={l.photoUrl}
+                        alt={l.name}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center text-lg font-semibold text-[#C49A3C]"
+                        style={{ background: "rgba(196,154,60,0.10)", fontFamily: "var(--font-cormorant)" }}
+                      >
+                        {l.name.replace(/^Lic\.\s*/i, "").charAt(0)}
+                      </div>
+                    )}
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-[#0C0D10] truncate max-w-full">{l.name}</p>
