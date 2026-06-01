@@ -46,10 +46,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `https://lexiamx.com/abogados/${ciudad}/${especialidad}`,
+      url: `https://www.lexiamx.com/abogados/${ciudad}/${especialidad}`,
       type: "website",
     },
-    alternates: { canonical: `https://lexiamx.com/abogados/${ciudad}/${especialidad}` },
+    alternates: { canonical: `https://www.lexiamx.com/abogados/${ciudad}/${especialidad}` },
   }
 }
 
