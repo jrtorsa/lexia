@@ -1,12 +1,14 @@
 // whatsapp.mjs
-// Envía mensajes de WhatsApp a prospectos vía Twilio
+// Envía mensajes de WhatsApp a prospectos vía Twilio Content Templates
 // Uso: node whatsapp.mjs
-// Requiere: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_NUMBER en .env.local
+// Requiere: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_NUMBER,
+//           TWILIO_CONTENT_SID, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
+
 const envFile = readFileSync(".env.local", "utf-8");
 const env = Object.fromEntries(
   envFile.split("\n")
@@ -17,42 +19,44 @@ const env = Object.fromEntries(
     })
 );
 
+const required = [
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_WHATSAPP_NUMBER",
+  "TWILIO_CONTENT_SID",
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
+];
+
+for (const key of required) {
+  if (!env[key]) throw new Error(`Falta variable: ${key}`);
+}
+
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
 const TWILIO_URL = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`;
 const TWILIO_AUTH = Buffer.from(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`).toString("base64");
-const FROM = env.TWILIO_WHATSAPP_NUMBER; // whatsapp:+14155238886
+const FROM = env.TWILIO_WHATSAPP_NUMBER;
 
-const LIMITE = 20; // Mensajes por corrida (sandbox permite pocos)
-
-// ─── Construir mensaje personalizado ─────────────────────────────────────────
-function buildmensaje(prospecto) {
-  return `Hola ${prospecto.nombre} 👋
-
-Somos *Lexia*, el directorio legal de México. Encontramos tu despacho en ${prospecto.ciudad} y queremos invitarte a crear tu perfil gratis.
-
-✅ Perfil profesional visible para clientes
-⚖️ Buscador de jurisprudencias
-🧮 Calculadora laboral
-
-Regístrate gratis en: https://lexiamx.com/registro
-
-¿Te interesa? Responde este mensaje y con gusto te ayudamos. 🙌`;
-}
+const LIMITE = 20;
 
 // ─── Enviar mensaje por Twilio ────────────────────────────────────────────────
-async function enviarWhatsApp(telefono, mensaje) {
-  // Limpiar y formatear el teléfono
-  const numeroLimpio = telefono.replace(/\s|-|\(|\)/g, "");
-  const numeroConCodigo = numeroLimpio.startsWith("+") 
-    ? numeroLimpio 
+
+async function enviarWhatsApp(prospecto) {
+  const numeroLimpio = prospecto.telefono.replace(/\s|-|\(|\)/g, "");
+  const numeroConCodigo = numeroLimpio.startsWith("+")
+    ? numeroLimpio
     : `+521${numeroLimpio}`;
   const to = `whatsapp:${numeroConCodigo}`;
 
   const body = new URLSearchParams({
     From: FROM,
     To: to,
-    Body: mensaje,
+    ContentSid: env.TWILIO_CONTENT_SID,
+    ContentVariables: JSON.stringify({
+      "1": prospecto.nombre,
+      "2": prospecto.ciudad,
+    }),
   });
 
   const res = await fetch(TWILIO_URL, {
@@ -70,17 +74,24 @@ async function enviarWhatsApp(telefono, mensaje) {
 }
 
 // ─── Runner ───────────────────────────────────────────────────────────────────
+
 async function main() {
   console.log("\n💬 LEXIA — Agente de WhatsApp");
   console.log("═".repeat(40));
 
-  // Obtener prospectos con teléfono que no han sido contactados por WhatsApp
-  const prospectos = [{
-  nombre: "Raul",
-  ciudad: "Chihuahua",
-  telefono: "6392649868",
-  id: "test"
-}];
+  const { data: prospectos, error } = await supabase
+    .from("prospectos")
+    .select("id, nombre, ciudad, telefono, estado")
+    .not("telefono", "is", null)
+    .not("telefono", "eq", "")
+    .not("estado", "eq", "contactado_whatsapp")
+    .limit(LIMITE);
+
+  if (error) throw new Error(error.message);
+  if (!prospectos?.length) {
+    console.log("✅ Sin prospectos pendientes");
+    return;
+  }
 
   console.log(`📋 ${prospectos.length} prospectos con teléfono\n`);
 
@@ -88,22 +99,19 @@ async function main() {
 
   for (const prospecto of prospectos) {
     try {
-      const mensaje = buildmensaje(prospecto);
-      const sid = await enviarWhatsApp(prospecto.telefono, mensaje);
+      const sid = await enviarWhatsApp(prospecto);
 
-      // Actualizar estado en Supabase
       await supabase
         .from("prospectos")
-        .update({ 
+        .update({
           estado: "contactado_whatsapp",
-          contactado_at: new Date().toISOString()
+          contactado_at: new Date().toISOString(),
         })
         .eq("id", prospecto.id);
 
       console.log(`  ✅ ${prospecto.nombre} (${prospecto.telefono}) → ${sid}`);
       resumen.enviados++;
 
-      // Pausa entre mensajes para evitar rate limiting
       await new Promise(r => setTimeout(r, 1000));
     } catch (e) {
       console.error(`  ❌ ${prospecto.nombre} (${prospecto.telefono}): ${e.message}`);
