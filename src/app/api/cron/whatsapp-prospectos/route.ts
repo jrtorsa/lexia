@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = "force-dynamic"
 
-const TWILIO_URL = `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`
-const TWILIO_AUTH = Buffer.from(
-  `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
-).toString("base64")
 const LIMITE = 20
 
-async function enviarWhatsApp(telefono: string, nombre: string, ciudad: string) {
+async function enviarWhatsApp(
+  telefono: string,
+  nombre: string,
+  ciudad: string,
+  twilioUrl: string,
+  twilioAuth: string
+) {
   const numeroLimpio = telefono.replace(/\s|-|\(|\)/g, "")
   const numeroConCodigo = numeroLimpio.startsWith("+")
     ? numeroLimpio
@@ -26,10 +25,10 @@ async function enviarWhatsApp(telefono: string, nombre: string, ciudad: string) 
     ContentVariables: JSON.stringify({ "1": nombre, "2": ciudad }),
   })
 
-  const res = await fetch(TWILIO_URL, {
+  const res = await fetch(twilioUrl, {
     method: "POST",
     headers: {
-      Authorization: `Basic ${TWILIO_AUTH}`,
+      Authorization: `Basic ${twilioAuth}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: body.toString(),
@@ -45,6 +44,15 @@ export async function GET(request: Request) {
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`
+  const twilioAuth = Buffer.from(
+    `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
+  ).toString("base64")
 
   const { data: prospectos, error } = await supabase
     .from("prospectos")
@@ -69,7 +77,9 @@ export async function GET(request: Request) {
       const sid = await enviarWhatsApp(
         prospecto.telefono,
         prospecto.nombre,
-        prospecto.ciudad
+        prospecto.ciudad,
+        twilioUrl,
+        twilioAuth
       )
 
       await supabase
