@@ -14,7 +14,7 @@
     },
     {
       "path": "/api/cron/email",
-      "schedule": "0 9 * * 0"
+      "schedule": "0 14 * * *"
     },
     {
       "path": "/api/cron/whatsapp-prospectos",
