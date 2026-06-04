@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 
 export const dynamic = "force-dynamic"
-export const maxDuration = 300 // Vercel Pro required
+export const maxDuration = 60 // Vercel Pro required
 
 // ─── Clientes ─────────────────────────────────────────────────────────────────
 
@@ -194,7 +194,7 @@ export async function GET(request: Request) {
 
       resumen.enviados++
 
-      await new Promise(r => setTimeout(r, 500))
+      await new Promise(r => setTimeout(r, 200))
     } catch (e) {
       console.error(`email error [${prospecto.email}]:`, e)
       resumen.errores++
