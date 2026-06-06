@@ -25,6 +25,8 @@ export default function ContactButton({
 }: Props) {
   async function handleClick() {
     await registrarContacto(lawyerId, type)
+    if (type === "WHATSAPP" && (window as any).fbq) (window as any).fbq("track", "Contact")
+    if ((window as any).fbq) (window as any).fbq("track", "Lead")
     const messages: Record<ContactType, string> = {
       WHATSAPP: `Conectando con ${lawyerName} por WhatsApp…`,
       CALL:     `Llamando a ${lawyerName}…`,

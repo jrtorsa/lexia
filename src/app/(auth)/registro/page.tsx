@@ -124,6 +124,7 @@ export default function RegistroPage() {
       setServerError(result.error)
     } else {
       setSubmitted(true)
+      if ((window as any).fbq) (window as any).fbq("track", "CompleteRegistration")
     }
   }
 
