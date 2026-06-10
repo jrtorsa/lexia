@@ -99,6 +99,25 @@ export default async function Page({ params }: Props) {
   const lawyer = await getLawyer(ciudad)
   if (!lawyer) notFound()
 
+  const reviews = await prisma.review.findMany({
+    where: {
+      lawyerId: lawyer.id,
+      isVisible: true,
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      userId: true,
+      reviewerName: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+    }
+  })
+
+  console.log('Reviews encontradas:', reviews.length, 'para lawyerId:', lawyer.id)
+  console.log('Reviews data:', JSON.stringify(reviews.slice(0, 2)))
+
   const avg = avgRating(lawyer.reviews)
   const primarySpecialty =
     lawyer.specialties.find((s) => s.isPrimary)?.specialty.name ??
@@ -418,7 +437,7 @@ export default async function Page({ params }: Props) {
         </div>
 
         <div className="mt-6">
-          <ReviewSection lawyerId={lawyer.id} reviews={lawyer.reviews} />
+          <ReviewSection lawyerId={lawyer.id} reviews={reviews} />
         </div>
       </div>
     </main>
