@@ -111,5 +111,38 @@ export async function registrarAbogado(input: RegistroInput) {
     console.error("[email] welcome failed:", e?.message)
   )
 
+  // Si el abogado registró cédula, notificar al admin para verificación
+  if (input.cedula) {
+    const lawyer = await prisma.lawyer.findUnique({
+      where: { email: input.email },
+      select: { id: true }
+    })
+
+    if (lawyer) {
+      // Marcar como pending
+      await prisma.lawyer.update({
+        where: { id: lawyer.id },
+        data: { cedulaStatus: "pending" }
+      })
+
+      // Construir URLs de aprobación
+      const base = process.env.NEXTAUTH_URL ?? "https://lexiamx.com"
+      const { makeToken } = await import("@/lib/cedula-token")
+      const aprobarUrl = `${base}/api/admin/cedula?id=${lawyer.id}&action=aprobar&token=${makeToken(lawyer.id, "aprobar")}`
+      const rechazarUrl = `${base}/api/admin/cedula?id=${lawyer.id}&action=rechazar&token=${makeToken(lawyer.id, "rechazar")}`
+
+      // Email al admin (non-blocking)
+      const { sendCedulaAdminRequest } = await import("@/lib/email")
+      sendCedulaAdminRequest({
+        lawyerId: lawyer.id,
+        lawyerName: input.name,
+        lawyerEmail: input.email,
+        cedula: input.cedula,
+        aprobarUrl,
+        rechazarUrl,
+      }).catch(console.error)
+    }
+  }
+
   return { success: true }
 }
