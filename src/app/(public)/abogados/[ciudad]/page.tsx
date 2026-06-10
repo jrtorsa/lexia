@@ -7,6 +7,7 @@ import {
   Globe, GraduationCap, Briefcase, ArrowLeft, Mail, ChevronRight,
 } from "lucide-react"
 import ContactButton from "@/components/ContactButton"
+import ReviewSection from "./ReviewSection"
 import { prisma } from "@/lib/prisma"
 import {
   CIUDADES,
@@ -455,6 +456,10 @@ export default async function Page({ params }: Props) {
               </Link>
             </div>
           </aside>
+        </div>
+
+        <div className="mt-6">
+          <ReviewSection lawyerId={lawyer.id} reviews={lawyer.reviews} />
         </div>
       </div>
     </main>
