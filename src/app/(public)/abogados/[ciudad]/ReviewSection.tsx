@@ -39,7 +39,7 @@ export default function ReviewSection({ lawyerId, reviews: initialReviews }: Rev
       setError(result.error)
     } else {
       setReviews((prev) => [
-        { id: crypto.randomUUID(), userId: nombre, rating, comment, createdAt: new Date() },
+        { id: crypto.randomUUID(), reviewerName: nombre, userId: null, rating, comment, createdAt: new Date() },
         ...prev,
       ])
       setNombre("")
