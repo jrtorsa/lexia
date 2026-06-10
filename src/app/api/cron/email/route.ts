@@ -200,7 +200,7 @@ export async function GET(request: Request) {
 
       resumen.enviados++
 
-      await new Promise(r => setTimeout(r, 200))
+      await new Promise(r => setTimeout(r, 400))
     } catch (e) {
       console.error(`email error [${prospecto.email}]:`, e)
       resumen.errores++
