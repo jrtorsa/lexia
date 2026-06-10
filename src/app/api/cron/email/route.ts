@@ -158,7 +158,7 @@ export async function GET(request: Request) {
     .from("prospectos")
     .select("id, nombre, email, especialidad, ciudad")
     .eq("estado", "prospecto")
-    .limit(20)
+    .limit(5)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
