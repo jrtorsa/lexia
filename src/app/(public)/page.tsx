@@ -96,12 +96,28 @@ async function getFeaturedLawyers() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function HomePage() {
-  const lawyers = await getFeaturedLawyers()
+  const [lawyers, totalAbogados, totalCiudades, totalContactos, totalVerificados] =
+    await Promise.all([
+      getFeaturedLawyers(),
+      prisma.lawyer.count({ where: { isActive: true } }),
+      prisma.lawyer.findMany({
+        where: { isActive: true },
+        select: { city: true },
+        distinct: ["city"],
+      }).then((r) => r.length),
+      prisma.contact.count(),
+      prisma.lawyer.count({ where: { isActive: true, isVerified: true } }),
+    ])
 
   return (
     <div className="bg-[#FAF7F2]">
       <Hero />
-      <StatsBar />
+      <StatsBar
+        totalAbogados={totalAbogados}
+        totalCiudades={totalCiudades}
+        totalContactos={totalContactos}
+        totalVerificados={totalVerificados}
+      />
       <EspecialidadesSection />
       <ComoFunciona />
       <CiudadesSection />
@@ -212,12 +228,20 @@ function Hero() {
 }
 
 // ─── Stats bar ────────────────────────────────────────────────────────────────
-function StatsBar() {
+function StatsBar({ totalAbogados, totalCiudades, totalContactos, totalVerificados }: {
+  totalAbogados: number
+  totalCiudades: number
+  totalContactos: number
+  totalVerificados: number
+}) {
+  const pctVerificados = totalAbogados > 0
+    ? Math.round((totalVerificados / totalAbogados) * 100)
+    : 0
   const STATS = [
-    { valor: "4,800+", etiqueta: "Abogados registrados", icon: Users },
-    { valor: "32",     etiqueta: "Estados cubiertos",    icon: MapPin },
-    { valor: "28k+",   etiqueta: "Clientes atendidos",   icon: Star },
-    { valor: "100%",   etiqueta: "Perfiles verificados", icon: ShieldCheck },
+    { valor: `${totalAbogados}+`,    etiqueta: "Abogados registrados", icon: Users },
+    { valor: `${totalCiudades}+`,    etiqueta: "Ciudades cubiertas",   icon: MapPin },
+    { valor: `${totalContactos}+`,   etiqueta: "Consultas atendidas",  icon: Star },
+    { valor: `${pctVerificados}%`,   etiqueta: "Perfiles verificados", icon: ShieldCheck },
   ]
   return (
     <div className="bg-[#1A1C26] border-b border-white/8">
