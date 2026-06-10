@@ -171,7 +171,7 @@ export async function GET(request: Request) {
     try {
       const { subject, html } = buildEmail(prospecto)
 
-      const { data: emailData } = await resend.emails.send({
+      const { data: emailData, error: emailError } = await resend.emails.send({
         from: FROM,
         replyTo: REPLY_TO,
         to: prospecto.email,
@@ -183,11 +183,17 @@ export async function GET(request: Request) {
         ],
       })
 
+      if (emailError || !emailData?.id) {
+        console.error(`Resend error [${prospecto.email}]:`, emailError)
+        resumen.errores++
+        continue
+      }
+
       await supabase
         .from("prospectos")
         .update({
           estado: "contactado",
-          resend_id: emailData?.id ?? null,
+          resend_id: emailData.id,
           contactado_at: new Date().toISOString(),
         })
         .eq("id", prospecto.id)
