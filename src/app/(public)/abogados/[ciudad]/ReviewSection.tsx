@@ -5,7 +5,7 @@ import { Star } from "lucide-react"
 
 interface Review {
   id: string
-  userId: string
+  userId: string | null
   rating: number
   comment: string
   createdAt: Date
@@ -62,7 +62,7 @@ export default function ReviewSection({ lawyerId, reviews: initialReviews }: Rev
               <div key={r.id}>
                 {i > 0 && <div className="h-px bg-[#EAE4D9] mb-5" />}
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="font-medium text-[#0C0D10] text-sm">{r.userId}</span>
+                  <span className="font-medium text-[#0C0D10] text-sm">{r.userId ?? "Anónimo"}</span>
                   <div className="flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <Star
