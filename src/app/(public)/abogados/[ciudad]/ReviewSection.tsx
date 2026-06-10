@@ -7,7 +7,7 @@ interface Review {
   id: string
   userId: string | null
   rating: number
-  comment: string
+  comment: string | null
   createdAt: Date
 }
 
@@ -74,7 +74,7 @@ export default function ReviewSection({ lawyerId, reviews: initialReviews }: Rev
                     ))}
                   </div>
                 </div>
-                <p className="text-[#0C0D10]/55 text-sm leading-relaxed">{r.comment}</p>
+                {r.comment && <p className="text-[#0C0D10]/55 text-sm leading-relaxed">{r.comment}</p>}
                 <p className="text-[#0C0D10]/30 text-xs mt-1.5">
                   {new Date(r.createdAt).toLocaleDateString("es-MX", {
                     year: "numeric",
