@@ -370,10 +370,7 @@ function CiudadesSection() {
               className="group bg-white hover:bg-[#FAF7F2] px-5 py-4 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-[#0C0D10] group-hover:text-[#C49A3C] transition-colors">{nombre}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{count} abogados</p>
-                </div>
+                <p className="text-sm font-medium text-[#0C0D10] group-hover:text-[#C49A3C] transition-colors">{nombre}</p>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#C49A3C] transition-colors" />
               </div>
             </Link>
