@@ -96,7 +96,7 @@ async function getFeaturedLawyers() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function HomePage() {
-  const [lawyers, totalAbogados, totalCiudades, totalContactos, totalVerificados] =
+  const [lawyers, totalAbogados, totalCiudades, totalContactos, totalVerificados, avgRatingResult] =
     await Promise.all([
       getFeaturedLawyers(),
       prisma.lawyer.count({ where: { isActive: true } }),
@@ -107,7 +107,10 @@ export default async function HomePage() {
       }).then((r) => r.length),
       prisma.contact.count(),
       prisma.lawyer.count({ where: { isActive: true, isVerified: true } }),
+      prisma.review.aggregate({ _avg: { rating: true }, where: { isVisible: true } }),
     ])
+
+  const avgReviewRating = `${avgRatingResult._avg.rating?.toFixed(1) ?? "5.0"}★`
 
   return (
     <div className="bg-[#FAF7F2]">
@@ -122,7 +125,7 @@ export default async function HomePage() {
       <ComoFunciona />
       <CiudadesSection />
       {lawyers.length > 0 && <AbogadosDestacados lawyers={lawyers} />}
-      <ParaAbogados />
+      <ParaAbogados avgReviewRating={avgReviewRating} />
       {/* <PlanesSection /> */}
       <CTAFinal />
     </div>
@@ -513,7 +516,7 @@ function AbogadosDestacados({ lawyers }: { lawyers: FeaturedLawyer[] }) {
 }
 
 // ─── Para abogados ────────────────────────────────────────────────────────────
-function ParaAbogados() {
+function ParaAbogados({ avgReviewRating }: { avgReviewRating: string }) {
   const BENEFICIOS = [
     "Perfil verificado con tu cédula profesional",
     "Recibe contactos directos de clientes",
@@ -565,10 +568,10 @@ function ParaAbogados() {
           {/* Right side: mini stat cards */}
           <div className="grid grid-cols-2 gap-4">
             {[
-              { valor: "4.8★",   etiqueta: "Calificación promedio",   sub: "de nuestros abogados" },
-              { valor: "23",     etiqueta: "Contactos promedio/mes",   sub: "en plan Premium" },
-              { valor: "72h",    etiqueta: "Tiempo de activación",     sub: "tras verificación" },
-              { valor: "0%",     etiqueta: "Comisión por cliente",     sub: "tú cobras directo" },
+              { valor: avgReviewRating, etiqueta: "Calificación promedio",              sub: "de nuestros abogados" },
+              { valor: "0%",          etiqueta: "Comisión por contacto",             sub: "tú cobras directo" },
+              { valor: "72h",         etiqueta: "Tiempo de activación",              sub: "tras verificación" },
+              { valor: "0%",          etiqueta: "Comisión por cliente",              sub: "tú cobras directo" },
             ].map(({ valor, etiqueta, sub }) => (
               <div
                 key={etiqueta}
