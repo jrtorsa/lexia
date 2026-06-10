@@ -21,7 +21,8 @@ export async function crearResena(input: {
   await prisma.review.create({
     data: {
       lawyerId: input.lawyerId,
-      userId: input.nombre, // guardamos el nombre como userId para anonimos
+      reviewerName: input.nombre,
+      userId: null,
       rating: input.rating,
       comment: input.comment,
       isVisible: true,

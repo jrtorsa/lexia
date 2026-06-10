@@ -134,13 +134,14 @@ enum MembershipStatus {
 // RESEÑAS
 // ─────────────────────────────────────────
 model Review {
-  id        String   @id @default(cuid())
-  lawyerId  String
-  userId    String?  // null si es anónimo
-  rating    Int      // 1-5
-  comment   String?  @db.Text
-  isVisible Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  lawyerId     String
+  userId       String?  // null si es anónimo
+  reviewerName String?
+  rating       Int      // 1-5
+  comment      String?  @db.Text
+  isVisible    Boolean  @default(true)
+  createdAt    DateTime @default(now())
 
   lawyer Lawyer @relation(fields: [lawyerId], references: [id])
   user   User?  @relation(fields: [userId], references: [id])
