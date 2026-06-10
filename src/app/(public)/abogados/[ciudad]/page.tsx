@@ -330,47 +330,6 @@ export default async function Page({ params }: Props) {
               </div>
             )}
 
-            <div className="bg-white border border-[#EAE4D9] rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-lg text-[#0C0D10]" style={displayFont}>
-                  Reseñas {lawyer.reviews.length > 0 && `(${lawyer.reviews.length})`}
-                </h2>
-                {lawyer.reviews.length > 0 && (
-                  <div className="flex items-center gap-1 text-amber-500">
-                    <Star className="w-4 h-4 fill-amber-400" />
-                    <span className="font-semibold text-[#0C0D10] text-sm">{avg.toFixed(1)}</span>
-                  </div>
-                )}
-              </div>
-
-              {lawyer.reviews.length === 0 ? (
-                <p className="text-[#0C0D10]/35 text-sm">Aún sin reseñas. ¡Sé el primero en opinar!</p>
-              ) : (
-                <div className="space-y-5">
-                  {lawyer.reviews.map((r, i) => (
-                    <div key={r.id}>
-                      {i > 0 && <div className="h-px bg-[#EAE4D9] mb-5" />}
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-medium text-[#0C0D10] text-sm">
-                          {r.user?.name ?? "Anónimo"}
-                        </span>
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((n) => (
-                            <Star
-                              key={n}
-                              className={`w-3.5 h-3.5 ${n <= r.rating ? "fill-amber-400 text-amber-400" : "text-[#EAE4D9] fill-[#EAE4D9]"}`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      {r.comment && (
-                        <p className="text-[#0C0D10]/55 text-sm leading-relaxed">{r.comment}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Sidebar */}
