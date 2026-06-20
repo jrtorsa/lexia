@@ -23,12 +23,14 @@ export default function AbogadosSearchForm({
   const formRef = useRef<HTMLFormElement>(null)
 
   function trackSearch() {
-    if (typeof window !== "undefined" && (window as { gtag?: Function }).gtag) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = typeof window !== "undefined" ? (window as any) : null
+    if (w?.gtag) {
       const form = formRef.current
       const query = (form?.querySelector('input[name="q"]') as HTMLInputElement)?.value ?? ""
       const esp = (form?.querySelector('input[name="especialidad"]:checked') as HTMLInputElement)?.value ?? ""
       const est = (form?.querySelector('input[name="estado"]:checked') as HTMLInputElement)?.value ?? ""
-      ;(window as { gtag: Function }).gtag("event", "search", {
+      w.gtag("event", "search", {
         search_term: query,
         especialidad: esp,
         ciudad: est,
