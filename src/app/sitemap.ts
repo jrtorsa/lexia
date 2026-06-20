@@ -1,19 +1,52 @@
 import type { MetadataRoute } from "next"
 import { ESPECIALIDADES, CITY_SLUGS } from "@/lib/seo-data"
 import { createClient } from "@supabase/supabase-js"
+import { prisma } from "@/lib/prisma"
 
-async function getArticulosPublicados(): Promise<{ slug: string; published_at: string }[]> {
+function toSlug(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+}
+
+async function getCiudadesActivas(): Promise<string[]> {
+  try {
+    const rows = await prisma.lawyer.groupBy({
+      by: ["city"],
+      where: { isActive: true },
+    })
+    return rows.map((r) => toSlug(r.city)).filter(Boolean)
+  } catch {
+    return []
+  }
+}
+
+async function getArticulosPublicados(): Promise<{ slug: string; created_at: string }[]> {
   try {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     )
     const { data } = await supabase
       .from("articulos")
-      .select("slug, published_at")
+      .select("slug, created_at")
       .eq("estado", "publicado")
-      .order("published_at", { ascending: false })
-    return (data ?? []) as { slug: string; published_at: string }[]
+      .order("created_at", { ascending: false })
+    return (data ?? []) as { slug: string; created_at: string }[]
+  } catch {
+    return []
+  }
+}
+
+async function getAbogadosActivos(): Promise<{ slug: string; updatedAt: Date }[]> {
+  try {
+    return prisma.lawyer.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true },
+    })
   } catch {
     return []
   }
@@ -35,9 +68,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "/terminos",      priority: 0.3, freq: "yearly"  },
   ]
 
-  const articulos = await getArticulosPublicados()
-
-  const cityPages = Array.from(CITY_SLUGS).map((c) => `/abogados/${c}`)
+  const [ciudades, articulos, abogados] = await Promise.all([
+    getCiudadesActivas(),
+    getArticulosPublicados(),
+    getAbogadosActivos(),
+  ])
 
   const comboPages = Array.from(CITY_SLUGS).flatMap((c) =>
     Object.keys(ESPECIALIDADES).map((e) => `/abogados/${c}/${e}`)
@@ -50,8 +85,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: freq as MetadataRoute.Sitemap[number]["changeFrequency"],
       priority,
     })),
-    ...cityPages.map((url) => ({
-      url: base + url,
+    ...ciudades.map((slug) => ({
+      url: `${base}/abogados/${slug}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.9,
@@ -62,9 +97,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...articulos.map(({ slug, published_at }) => ({
-      url: `https://www.lexiamx.com/blog/${slug}`,
-      lastModified: new Date(published_at),
+    ...articulos.map(({ slug, created_at }) => ({
+      url: `${base}/blog/${slug}`,
+      lastModified: new Date(created_at),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...abogados.map(({ slug, updatedAt }) => ({
+      url: `${base}/abogados/${slug}`,
+      lastModified: updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
