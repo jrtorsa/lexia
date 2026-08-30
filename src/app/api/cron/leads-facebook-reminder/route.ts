@@ -30,7 +30,7 @@ export async function GET(request: Request) {
             <code style="background:#EAE4D9;padding:2px 6px;border-radius:4px;">importar-leads-facebook-csv.mjs</code>.
           </p>
           <p style="color: #555; font-size: 14px; line-height: 1.7;">
-            Pasos: exporta el CSV desde Meta Business Suite → revisa con <code style="background:#EAE4D9;padding:2px 6px;border-radius:4px;">--dry-run</code> → corre el import real. Ver <code style="background:#EAE4D9;padding:2px 6px;border-radius:4px;">README-leads-facebook.md</code> en el repo para el detalle.
+            Pasos: exporta el CSV desde Meta Business Suite → revisa con <code style="background:#EAE4D9;padding:2px 6px;border-radius:4px;">--dry-run</code> → corre el import real. Ver <code style="background:#EAE4D9;padding:2px 6px;border-radius:4px;">scripts/leads-facebook/README.md</code> en el repo para el detalle.
           </p>
           <p style="color: #999; font-size: 12px; margin: 24px 0 0; border-top: 1px solid #EAE4D9; padding-top: 16px;">
             Este recordatorio se envía automáticamente cada lunes a las 9:00 AM UTC.

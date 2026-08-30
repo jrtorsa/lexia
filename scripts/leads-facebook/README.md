@@ -11,30 +11,59 @@ Antes de este script existían `importar-leads-facebook.mjs`, `-2.mjs` y
 dejaron de correr y ~750 leads se quedaron sin importar. Este script los
 reemplaza: lee un CSV real en vez de requerir transcripción manual.
 
-## Uso
+## Cómo bajar el CSV de Meta Business Suite
 
-1. En Meta Business Suite → Leads, exporta el CSV (headers en español:
-   `Correo electrónico`, `Nombre`, `Teléfono`, `Fecha de creación`).
-2. Revisa primero en modo simulación, sin tocar la base de datos:
+1. Entra a [Meta Business Suite](https://business.facebook.com/) → **Todas
+   las herramientas → Leads** (o directo desde el formulario del anuncio en
+   Ads Manager → Publishing Tools → Instant Forms → Download).
+2. Exporta el CSV del rango de fechas que necesites. El export viene con
+   headers en español: `Correo electrónico`, `Nombre`, `Teléfono`,
+   `Fecha de creación` (además de otras columnas que el script ignora).
+3. Guárdalo donde sea de tu máquina (ej. `~/Downloads/`) — **no lo pongas
+   dentro del repo**, tiene datos personales reales y `*.csv` está en
+   `.gitignore` como red de seguridad, pero evita depender de eso.
+
+## Cómo correrlo
+
+Corre los comandos **desde la raíz del repo** (el script lee `.env.local`
+de forma relativa al directorio desde donde se invoca `node`, no de su
+propia carpeta):
+
+1. Simulación, sin tocar la base de datos:
 
    ```
-   node importar-leads-facebook-csv.mjs "ruta/al/export.csv" --dry-run
+   node scripts/leads-facebook/importar-leads-facebook-csv.mjs "ruta/al/export.csv" --dry-run
    ```
 
    Lee el resumen: cuántos se leyeron, cuántos ya existen (por email),
    cuántos chocan por teléfono contra la BD (requieren revisión manual) y
    cuántos se insertarían limpios.
-3. Si el resumen se ve bien, corre el import real:
+2. Si el resumen se ve bien, corre el import real (mismo comando sin `--dry-run`):
 
    ```
-   node importar-leads-facebook-csv.mjs "ruta/al/export.csv"
+   node scripts/leads-facebook/importar-leads-facebook-csv.mjs "ruta/al/export.csv"
    ```
 
-4. Verifica en Supabase:
+3. Verifica en Supabase:
 
    ```sql
    SELECT COUNT(*) FROM prospectos WHERE fuente = 'facebook_lead_ad';
    ```
+
+## Columnas que espera el CSV
+
+El script detecta columnas por **nombre de header**, no por posición, así
+que tolera variantes en español/inglés. Necesita poder identificar:
+
+| Campo | Headers reconocidos (normalizados: minúsculas, sin acentos/espacios) |
+|---|---|
+| Email (obligatorio) | `email`, `correo`, `correo electrónico` |
+| Nombre | `nombre`, `name`, `full_name` |
+| Teléfono | `telefono`, `teléfono`, `phone`, `phone_number`, `celular`, `whatsapp` |
+| Fecha de creación | `fecha de creación`, `fecha`, `created_time` |
+
+Si no encuentra columna de email, el script se detiene con error — sin
+email no hay forma de deduplicar de forma confiable.
 
 ## Qué hace el script
 
