@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { sanitizeTag } from "@/lib/email"
 
 export const dynamic = "force-dynamic"
 export const maxDuration = 60 // Vercel Pro required
@@ -178,13 +179,19 @@ export async function GET(request: Request) {
         subject,
         html,
         tags: [
-          { name: "campaign", value: "captacion-chihuahua" },
-          { name: "especialidad", value: prospecto.especialidad.replace(/\s/g, "-").toLowerCase() },
+          { name: "campaign", value: sanitizeTag("captacion-chihuahua") },
+          { name: "especialidad", value: sanitizeTag(prospecto.especialidad) },
         ],
       })
 
       if (emailError || !emailData?.id) {
-        console.error(`Resend error [${prospecto.email}]:`, emailError)
+        // TEMPORAL — diagnóstico del 422 masivo (quitar cuando se resuelva).
+        // JSON.stringify para ver todos los campos (name, message, statusCode)
+        // en vez de que Vercel trunque/colapse el objeto de error.
+        console.error(
+          `Resend error [${prospecto.email}] especialidad="${prospecto.especialidad}" tag-especialidad="${sanitizeTag(prospecto.especialidad)}":`,
+          JSON.stringify(emailError, null, 2),
+        )
         resumen.errores++
         continue
       }

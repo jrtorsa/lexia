@@ -5,6 +5,18 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export const FROM = "Lexia <hola@lexiamx.com>"
 export const REPLY_TO = "hola@lexiamx.com"
 
+// Resend exige que los valores de `tags` sean ASCII puro (letras, números,
+// guión bajo o guión). Solo para eso — nunca para subject/html/datos de BD,
+// que deben conservar acentos correctos en español.
+export function sanitizeTag(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // quita diacríticos (tildes, diéresis, etc.)
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_-]/g, "")
+}
+
 // ─── Welcome email to new lawyer ──────────────────────────────────────────────
 export async function sendWelcomeEmail({
   to,
