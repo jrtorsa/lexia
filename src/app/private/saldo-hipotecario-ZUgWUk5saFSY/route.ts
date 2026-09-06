@@ -80,7 +80,7 @@ const HTML = `<!DOCTYPE html>
   .device {
     width: 375px;
     max-width: 100%;
-    background: var(--bg-screen);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 28px;
     padding: 22px 16px 28px;
@@ -115,15 +115,14 @@ const HTML = `<!DOCTYPE html>
   }
 
   .balance-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #a9a9a9;
     border-radius: 4px;
     padding: 20px 18px;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 12px;
-    box-shadow: 0 1px 2px var(--shadow);
   }
 
   .balance-amount {
@@ -131,7 +130,7 @@ const HTML = `<!DOCTYPE html>
     font-weight: 700;
     font-size: 26px;
     font-variant-numeric: tabular-nums;
-    color: var(--ink);
+    color: #a9a9a9;
     letter-spacing: -0.01em;
     text-wrap: balance;
   }
@@ -178,11 +177,10 @@ const HTML = `<!DOCTYPE html>
   }
 
   .amort-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #a9a9a9;
     border-radius: 4px;
     padding: 4px 12px;
-    box-shadow: 0 1px 2px var(--shadow);
     overflow-x: auto;
   }
 
@@ -213,7 +211,7 @@ const HTML = `<!DOCTYPE html>
     padding: 9px 0;
     font-size: 12.5px;
     font-variant-numeric: tabular-nums;
-    color: var(--ink);
+    color: #a9a9a9;
     text-align: right;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
@@ -237,21 +235,14 @@ const HTML = `<!DOCTYPE html>
 </head>
 <body>
 
-<p class="rule">375px · vista móvil</p>
 <div class="stage">
   <div class="device">
-    <div class="statusbar">
-      <span>9:41</span>
-      <span>••• LTE 100%</span>
-    </div>
 
     <div class="field">
       <span class="field-label">Crédito Hipotecario</span>
       <div class="balance-card">
-        <span class="balance-amount"><span class="mark">*</span>$ 578,745.45</span>
-        <span class="currency-tag">MXN</span>
+        <span class="balance-amount">$ 328,745.45</span>
       </div>
-      <p class="footnote">* Saldo sujeto a variación por tasa de interés.</p>
     </div>
 
     <div class="amort-section">
@@ -262,28 +253,24 @@ const HTML = `<!DOCTYPE html>
             <tr><th>Fecha</th><th>Pago</th><th>Saldo</th></tr>
           </thead>
           <tbody>
-            <tr><td class="col-fecha">17 sep 2026</td><td>36,754.00</td><td>541,991.45</td></tr>
-            <tr><td class="col-fecha">17 oct 2026</td><td>36,754.00</td><td>505,237.45</td></tr>
-            <tr><td class="col-fecha">17 nov 2026</td><td>36,754.00</td><td>468,483.45</td></tr>
-            <tr><td class="col-fecha">17 dic 2026</td><td>36,754.00</td><td>431,729.45</td></tr>
-            <tr><td class="col-fecha">17 ene 2027</td><td>36,754.00</td><td>394,975.45</td></tr>
-            <tr><td class="col-fecha">17 feb 2027</td><td>36,754.00</td><td>358,221.45</td></tr>
-            <tr><td class="col-fecha">17 mar 2027</td><td>36,754.00</td><td>321,467.45</td></tr>
-            <tr><td class="col-fecha">17 abr 2027</td><td>36,754.00</td><td>284,713.45</td></tr>
-            <tr><td class="col-fecha">17 may 2027</td><td>36,754.00</td><td>247,959.45</td></tr>
-            <tr><td class="col-fecha">17 jun 2027</td><td>36,754.00</td><td>211,205.45</td></tr>
-            <tr><td class="col-fecha">17 jul 2027</td><td>36,754.00</td><td>174,451.45</td></tr>
-            <tr><td class="col-fecha">17 ago 2027</td><td>36,754.00</td><td>137,697.45</td></tr>
-            <tr><td class="col-fecha">17 sep 2027</td><td>36,754.00</td><td>100,943.45</td></tr>
-            <tr><td class="col-fecha">17 oct 2027</td><td>36,754.00</td><td>64,189.45</td></tr>
-            <tr><td class="col-fecha">17 nov 2027</td><td>36,754.00</td><td>27,435.45</td></tr>
-            <tr class="final"><td class="col-fecha">17 dic 2027</td><td>27,435.45</td><td>0.00</td></tr>
+            <tr><td class="col-fecha">17 sep 2026</td><td>26,578.45</td><td>302,167.00</td></tr>
+            <tr><td class="col-fecha">17 oct 2026</td><td>26,578.45</td><td>275,588.55</td></tr>
+            <tr><td class="col-fecha">17 nov 2026</td><td>26,578.45</td><td>249,010.10</td></tr>
+            <tr><td class="col-fecha">17 dic 2026</td><td>26,578.45</td><td>222,431.65</td></tr>
+            <tr><td class="col-fecha">17 ene 2027</td><td>26,578.45</td><td>195,853.20</td></tr>
+            <tr><td class="col-fecha">17 feb 2027</td><td>26,578.45</td><td>169,274.75</td></tr>
+            <tr><td class="col-fecha">17 mar 2027</td><td>26,578.45</td><td>142,696.30</td></tr>
+            <tr><td class="col-fecha">17 abr 2027</td><td>26,578.45</td><td>116,117.85</td></tr>
+            <tr><td class="col-fecha">17 may 2027</td><td>26,578.45</td><td>89,539.40</td></tr>
+            <tr><td class="col-fecha">17 jun 2027</td><td>26,578.45</td><td>62,960.95</td></tr>
+            <tr><td class="col-fecha">17 jul 2027</td><td>26,578.45</td><td>36,382.50</td></tr>
+            <tr><td class="col-fecha">17 ago 2027</td><td>26,578.45</td><td>9,804.05</td></tr>
+            <tr class="final"><td class="col-fecha">17 sep 2027</td><td>9,804.05</td><td>0.00</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
-  <span class="spec">border-radius: 4px</span>
 </div>
 
 </body>
