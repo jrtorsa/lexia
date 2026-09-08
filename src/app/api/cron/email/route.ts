@@ -20,6 +20,11 @@ function getSupabase() {
 const FROM     = "Lexia <hola@lexiamx.com>"
 const REPLY_TO = "hola@lexiamx.com"
 
+// Warmup gradual del dominio: 10 -> 25 -> 30 -> 40 (subir un escalón solo
+// después de confirmar tasa de error sana en los logs de cada corrida).
+// Límite propio, no de Resend (su tier gratis permite hasta 100/día).
+const LIMITE = 25
+
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 interface Prospecto {
@@ -159,7 +164,7 @@ export async function GET(request: Request) {
     .from("prospectos")
     .select("id, nombre, email, especialidad, ciudad")
     .eq("estado", "prospecto")
-    .limit(10)
+    .limit(LIMITE)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -214,5 +219,17 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, total: lista.length, resumen })
+  // Salud de la corrida, para decidir si se sube al siguiente escalón del
+  // warmup (25 -> 30 -> 40). OJO: esto mide errores SÍNCRONOS que Resend
+  // devuelve al momento del request (formato inválido, tag inválido, etc.),
+  // NO bounces reales — un bounce ocurre después de que Resend ya aceptó
+  // el mensaje, y hoy no hay webhook de Resend configurado para verlo (se
+  // confirmó `GET /webhooks` -> lista vacía). Si se necesita bounce rate
+  // real antes de subir de escalón, hay que dar de alta ese webhook aparte.
+  const tasaError = lista.length > 0 ? (resumen.errores / lista.length) * 100 : 0
+  console.log(
+    `[cron/email] corrida completa — limite=${LIMITE} total=${lista.length} enviados=${resumen.enviados} errores=${resumen.errores} tasa_error=${tasaError.toFixed(1)}%`
+  )
+
+  return NextResponse.json({ ok: true, total: lista.length, limite: LIMITE, resumen, tasaErrorPct: Number(tasaError.toFixed(1)) })
 }
