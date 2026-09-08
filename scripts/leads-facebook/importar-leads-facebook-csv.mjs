@@ -228,14 +228,28 @@ async function main() {
   }
 
   // ─── Traer estado actual de la tabla (dedup real, no contra scripts viejos) ──
+  // Paginado explícitamente: Supabase/PostgREST trunca a 1000 filas por
+  // default si no se pagina, y con la tabla creciendo cada semana un
+  // .select() sin límite deja de traer todo en silencio — pasó exactamente
+  // eso el 2026-09-08 (tabla en 1370 filas, fetch trajo solo 1000, 25 leads
+  // que ya existían se reportaron como "nuevos" en el dry-run y luego
+  // truenaron contra el UNIQUE de email al insertar de verdad).
 
-  const { data: existingRows, error: fetchError } = await supabase
-    .from("prospectos")
-    .select("email, nombre, telefono")
+  const PAGE_SIZE = 1000
+  const existingRows = []
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data: page, error: fetchError } = await supabase
+      .from("prospectos")
+      .select("email, nombre, telefono")
+      .range(from, from + PAGE_SIZE - 1)
 
-  if (fetchError) {
-    console.error("❌ Error consultando prospectos existentes:", fetchError.message)
-    process.exit(1)
+    if (fetchError) {
+      console.error("❌ Error consultando prospectos existentes:", fetchError.message)
+      process.exit(1)
+    }
+
+    existingRows.push(...page)
+    if (page.length < PAGE_SIZE) break
   }
 
   const existingEmails = new Set(existingRows.map((r) => normEmail(r.email)))
