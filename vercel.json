@@ -9,10 +9,6 @@
       "schedule": "0 6 * * 1"
     },
     {
-      "path": "/api/cron/captacion",
-      "schedule": "0 7 * * 0"
-    },
-    {
       "path": "/api/cron/email",
       "schedule": "0 14 * * *"
     },

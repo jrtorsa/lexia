@@ -13,8 +13,7 @@ desde el dashboard).
 |---|---|---|
 | `/api/cron/cedulas-pendientes` | `0 9 * * *` (diario) | Avisa al admin de cédulas de abogados pendientes >24h |
 | `/api/cron/generar-articulos` | `0 6 * * 1` (lunes) | Genera artículos de blog con Claude |
-| `/api/cron/captacion` | `0 7 * * 0` (domingo) | Scraping de Google Maps → prospectos |
-| `/api/cron/email` | `0 14 * * *` (diario) | Invitaciones por email a `estado='prospecto'` (Resend) |
+| `/api/cron/email` | `0 14 * * *` (diario) | Invitaciones por email a `estado='prospecto'` (Resend), warmup 10→25→30→40 |
 | `/api/cron/leads-facebook-reminder` | `0 9 * * 1` (lunes) | Recordatorio para bajar el CSV de Meta Business Suite |
 
 ## Removido — `/api/cron/whatsapp-prospectos`
@@ -56,6 +55,59 @@ desde el dashboard).
 4. Correrlo manualmente una vez (`vercel crons run` o vía curl con
    `CRON_SECRET`) contra un solo prospecto de prueba antes de dejarlo
    correr contra toda la cola.
+
+## Removido — `/api/cron/captacion`
+
+**Quitado de `vercel.json` el 2026-09-08. Apagado DEFINITIVO — no es un
+problema técnico transitorio como WhatsApp, es un problema de calidad de
+datos estructural del enfoque actual.**
+
+- Horario que tenía: `0 7 * * 0` (domingo).
+- **Causa — dos datos, ambos medidos directamente, no estimados:**
+  - **0% de conversión**: de 461 prospectos con `fuente='google-maps'`
+    insertados históricamente, **cero** llegaron a registrarse como
+    abogado (cruce `prospectos.email` contra `Lawyer.email`). `facebook_lead_ad`,
+    en comparación, convierte al 2.64% (24 de 909).
+  - **90.9% de bounce rate**: de una muestra de 11 emails enviados a esta
+    fuente (dentro de la ventana de retención de datos de Resend, ~pocos
+    días), 10 rebotaron. `facebook_lead_ad` en la misma ventana: 7.3% de
+    bounce sobre 55 envíos.
+  - Causa raíz de ambos números: el email de cada prospecto de
+    `google-maps` no lo escribe la persona — lo **infiere Claude Haiku**
+    a partir del nombre del despacho y su sitio web (`enriquecerConClaude()`
+    en `route.ts`). La mayoría de esas inferencias no son casillas reales.
+  - Riesgo adicional: bombardear ese % de bounce rate hacia arriba
+    justo después de estabilizar la reputación del dominio (fix de
+    `sanitizeTag`, warmup gradual del cron de email) sería contraproducente.
+  - (Aparte, ya independiente de esta decisión: el cron llevaba 12 semanas
+    sin producir NADA desde antes, por falta de `GOOGLE_API_KEY` en Vercel
+    Production — ver commit/conversación del 2026-09-08.)
+- **No se borró el código** (`src/app/api/cron/captacion/route.ts` sigue
+  en el repo completo) — por si algún día se rediseña el flujo para usar
+  emails reales (ej. capturados manualmente, o vía un formulario de
+  contacto del despacho) en vez de inferidos por IA.
+- **Kill switch explícito en código**, mismo patrón que WhatsApp: el
+  handler retorna temprano a menos que `process.env.CAPTACION_ENABLED === "true"`.
+  Esa env var no existe en Vercel, así que queda deshabilitado por
+  defecto aunque el toggle global de Hobby (ver nota abajo) lo reactive
+  de rebote en `vercel.json`.
+- **Cola limpia**: verificado que 0 prospectos de `google-maps` quedan en
+  `estado='prospecto'` al momento de apagar el cron (los 461 ya se
+  repartieron entre `contactado_whatsapp`, `contactado` e `invalido`) —
+  no hay leads muertos esperando a que el cron de email los alcance.
+
+### Para reconsiderarlo en el futuro
+
+Esto no se reactiva simplemente arreglando la API key. Hace falta:
+1. Rediseñar cómo se obtiene el email — no inferirlo con IA. Opciones:
+   scraping real del sitio del despacho buscando un email publicado,
+   o cambiar a un canal que no dependa de email (ej. solo WhatsApp/SMS
+   al teléfono real que sí da Google Places, sin inventar nada).
+2. Si se corrige el email, medir de nuevo con un lote chico antes de
+   soltarlo — no asumir que arreglar la fuente del dato arregla la
+   conversión.
+3. Recién entonces, agregar `CAPTACION_ENABLED=true` en Vercel y
+   regresar la entrada a `vercel.json`.
 
 ## Nota sobre el toggle global de Hobby
 

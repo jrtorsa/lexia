@@ -5,6 +5,21 @@ import { createClient } from "@supabase/supabase-js"
 export const dynamic = "force-dynamic"
 export const maxDuration = 300 // Vercel Pro required
 
+// ─── Kill switch explícito ──────────────────────────────────────────────────
+// Apagado definitivamente el 2026-09-08: 0% de conversión a abogado
+// registrado (0 de 461 prospectos) y 90.9% de bounce rate en los emails
+// enviados a esta fuente — los emails que Claude infiere a partir del
+// nombre/website del despacho casi nunca son reales. Reactivarlo dañaría
+// la reputación de dominio que se acaba de estabilizar (ver fix de
+// sanitizeTag y warmup gradual del cron de email). Ver CRONS.md para el
+// detalle completo y los números.
+// Mismo patrón que WhatsApp: no basta con quitarlo de vercel.json, porque
+// el toggle de pausado global de Vercel (plan Hobby) se ha reseteado solo
+// en el pasado tras un deploy no relacionado. Este flag es la fuente de
+// verdad real — no cambiar a "true" sin rediseñar el flujo para usar
+// emails reales en vez de inferidos.
+const CAPTACION_ENABLED = process.env.CAPTACION_ENABLED === "true"
+
 // ─── Clientes ─────────────────────────────────────────────────────────────────
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -220,6 +235,15 @@ export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization")
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  if (!CAPTACION_ENABLED) {
+    return NextResponse.json({
+      message:
+        "Captación de Google Maps deshabilitada explícitamente (CAPTACION_ENABLED != 'true'). " +
+        "0% conversión (0/461) y 90.9% bounce rate — ver CRONS.md antes de reactivar.",
+      resumen: { buscados: 0, nuevos: 0, duplicados: 0, errores: 0 },
+    })
   }
 
   const resumen = { buscados: 0, nuevos: 0, duplicados: 0, errores: 0 }
