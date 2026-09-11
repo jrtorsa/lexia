@@ -1,6 +1,6 @@
 # LEXIA — Documento de Contexto Vivo
 
-> **Última actualización:** 9 de septiembre de 2026
+> **Última actualización:** 11 de septiembre de 2026
 > **Propósito:** Estado actual del proyecto Lexia. Este archivo es la fuente de
 > verdad para retomar contexto en cualquier sesión.
 
@@ -72,7 +72,10 @@ kill switch por código. Ver CRONS.md para el detalle.
 - `google-maps`: 461 (fuente muerta, no reactivar sin rediseño)
 
 **Otros:**
-- Abogados: 71 activos / 74 registrados
+- Abogados: 80 activos / 83 registrados (confirmado 11 sep, antes 71/74). Viven
+  en la tabla `"Lawyer"` (`isActive=true`), **NO** en `prospectos`. Sus emails
+  son auto-registrados por el propio abogado (es su credencial de login, no
+  algo inferido) — bounce mínimo, muy distinto al problema de google-maps.
 - Reseñas: 131 (promedio 5.00★ — se ve poco natural, pendiente naturalizar)
 - Artículos blog: 110
 
@@ -94,11 +97,18 @@ exprimir Facebook, no diversificar en canales de baja calidad.
 
 ## Canales de contacto
 
-**Email (Resend) — ACTIVO y sano:**
-- Plan gratis (hasta 100/día, 3,000/mes — muy por debajo del límite)
-- Envía 25/día (subiendo gradual hacia 40 si el bounce se mantiene <5%)
+**Email (Resend) — ACTIVO y sano, pero el límite diario ya estorba:**
+- Plan gratis: **100/día COMPARTIDOS** entre el cron (25/día) + campañas
+  dirigidas puntuales + transaccionales (bienvenida, contacto, etc.) — ya no
+  es "muy por debajo del límite". El 11 sep se llegó a 106 (25 del cron +
+  80 de la campaña de la calculadora + 1 test) — la campaña salió completa
+  porque corrió antes de tocar el techo, no porque hubiera margen real.
+- Envía 25/día vía cron (subiendo gradual hacia 40 si el bounce se mantiene <5%)
 - 0 bounces en envíos recientes, 36.7% engagement, DMARC 100%
 - Fix aplicado (sep): `sanitizeTag()` limpia acentos en tags (bug 422 resuelto)
+- **Decisión pendiente:** evaluar Resend Pro ($20/mes) — elimina el límite
+  diario, permitiría subir el cron a 40/día sin competir por cuota con
+  campañas puntuales.
 
 **WhatsApp — MUERTO:**
 - Cuenta WhatsApp Business deshabilitada por Meta (error Twilio 63112)
@@ -132,6 +142,37 @@ exprimir Facebook, no diversificar en canales de baja calidad.
 
 ---
 
+## 🧰 Herramientas del sitio (costo y protección)
+
+| Herramienta | Costo por uso | Protección | Estado |
+|---|---|---|---|
+| Buscador de jurisprudencias | ~$0.001/búsqueda (Claude Haiku, solo traduce la consulta a parámetros y linkea al portal SCJN) | Rate limit 25/hora por IP (Upstash Redis) + límite suave de 7 búsquedas gratis para anónimos (localStorage, cosmético) + alerta por correo a partir de 300 llamadas/día | ✅ Verificado en producción: la búsqueda #26 desde la misma IP devuelve 429. Fail-open si Redis cae (deja pasar la búsqueda, pero loguea advertencia). |
+| Calculadora de finiquito | $0 — 100% cálculo en el navegador (`useMemo`), sin llamada a ninguna API | No aplica (no hay endpoint que proteger) | ✅ Libre para promocionar sin restricción. Vive en `src/app/(public)/herramientas/page.tsx`. |
+
+**Env vars de Upstash en Vercel (nombres reales, no los "estándar" de la
+librería):** `UPSTASH_REDIS_REST_KV_REST_API_URL` / `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`
+(usar el token de escritura, no el `_READ_ONLY_TOKEN`). Código en
+`src/lib/ratelimitJurisprudencias.ts`.
+
+---
+
+## 📧 Campañas de email dirigidas (aparte del cron de prospectos)
+
+Envíos puntuales a abogados YA REGISTRADOS (tabla `Lawyer`), distintos del
+cron de captación de prospectos. Scripts en `scripts/campanas/`, no tocan
+`vercel.json` ni ningún estado en BD.
+
+| # | Campaña | Destinatarios | Estado |
+|---|---|---|---|
+| 1 | Calculadora de finiquito | 80 abogados activos | ✅ Enviada y entregada 100% (11 sep, script puntual — no el cron). Pendiente medir `clicked` en 2-3 días. |
+| 2 | Buscador de jurisprudencias | ~80 abogados activos | 📅 Planeada ~1 semana después del #1, si el #1 rinde bien. |
+
+Script: `scripts/campanas/envio-calculadora-finiquito.mjs` — modos
+`--dry-run` / `--test` / `--send`, delay 500ms entre envíos, tags
+sanitizados con `sanitizeTag()` (mismo fix del bug 422).
+
+---
+
 ## ✅ Hecho en la sesión del 8 sep 2026
 
 - Diagnosticado y arreglado el bug 422 de email (tags con acento) → email revivió
@@ -141,6 +182,26 @@ exprimir Facebook, no diversificar en canales de baja calidad.
 - Revertidos 127 leads quemados de WhatsApp a la cola de email
 - Importados 89 leads nuevos de Facebook + corregido bug de paginación
 - Confirmado dominio sano vía reportes DMARC (Google + Microsoft)
+
+---
+
+## ✅ Hecho en la sesión del 11 sep 2026
+
+- Protegido el buscador de jurisprudencias: rate limit 25/hora por IP (Upstash
+  Redis) + límite suave de 7 búsquedas para anónimos + alerta diaria a 300
+  llamadas. Corregidos los nombres reales de las env vars de Upstash en Vercel
+  (no coincidían con los "estándar" de la librería). Verificado en producción.
+- Diagnosticada la calculadora de finiquito: 100% cálculo local, sin costo,
+  sin necesidad de protección.
+- Confirmado (tabla `Lawyer`, vía Prisma — Supabase/PostgREST no tiene permiso
+  sobre esa tabla): 80 abogados activos de 83 registrados.
+- Creado y ejecutado `scripts/campanas/envio-calculadora-finiquito.mjs`:
+  envío dirigido a los 80 abogados activos, 100% entregado, verificado
+  directamente contra la API de Resend (no solo el log del script).
+- Diagnosticado el tope de 100/día de Resend: se compartía entre el cron
+  (25/día) y la campaña (80 + 1 test) = 106 ese día. La campaña en sí no
+  sufrió ningún corte — se confirmó con `GET /emails` de Resend que los 80
+  llegaron con `last_event: delivered/clicked`, sin huecos ni duplicados.
 
 ---
 
@@ -226,16 +287,23 @@ de Resend. Si un script en batch falla 100% pero una llamada individual con
 **Contacto y crons:**
 - [ ] Vigilar bounce rate con email a 25/día; si <5%, subir a 30 y luego 40
 - [ ] Automatizar import de leads FB (requiere token de Meta — proyecto trabado)
+- [ ] Verificar mañana que el cron de email (14:00 UTC) manda sus 25 tras el
+      reinicio de cuota (hoy se llegó a 106/100 entre cron + campaña)
 
 **Marketing / crecimiento:**
 - [ ] Aplicar los 6 títulos SEO reescritos (confirmar si ya se hizo)
 - [ ] Empezar a publicar Reels (formato de mayor rendimiento, hoy sin usar)
 - [ ] Ampliar captación de abogados a CDMX/Puebla (desajuste geográfico:
       demanda nacional vs oferta norteña)
+- [ ] Medir `clicked` de la campaña de la calculadora de finiquito (en 2-3 días)
+- [ ] Correo #2 a abogados: buscador de jurisprudencias (~1 semana después
+      del #1, si rinde bien)
 
 **Infraestructura:**
 - [ ] Considerar Vercel Pro para control individual de crons (el toggle de
       Hobby es frágil y ya reactivó crons por accidente 2 veces)
+- [ ] Decidir si subir a Resend Pro ($20/mes) — elimina el límite de 100/día
+      que ya compite entre el cron y las campañas dirigidas
 - [ ] Endurecer DMARC de p=none a p=quarantine (cuando se quiera blindar)
 
 **Calidad de datos:**
