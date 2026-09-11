@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   BookOpen, ChevronRight, Sparkles, Loader2, AlertCircle,
   Search, ExternalLink, CircleAlert, CircleMinus, CircleCheck,
-  MessageSquare, ArrowLeft,
+  MessageSquare, ArrowLeft, Lock, UserPlus,
 } from 'lucide-react'
 
 const df = { fontFamily: 'var(--font-cormorant)' }
@@ -67,9 +67,15 @@ function esTextoCorto(texto) {
   return palabras < 5 || texto.trim().length < 30
 }
 
+// ─── Límite gratis (solo UX/cosmético — la protección real es el rate limit
+// por IP del lado del servidor). Solo aplica a visitantes anónimos; los
+// abogados con sesión (isLoggedIn) no tienen este contador. ────────────────
+const FREE_SEARCHES_LIMIT = 7
+const STORAGE_KEY = 'lexia_jurisprudencias_used'
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function JurisprudenciasSearch() {
+export default function JurisprudenciasSearch({ isLoggedIn = false }) {
   // form
   const [caso,           setCaso]           = useState('')
   const [placeholderIdx, setPlaceholderIdx] = useState(0)
@@ -81,12 +87,35 @@ export default function JurisprudenciasSearch() {
   // result
   const [resultado,      setResultado]      = useState(null)
   const [error,          setError]          = useState('')
+  // contador de búsquedas gratis (solo anónimos) — arranca en 0 para que el
+  // render inicial del servidor y del cliente coincidan; se lee de
+  // localStorage en el primer effect, ya en cliente.
+  const [searchesUsed,   setSearchesUsed]   = useState(0)
 
   // Rotate placeholder every 3 s
   useEffect(() => {
     const id = setInterval(() => setPlaceholderIdx((i) => (i + 1) % PLACEHOLDERS.length), 3000)
     return () => clearInterval(id)
   }, [])
+
+  // Leer contador de localStorage al montar (solo relevante para anónimos)
+  useEffect(() => {
+    if (isLoggedIn) return
+    const stored = Number(window.localStorage.getItem(STORAGE_KEY))
+    if (Number.isFinite(stored) && stored > 0) setSearchesUsed(stored)
+  }, [isLoggedIn])
+
+  const remainingSearches = Math.max(0, FREE_SEARCHES_LIMIT - searchesUsed)
+  const limitReached = !isLoggedIn && remainingSearches <= 0
+
+  function registrarBusquedaUsada() {
+    if (isLoggedIn) return // abogados registrados: sin contador, solo los protege el rate limit por IP
+    setSearchesUsed((prev) => {
+      const next = prev + 1
+      window.localStorage.setItem(STORAGE_KEY, String(next))
+      return next
+    })
+  }
 
   const quality = useMemo(() => evaluateQuality(caso), [caso])
   const qConfig = quality ? QUALITY_CONFIG[quality] : null
@@ -133,6 +162,7 @@ export default function JurisprudenciasSearch() {
       if (!res.ok || data.error) { setError(data.error ?? 'Error al analizar el caso.'); setEstado('idle'); return }
       setResultado(data)
       setEstado('resultado')
+      registrarBusquedaUsada() // cuenta como una búsqueda completada (solo anónimos)
     } catch {
       setError('No se pudo conectar. Intenta de nuevo.')
       setEstado('idle')
@@ -142,7 +172,7 @@ export default function JurisprudenciasSearch() {
   // ── Submit: decide flow path ───────────────────────────────────────────────
   function handleAnalizar(e) {
     e.preventDefault()
-    if (!caso.trim()) return
+    if (!caso.trim() || limitReached) return
     setResultado(null)
     if (esTextoCorto(caso)) {
       fetchClarificacion()
@@ -211,7 +241,35 @@ export default function JurisprudenciasSearch() {
 
       <div className="max-w-3xl mx-auto px-6 lg:px-8 py-12 space-y-5">
 
-        {/* ── Input card ─────────────────────────────────────────────────── */}
+        {/* ── Contador de búsquedas gratis (solo anónimos, con saldo) ─────── */}
+        {!isLoggedIn && !limitReached && (
+          <p className="text-center text-xs text-[#0C0D10]/45">
+            Te quedan <span className="font-semibold text-[#C49A3C]">{remainingSearches}</span>{' '}
+            {remainingSearches === 1 ? 'búsqueda gratis' : 'búsquedas gratis'} sin registrarte
+          </p>
+        )}
+
+        {/* ── Input card (o CTA de registro si se agotó el límite gratis) ── */}
+        {limitReached ? (
+          <div className="bg-white border border-[#EAE4D9] rounded-2xl p-8 shadow-sm text-center space-y-4">
+            <div className="w-12 h-12 rounded-full bg-[rgba(196,154,60,0.12)] border border-[rgba(196,154,60,0.3)] flex items-center justify-center mx-auto">
+              <Lock className="w-5 h-5 text-[#C49A3C]" />
+            </div>
+            <h2 className="text-xl text-[#0C0D10]" style={df}>
+              Usaste tus {FREE_SEARCHES_LIMIT} búsquedas gratis
+            </h2>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+              Regístrate gratis como abogado en Lexia para seguir usando el buscador de jurisprudencias sin límite.
+            </p>
+            <Link
+              href="/registro"
+              className="inline-flex items-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
+            >
+              <UserPlus className="w-4 h-4" />
+              Regístrate gratis para seguir buscando
+            </Link>
+          </div>
+        ) : (
         <div className="bg-white border border-[#EAE4D9] rounded-2xl p-7 shadow-sm">
           <form onSubmit={handleAnalizar} className="space-y-4">
             <div>
@@ -270,6 +328,7 @@ export default function JurisprudenciasSearch() {
             )}
           </form>
         </div>
+        )}
 
         {/* ── Clarification card ─────────────────────────────────────────── */}
         {estado === 'clarificacion' && clarificacion && (

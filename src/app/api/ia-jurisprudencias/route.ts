@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import {
+  getClientIp,
+  checkJurisprudenciasRateLimit,
+  trackDailyCallAndAlert,
+  logJurisprudenciasCall,
+} from '@/lib/ratelimitJurisprudencias'
 
 const SYSTEM_PROMPT = `Eres un experto en derecho mexicano especializado en búsqueda de jurisprudencias en el Semanario Judicial de la Federación (SJF). Cuando el usuario describa su caso, responde ÚNICAMENTE con un objeto JSON con esta estructura exacta, sin texto adicional ni backticks:
 {
@@ -13,6 +19,20 @@ export async function POST(request: NextRequest) {
   if (!apiKey) {
     return NextResponse.json({ error: 'Servicio de IA no configurado.' }, { status: 503 })
   }
+
+  const ip = getClientIp(request)
+  const { allowed, failedOpen } = await checkJurisprudenciasRateLimit(ip)
+  logJurisprudenciasCall('ia-jurisprudencias', ip, allowed)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Has alcanzado el límite de búsquedas por hora. Intenta de nuevo más tarde.' },
+      { status: 429 }
+    )
+  }
+  if (failedOpen) {
+    console.warn(`[ia-jurisprudencias] Redis caído, dejando pasar sin límite (fail-open) — ip=${ip}`)
+  }
+  await trackDailyCallAndAlert()
 
   let caso: string
   try {
