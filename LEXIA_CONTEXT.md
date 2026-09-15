@@ -1,8 +1,35 @@
 # LEXIA — Documento de Contexto Vivo
 
-> **Última actualización:** 11 de septiembre de 2026
+> **Última actualización:** 15 de septiembre de 2026
 > **Propósito:** Estado actual del proyecto Lexia. Este archivo es la fuente de
 > verdad para retomar contexto en cualquier sesión.
+
+---
+
+## 🎯 HALLAZGO ESTRATÉGICO (15 sep 2026) — leer primero
+
+**El cuello de botella de Lexia NO es captar abogados — van 80 activos,
+sobran. El cuello de botella es CONVERTIR tráfico en contactos.** Solo
+**15 contactos a abogados en 30 días**, y **86% de los abogados (69 de 80)
+no recibieron ni un solo contacto** en ese periodo (ver detalle en
+"Tracking de contactos" más abajo).
+
+**Causa raíz encontrada:** el anuncio B2C de Facebook ("¿Te quedas horas
+extra sin que te paguen?...") trae **16,176 visitas** de clientes
+potenciales — pero mandaba a la home genérica (`lexiamx.com`), no a una
+lista de abogados laborales. El visitante llegaba buscando "un abogado
+laboral" y no encontraba cómo contactar a ninguno sin navegar y filtrar
+manualmente — se iba antes de convertir.
+
+**Acción tomada hoy:** se cambió el destino del anuncio a
+`/abogados?especialidad=Derecho%20Laboral` (página que ya existía y ya
+funcionaba: 39 abogados con especialidad laboral, 34 con botón de
+WhatsApp visible de inmediato en la tarjeta, **0 clics** entre aterrizar
+y poder contactar). Se agregó UTM al link para poder medir el efecto.
+
+**Pendiente:** medir en 2-3 semanas si los contactos mensuales suben
+respecto al baseline. **Baseline a comparar: 16,176 visitas → 15
+contactos/mes** (con destino a la home).
 
 ---
 
@@ -130,6 +157,14 @@ exprimir Facebook, no diversificar en canales de baja calidad.
 - Import de leads: MANUAL vía CSV semanal (`importar-leads-facebook-csv.mjs`,
   ya commiteado en repo). Bug de paginación corregido (sep).
 
+**Estado de campañas activas (15 sep 2026):**
+- **B2B "¿Eres abogado…?"** (capta abogados nuevos): **EN PAUSA** — correcto,
+  ya sobran abogados activos (ver hallazgo estratégico arriba).
+- **B2C "¿Te quedas horas extra…?"** (trae clientes/prospectos): **ACTIVA**,
+  $75 MXN/día. Destino corregido hoy de la home genérica a
+  `/abogados?especialidad=Derecho%20Laboral` — ver hallazgo estratégico arriba
+  para el porqué.
+
 ---
 
 ## SEO / Google (últimos 3 meses, medido ago 2026)
@@ -156,6 +191,59 @@ librería):** `UPSTASH_REDIS_REST_KV_REST_API_URL` / `UPSTASH_REDIS_REST_KV_REST
 
 ---
 
+## 📞 Tracking de contactos (visitante → abogado)
+
+**Sí se mide.** Tabla `Contact` (Prisma) registra cada clic en los botones
+de contacto del perfil (`lawyerId` + `type`: `WHATSAPP`/`CALL`/`EMAIL` +
+`createdAt`), vía el componente `src/components/ContactButton.tsx` →
+server action `registrarContacto()`. También notifica al abogado por
+email en cada contacto (no bloqueante).
+
+**Volumen real (medido 11 sep):**
+- Total histórico: **63 contactos** en 5.5 meses (desde 28 mar 2026)
+- Últimos 30 días: **15** (WhatsApp 8, Email 7, Call 0)
+- Solo 11 de 80 abogados activos recibieron algún contacto en 30 días —
+  **69 (86%) con cero**
+
+**Huecos de instrumentación (menores, no bloqueantes):**
+- Falta evento `gtag` en los botones de contacto — GA4 no ve esta
+  conversión, aunque el patrón `gtag('event', ...)` ya se usa en otro
+  lado del código (`AbogadosSearchForm.tsx`).
+- El evento de Facebook Pixel `Contact` solo se dispara en WhatsApp; el
+  evento `Lead` sí cubre los tres tipos.
+
+**Decisión:** NO construir un dashboard de reporte por abogado todavía —
+con solo 15 contactos/mes el volumen es demasiado bajo para que valga la
+pena. Prioridad es subir la conversión primero (ver hallazgo estratégico
+arriba); el reporte se revisita si el volumen sube.
+
+---
+
+## ✉️ Emails suprimidos en Resend (abogados activos)
+
+**2 de 80 abogados activos** tienen su email en la lista de supresión de
+Resend (`GET /suppressions`) — quedan como "activos" en la BD pero
+incontactables por correo, sin que nadie se entere (ambos rebotaron su
+correo de bienvenida en el mismo segundo del registro, consistente con
+typo al momento de registrarse):
+- **Geovanny** (`abogadosespinosa2026@icloud.com`) — hard bounce ("user
+  does not exist"), suprimido desde 19 ago. Sin teléfono/WhatsApp en
+  perfil — no hay forma de contactarlo para corregir el email.
+- **Sandra** (`sandycamarillo2016@hotmail.com`) — suprimido desde 27 jul,
+  detalle del bounce original ya purgado por Resend. **Sí tiene WhatsApp
+  registrado** — rescatable, contactar para validar/corregir su email.
+
+**Causa raíz:** el registro no valida el formato del email en el
+servidor (solo `type="email"` de HTML5 en el navegador, que no detecta
+buzones inexistentes) y no hay forma de detectar cuando el correo de
+bienvenida rebota (mismo problema de fondo que "aceptado ≠ entregado",
+ver lecciones aprendidas). **Fix Nivel 1 propuesto (no implementado):**
+tras `sendWelcomeEmail()`, hacer polling del status vía `GET /emails/{id}`
+y avisar al admin si rebota, sin necesidad de webhook ni migración de
+esquema. Baja prioridad — son solo 2 casos de 80.
+
+---
+
 ## 📧 Campañas de email dirigidas (aparte del cron de prospectos)
 
 Envíos puntuales a abogados YA REGISTRADOS (tabla `Lawyer`), distintos del
@@ -164,7 +252,7 @@ cron de captación de prospectos. Scripts en `scripts/campanas/`, no tocan
 
 | # | Campaña | Destinatarios | Estado |
 |---|---|---|---|
-| 1 | Calculadora de finiquito | 80 abogados activos | ✅ Enviada y entregada 100% (11 sep, script puntual — no el cron). Pendiente medir `clicked` en 2-3 días. |
+| 1 | Calculadora de finiquito | 80 abogados activos | ✅ Enviada 11 sep (script puntual — no el cron). Resultado real: **77 entregados/clicked, 1 bounce soft (recuperable, reintentar), 2 suppressed** (ver sección de emails suprimidos). Pendiente medir `clicked` agregado. |
 | 2 | Buscador de jurisprudencias | ~80 abogados activos | 📅 Planeada ~1 semana después del #1, si el #1 rinde bien. |
 
 Script: `scripts/campanas/envio-calculadora-finiquito.mjs` — modos
@@ -202,6 +290,24 @@ sanitizados con `sanitizeTag()` (mismo fix del bug 422).
   (25/día) y la campaña (80 + 1 test) = 106 ese día. La campaña en sí no
   sufrió ningún corte — se confirmó con `GET /emails` de Resend que los 80
   llegaron con `last_event: delivered/clicked`, sin huecos ni duplicados.
+
+---
+
+## ✅ Hecho en la sesión del 15 sep 2026
+
+- Importados 55 leads nuevos de Facebook (CSV semanal, 63 leídos, 7 ya
+  existían, 1 choque de teléfono omitido, 0 errores) — `prospectos` pasó
+  de 1,370 a 1,425.
+- Diagnosticado el tracking de contactos: confirmado que sí existe
+  (tabla `Contact`), medido el volumen real (63 histórico, 15/30 días),
+  identificados los huecos de GA4/Pixel.
+- Diagnosticados los 2 emails suprimidos en Resend entre los abogados
+  activos, causa raíz (sin validación server-side, sin detección de
+  bounce) y propuesta de fix (no implementado).
+- **Hallazgo estratégico:** diagnosticado el agujero de conversión de la
+  campaña B2C de Facebook (16,176 visitas → 15 contactos) — el anuncio
+  mandaba a la home en vez de a una lista filtrada de abogados
+  laboralistas. Destino del anuncio corregido.
 
 ---
 
@@ -298,6 +404,14 @@ de Resend. Si un script en batch falla 100% pero una llamada individual con
 - [ ] Medir `clicked` de la campaña de la calculadora de finiquito (en 2-3 días)
 - [ ] Correo #2 a abogados: buscador de jurisprudencias (~1 semana después
       del #1, si rinde bien)
+- [ ] **PRIORITARIO:** medir en 2-3 semanas si los contactos/mes suben del
+      baseline (15) tras corregir el destino del anuncio B2C
+- [ ] Agregar evento `gtag` a los botones de contacto (WhatsApp/llamada/email)
+      para que GA4 vea la conversión real del negocio
+- [ ] Contactar a Sandra por WhatsApp para validar/corregir su email
+      suprimido en Resend
+- [ ] Evaluar implementar el fix Nivel 1 de detección de bounce en el
+      registro (avisar admin si el correo de bienvenida rebota)
 
 **Infraestructura:**
 - [ ] Considerar Vercel Pro para control individual de crons (el toggle de
