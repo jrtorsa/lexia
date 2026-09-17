@@ -388,6 +388,60 @@ de Resend. Si un script en batch falla 100% pero una llamada individual con
 
 ---
 
+## 🚧 Rediseño de páginas combo ciudad+especialidad (en curso, 17 sep 2026)
+
+Las páginas `/abogados/[ciudad]/[especialidad]` no mostraban abogados reales
+(plantilla de texto casi idéntica entre ciudades) — Search Console las
+reportaba como "sin indexar"/"duplicada sin canónica". Plan aprobado, en
+ejecución por pasos, cada uno con su propio commit local:
+
+1. **✅ Hecho y comiteado (`7dec321`):** fix de 3 menciones hardcodeadas de
+   "Chihuahua" en las plantillas compartidas (`derecho-familiar`,
+   `derecho-laboral`, `derecho-civil` en `src/lib/seo-data.ts`) que
+   aparecían igual en páginas de otras ciudades. Auditadas las 8 plantillas
+   completas — las demás menciones de "Chihuahua" son referencias
+   correctas a nivel estado/circuito judicial, no se tocan.
+2. Normalizar `Lawyer.city` (columna `cityNormalizado` + mapa de alias
+   legible en un solo lugar, con `// TODO: migrar a catálogo City cuando
+   se construya el selector de registro`). Enfoque LIGERO confirmado (no
+   catálogo `City`/FK por ahora). Solo se corrige el typo de puntuación de
+   "San Martín Texmelucan." — los otros 4 registros sucios (Ce, Estado de
+   México, "todos los municipios...", colonia de Ecatepec) quedan FUERA de
+   combos y en lista aparte para contactar a esos abogados.
+3. `generateStaticParams` generado desde BD (no lista fija de 12
+   municipios) + agrupación de zona metro CDMX en una sola página.
+4. `LawyerCard` real (con botón de contacto) en cada combo.
+5. Umbral N=2 abogados para indexar, `noindex` condicional debajo del
+   umbral. Deploy + verificación en vivo.
+
+**Sin pushear a propósito** — se acumulan los pasos en commits locales y
+se pushea todo junto cuando el bloque esté completo y probado, para no
+generar deploys sueltos (cada deploy resetea el toggle de crons de Vercel
+Hobby a "activado", ya causó una reactivación accidental antes).
+
+**Patrón de título rescatado para el paso de metadata (no perderlo):**
+había un override manual sin comitear desde abril (`META_OVERRIDES` en
+`seo-data.ts` + su uso en el combo `page.tsx`) con un buen título hecho a
+mano: *"Abogados Familiares en Chihuahua | Divorcio y Custodia | Lexia"*.
+Ese código se descarta (queda obsoleto con la metadata generada desde BD),
+pero el PATRÓN se reutiliza como plantilla para las 96 páginas:
+```
+Abogados de {Especialidad} en {Ciudad} | {subtemas relevantes} | Lexia
+```
+generando `{subtemas relevantes}` automáticamente (ej. conteo real de
+abogados, o los 2-3 subtemas más buscados de esa especialidad), no a mano
+por combo. El mecanismo de override manual se conserva solo como
+excepción futura para un combo insignia si algún día se justifica — no
+como default.
+
+**Importante — resuelve una duda abierta de sesiones anteriores:** el
+título personalizado de "Abogados Familiares en Chihuahua" nunca se vio
+en producción no por un problema de caché de Vercel (como se sospechó
+antes) — el código (`META_OVERRIDES`/`getComboMeta`, en `seo-data.ts` Y
+en el combo `page.tsx`) simplemente nunca se comiteó ni se desplegó.
+
+---
+
 ## 📌 Pendientes / decisiones abiertas
 
 **Contacto y crons:**
