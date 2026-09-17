@@ -401,13 +401,26 @@ ejecución por pasos, cada uno con su propio commit local:
    aparecían igual en páginas de otras ciudades. Auditadas las 8 plantillas
    completas — las demás menciones de "Chihuahua" son referencias
    correctas a nivel estado/circuito judicial, no se tocan.
-2. Normalizar `Lawyer.city` (columna `cityNormalizado` + mapa de alias
-   legible en un solo lugar, con `// TODO: migrar a catálogo City cuando
-   se construya el selector de registro`). Enfoque LIGERO confirmado (no
-   catálogo `City`/FK por ahora). Solo se corrige el typo de puntuación de
-   "San Martín Texmelucan." — los otros 4 registros sucios (Ce, Estado de
-   México, "todos los municipios...", colonia de Ecatepec) quedan FUERA de
-   combos y en lista aparte para contactar a esos abogados.
+2. **✅ Hecho y comiteado (`a2393ff`):** columna `Lawyer.cityNormalizado`
+   (agregada vía SQL directo, NO `prisma db push` — ese comando quería
+   borrar `articulos`/`posts_facebook`/`prospectos`/`videos_youtube` por
+   no estar modeladas en Prisma) + backfill de 86/86 registros. Mapa de
+   alias en `src/lib/normalizar-ciudad.ts` (con el `// TODO` de migrar a
+   catálogo `City`), verificado con 0 discrepancias contra el backfill
+   real. 83 abogados activos agrupados en 35 buckets; `ciudad-de-mexico`
+   solo (zona metro completa: CDMX + Coyoacán + Xochimilco + Ecatepec +
+   Coacalco + Cuautitlán Izcalli + Naucalpan + Tlalnepantla + Chalco +
+   Tultepec + Ciudad López Mateos + Miguel Hidalgo) = 29.
+
+   **5 registros sin clasificar a propósito** (quedan `NULL`, fuera de
+   combos, pendientes de contactar para confirmar su ciudad real):
+   | Abogado | `city` capturado | Email |
+   |---|---|---|
+   | Almali Alceda | "Ce" | sublimecelsitud@hotmail.com |
+   | Geovanny Ulises Espinosa Perez | "Mexico" (state="México", sin municipio claro) | geovanyespinosa26@icloud.com |
+   | Jorge Martínez Palacios | "Estado De México" | jorgemtzpalacios@gmail.com |
+   | Lic Gerardo César Ham Ramírez | "Todos los municipios del estado de México." | cjam95052@gmail.com |
+   | Martin Saucedo Velazquez | "Santa María Guadalupe Las Torres 1A Sección" | marsave4761@gmail.com |
 3. `generateStaticParams` generado desde BD (no lista fija de 12
    municipios) + agrupación de zona metro CDMX en una sola página.
 4. `LawyerCard` real (con botón de contacto) en cada combo.
