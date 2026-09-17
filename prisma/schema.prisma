@@ -43,6 +43,15 @@ model Lawyer {
   graduationYear  Int?
   yearsExperience Int?
   city            String
+  // Ciudad normalizada para agrupar combos SEO (ciudad+especialidad):
+  // trim + minúsculas + sin acentos + fusión de variantes de escritura +
+  // agrupación de zona metro CDMX en un solo bucket. Mapa de alias en
+  // src/lib/normalizar-ciudad.ts (editar ahí para agregar una ciudad nueva).
+  // NULL = ciudad sin poder normalizar con confianza (dato sucio/ambiguo);
+  // se excluye de los combos a propósito, no se le inventa un valor.
+  // TODO: migrar a catálogo City (tabla + cityId FK) cuando se construya
+  // el selector de ciudades en el formulario de registro.
+  cityNormalizado String?
   state           String
   address         String?
   website         String?
@@ -68,6 +77,7 @@ model Lawyer {
 
   @@index([city, state])
   @@index([slug])
+  @@index([cityNormalizado])
 }
 
 // ─────────────────────────────────────────
