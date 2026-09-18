@@ -8,6 +8,16 @@ export interface CiudadData {
   contextoEconomico: string
 }
 
+// Forma mínima que necesita buildComboContent — las ciudades fuera de las
+// 12 de Chihuahua (generadas desde la BD, ver src/lib/lawyers.ts) no tienen
+// `contexto`/`contextoEconomico` escritos a mano todavía.
+export interface CiudadLike {
+  nombre: string
+  estado: string
+  contexto?: string
+  contextoEconomico?: string
+}
+
 export interface EspecialidadData {
   slug: string
   nombre: string
@@ -338,8 +348,7 @@ const COMBO_OVERRIDES: Partial<Record<ComboKey, ComboContent>> = {
   },
 }
 
-function buildComboContent(ciudadSlug: string, especSlug: string): ComboContent {
-  const c = CIUDADES[ciudadSlug]
+function buildComboContent(c: CiudadLike | undefined, especSlug: string): ComboContent {
   const e = ESPECIALIDADES[especSlug]
   if (!c || !e) {
     return {
@@ -349,15 +358,24 @@ function buildComboContent(ciudadSlug: string, especSlug: string): ComboContent 
     }
   }
 
+  // Ciudades fuera de las 12 de Chihuahua no tienen contexto/contextoEconomico
+  // escritos a mano todavía — se usa una frase genérica en su lugar.
+  const contextoFrase = c.contexto
+    ? c.contexto.split(".")[0]
+    : `${c.nombre} concentra una actividad económica y social relevante en ${c.estado}`
+  const contextoEconomicoFrase = c.contextoEconomico
+    ? c.contextoEconomico.split(".")[0]
+    : `La actividad económica de ${c.nombre} genera una demanda constante de servicios jurídicos`
+
   const introMap: Record<string, string> = {
-    "derecho-familiar": `El derecho familiar en ${c.nombre} atiende situaciones que impactan directamente la vida cotidiana de las familias: divorcios, pensiones alimenticias, custodia de hijos y herencias. ${c.contexto.split(".")[0]}, lo que significa que los asuntos familiares con frecuencia tienen implicaciones patrimoniales relevantes.`,
-    "derecho-penal": `El derecho penal en ${c.nombre} opera bajo el sistema acusatorio adversarial que exige la presencia de un defensor técnico calificado desde el primer contacto con la autoridad. ${c.contexto.split(".")[0]}, contexto que influye en el tipo de delitos del fuero común y federal que se presentan en la región.`,
-    "derecho-laboral": `El derecho laboral en ${c.nombre} responde a la dinámica económica de la ciudad y sus empleadores. ${c.contextoEconomico.split(".")[0]}, lo que genera un flujo constante de conflictos individuales y colectivos que requieren asesoría especializada.`,
-    "derecho-civil": `El derecho civil en ${c.nombre} cubre una amplia gama de controversias entre particulares: desde contratos incumplidos hasta disputas por bienes inmuebles y cobros de deuda. ${c.contexto.split(".")[0]}, entorno que determina el tipo de contratos y relaciones jurídicas más frecuentes en la zona.`,
-    "derecho-mercantil": `Las empresas en ${c.nombre} requieren asesoría mercantil para constituirse, operar y resolver conflictos con clientes, proveedores y socios. ${c.contextoEconomico.split(".")[0]}, sectores que generan una demanda creciente de servicios jurídicos especializados en derecho de los negocios.`,
-    "derecho-inmobiliario": `El mercado inmobiliario en ${c.nombre} presenta oportunidades y riesgos que solo un abogado especializado puede ayudar a gestionar adecuadamente. ${c.contexto.split(".")[0]}, factores que impactan directamente el valor y la regularización de los inmuebles en la ciudad.`,
-    "derecho-fiscal": `Los contribuyentes en ${c.nombre} enfrentan obligaciones tributarias que varían según su actividad económica y el sector en que operan. ${c.contextoEconomico.split(".")[0]}, lo que implica un perfil fiscal específico que requiere planeación y defensa ante el SAT.`,
-    amparo: `El juicio de amparo en ${c.nombre} es el recurso constitucional más poderoso para proteger los derechos de los ciudadanos frente a actos de autoridades locales y federales. ${c.contexto.split(".")[0]}, ciudad que cuenta con juzgados y tribunales competentes para conocer de los amparos promovidos en la región.`,
+    "derecho-familiar": `El derecho familiar en ${c.nombre} atiende situaciones que impactan directamente la vida cotidiana de las familias: divorcios, pensiones alimenticias, custodia de hijos y herencias. ${contextoFrase}, lo que significa que los asuntos familiares con frecuencia tienen implicaciones patrimoniales relevantes.`,
+    "derecho-penal": `El derecho penal en ${c.nombre} opera bajo el sistema acusatorio adversarial que exige la presencia de un defensor técnico calificado desde el primer contacto con la autoridad. ${contextoFrase}, contexto que influye en el tipo de delitos del fuero común y federal que se presentan en la región.`,
+    "derecho-laboral": `El derecho laboral en ${c.nombre} responde a la dinámica económica de la ciudad y sus empleadores. ${contextoEconomicoFrase}, lo que genera un flujo constante de conflictos individuales y colectivos que requieren asesoría especializada.`,
+    "derecho-civil": `El derecho civil en ${c.nombre} cubre una amplia gama de controversias entre particulares: desde contratos incumplidos hasta disputas por bienes inmuebles y cobros de deuda. ${contextoFrase}, entorno que determina el tipo de contratos y relaciones jurídicas más frecuentes en la zona.`,
+    "derecho-mercantil": `Las empresas en ${c.nombre} requieren asesoría mercantil para constituirse, operar y resolver conflictos con clientes, proveedores y socios. ${contextoEconomicoFrase}, sectores que generan una demanda creciente de servicios jurídicos especializados en derecho de los negocios.`,
+    "derecho-inmobiliario": `El mercado inmobiliario en ${c.nombre} presenta oportunidades y riesgos que solo un abogado especializado puede ayudar a gestionar adecuadamente. ${contextoFrase}, factores que impactan directamente el valor y la regularización de los inmuebles en la ciudad.`,
+    "derecho-fiscal": `Los contribuyentes en ${c.nombre} enfrentan obligaciones tributarias que varían según su actividad económica y el sector en que operan. ${contextoEconomicoFrase}, lo que implica un perfil fiscal específico que requiere planeación y defensa ante el SAT.`,
+    amparo: `El juicio de amparo en ${c.nombre} es el recurso constitucional más poderoso para proteger los derechos de los ciudadanos frente a actos de autoridades locales y federales. ${contextoFrase}, ciudad que cuenta con juzgados y tribunales competentes para conocer de los amparos promovidos en la región.`,
   }
 
   const detalleMap: Record<string, string> = {
@@ -493,10 +511,10 @@ function buildComboContent(ciudadSlug: string, especSlug: string): ComboContent 
   }
 }
 
-export function getComboContent(ciudadSlug: string, especSlug: string): ComboContent {
+export function getComboContent(ciudadSlug: string, especSlug: string, ciudad: CiudadLike | undefined): ComboContent {
   const key: ComboKey = `${ciudadSlug}|${especSlug}`
   if (COMBO_OVERRIDES[key]) {
     return COMBO_OVERRIDES[key]!
   }
-  return buildComboContent(ciudadSlug, especSlug)
+  return buildComboContent(ciudad, especSlug)
 }

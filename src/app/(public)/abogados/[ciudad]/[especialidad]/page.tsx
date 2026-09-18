@@ -1,26 +1,40 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { MapPin, ChevronRight, Scale, MessageCircle, ArrowRight } from "lucide-react"
+import { MapPin, ChevronRight, Scale, MessageCircle } from "lucide-react"
 import {
   CIUDADES,
   ESPECIALIDADES,
-  CITY_SLUGS,
   getCiudadesCercanas,
   getComboContent,
+  type CiudadLike,
 } from "@/lib/seo-data"
+import { fetchLawyersByCombo, countLawyersByCombo, getCityNormalizadoBuckets, getCiudadDisplay } from "@/lib/lawyers"
+import LawyerCard from "@/components/LawyerCard"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
+
+// Umbral mínimo de abogados reales para que un combo sea indexable. Por
+// debajo de esto, la página se genera igual (para no romper links / dar
+// una experiencia útil) pero con noindex — evita repetir el problema de
+// thin content que tenía Search Console con el modelo anterior.
+const UMBRAL_INDEXABLE = 2
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Props = { params: Promise<{ ciudad: string; especialidad: string }> }
 
 // ─── Static params ────────────────────────────────────────────────────────────
+// Generado desde la BD (Lawyer.cityNormalizado), no de una lista fija de
+// municipios. Cruza cada ciudad real con las 8 especialidades que ya
+// tienen plantilla de texto (Propiedad Intelectual/Derecho Migratorio
+// quedan fuera por ahora — ver LEXIA_CONTEXT.md, "ampliar especialidades
+// en iteración futura").
 
 export async function generateStaticParams() {
+  const ciudades = await getCityNormalizadoBuckets()
   const combos: { ciudad: string; especialidad: string }[] = []
-  for (const ciudadSlug of Array.from(CITY_SLUGS)) {
+  for (const ciudadSlug of ciudades) {
     for (const especSlug of Object.keys(ESPECIALIDADES)) {
       combos.push({ ciudad: ciudadSlug, especialidad: especSlug })
     }
@@ -28,21 +42,34 @@ export async function generateStaticParams() {
   return combos
 }
 
+async function resolveCiudad(ciudadSlug: string): Promise<CiudadLike | undefined> {
+  return CIUDADES[ciudadSlug] ?? (await getCiudadDisplay(ciudadSlug)) ?? undefined
+}
+
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { ciudad, especialidad } = await params
 
-  const c = CIUDADES[ciudad]
   const e = ESPECIALIDADES[especialidad]
+  const c = await resolveCiudad(ciudad)
   if (!c || !e) return { title: "Página no encontrada | Lexia" }
 
-  const title = `Abogados de ${e.nombre} en ${c.nombre} | Lexia`
-  const description = `Encuentra abogados especializados en ${e.nombre} en ${c.nombre}, ${c.estado}. ${e.descripcion}. Cédula verificada, contacto directo.`.slice(0, 155)
+  const nAbogados = await countLawyersByCombo(ciudad, e.nombre)
+  const indexable = nAbogados >= UMBRAL_INDEXABLE
+
+  const title = nAbogados > 0
+    ? `Abogados de ${e.nombre} en ${c.nombre} | ${nAbogados} verificado${nAbogados !== 1 ? "s" : ""} | Lexia`
+    : `Abogados de ${e.nombre} en ${c.nombre} | Lexia`
+  const description =
+    `Encuentra abogados especializados en ${e.nombre} en ${c.nombre}, ${c.estado}. ${e.descripcion}. Cédula verificada, contacto directo.`.slice(0, 155)
 
   return {
     title,
     description,
+    robots: indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
     openGraph: {
       title,
       description,
@@ -58,12 +85,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const { ciudad: ciudadSlug, especialidad: especSlug } = await params
 
-  const c = CIUDADES[ciudadSlug]
   const e = ESPECIALIDADES[especSlug]
+  const c = await resolveCiudad(ciudadSlug)
 
   if (!c || !e) notFound()
 
-  const combo = getComboContent(ciudadSlug, especSlug)
+  const [lawyers, combo] = await Promise.all([
+    fetchLawyersByCombo(ciudadSlug, e.nombre),
+    Promise.resolve(getComboContent(ciudadSlug, especSlug, c)),
+  ])
+
   const cercanas = getCiudadesCercanas(ciudadSlug)
   const otrasEspecialidades = Object.values(ESPECIALIDADES).filter((x) => x.slug !== especSlug)
 
@@ -74,7 +105,7 @@ export default async function Page({ params }: Props) {
     description: `Directorio de abogados especializados en ${e.nombre} en ${c.nombre}, ${c.estado}.`,
     areaServed: {
       "@type": "City",
-      name: c.nombreCompleto,
+      name: c.nombre,
       containedInPlace: {
         "@type": "State",
         name: c.estado,
@@ -139,10 +170,6 @@ export default async function Page({ params }: Props) {
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
             <Link href="/abogados" className="hover:text-[#C49A3C] transition-colors">Abogados</Link>
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
-            <Link href={`/abogados/${ciudadSlug}`} className="hover:text-[#C49A3C] transition-colors">
-              {c.nombre}
-            </Link>
-            <ChevronRight className="w-3 h-3 flex-shrink-0" />
             <span className="text-[#FAF7F2]/60">{e.nombre}</span>
           </nav>
 
@@ -162,13 +189,34 @@ export default async function Page({ params }: Props) {
           </h1>
 
           <p className="text-[#FAF7F2]/55 text-base max-w-2xl leading-relaxed">
-            {e.descripcion}. Encuentra al especialista que necesitas en {c.nombre}, {c.estado}.
+            {e.descripcion}. {lawyers.length > 0
+              ? `${lawyers.length} abogado${lawyers.length !== 1 ? "s" : ""} verificado${lawyers.length !== 1 ? "s" : ""} en ${c.nombre}, listos para contactar.`
+              : `Encuentra al especialista que necesitas en ${c.nombre}, ${c.estado}.`}
           </p>
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-5xl mx-auto px-6 lg:px-8 py-10 space-y-10">
+
+        {/* Abogados reales */}
+        {lawyers.length > 0 ? (
+          <section>
+            <h2 className="text-2xl text-[#0C0D10] mb-5" style={displayFont}>
+              {lawyers.length} abogado{lawyers.length !== 1 ? "s" : ""} de {e.nombre} en {c.nombre}
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {lawyers.map((lawyer) => (
+                <LawyerCard key={lawyer.id} lawyer={lawyer} />
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section className="bg-white border border-[#EAE4D9] rounded-2xl p-8 text-center">
+            <p className="text-[#0C0D10]/50 text-sm">
+              Aún no hay abogados de {e.nombre} registrados en {c.nombre}. Sé el primero en aparecer aquí.
+            </p>
+          </section>
+        )}
 
         {/* Main content card */}
         <section className="bg-white border border-[#EAE4D9] rounded-2xl p-8">
@@ -180,25 +228,6 @@ export default async function Page({ params }: Props) {
             <p>{combo.detalle}</p>
             <p>{e.contenidoBase}</p>
           </div>
-        </section>
-
-        {/* CTA search */}
-        <section className="bg-[rgba(196,154,60,0.06)] border border-[rgba(196,154,60,0.2)] rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <p className="font-medium text-[#0C0D10] text-sm" style={displayFont}>
-              Busca abogados de {e.nombre} en {c.nombre}
-            </p>
-            <p className="text-[#0C0D10]/50 text-xs mt-1">
-              Perfiles verificados con cédula SEP. Contacto directo sin intermediarios.
-            </p>
-          </div>
-          <Link
-            href={`/abogados?ciudad=${encodeURIComponent(c.nombre)}&especialidad=${encodeURIComponent(e.nombre)}`}
-            className="inline-flex items-center gap-2 bg-[#C49A3C] hover:bg-[#E2B865] text-[#0C0D10] font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors flex-shrink-0"
-          >
-            Ver abogados
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </section>
 
         {/* FAQs */}
