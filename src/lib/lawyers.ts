@@ -3,8 +3,24 @@
 // src/lib/normalizar-ciudad.ts) para agrupar por ciudad real, no por el
 // texto libre capturado en el registro.
 
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import type { Lawyer } from "@/lib/mock-lawyers"
+
+// Umbral mínimo de abogados reales para que un combo ciudad+especialidad
+// sea indexable. Fuente única — la página combo (robots noindex) y el
+// sitemap (qué URLs incluir) tienen que usar exactamente este mismo valor,
+// o se manda una señal contradictoria a Google (noindex + en el sitemap).
+export const UMBRAL_INDEXABLE = 2
+
+// Las 8 especialidades que ya tienen plantilla de texto en seo-data.ts.
+// Propiedad Intelectual / Derecho Migratorio existen en la BD pero no
+// tienen plantilla todavía — quedan fuera hasta ampliar especialidades
+// (ver LEXIA_CONTEXT.md).
+const ESPECIALIDADES_CON_PLANTILLA = [
+  "derecho-familiar", "derecho-penal", "derecho-laboral", "derecho-civil",
+  "derecho-mercantil", "derecho-inmobiliario", "derecho-fiscal", "amparo",
+]
 
 const LAWYER_INCLUDE = {
   specialties: { include: { specialty: true } },
@@ -105,4 +121,25 @@ export async function getCiudadDisplay(cityNormalizado: string): Promise<{ nombr
   })
   if (rows.length === 0) return null
   return { nombre: rows[0].city.trim(), estado: rows[0].state.trim() }
+}
+
+/**
+ * Combos ciudad+especialidad con UMBRAL_INDEXABLE o más abogados reales —
+ * exactamente las URLs que deben aparecer en el sitemap (las que la página
+ * combo marca como `index, follow`). Solo entre las 8 especialidades con
+ * plantilla — ver ESPECIALIDADES_CON_PLANTILLA.
+ */
+export async function getIndexableCombos(): Promise<{ ciudad: string; especialidadSlug: string; n: number }[]> {
+  const rows = await prisma.$queryRaw<{ ciudad: string; especialidadSlug: string; n: bigint }[]>`
+    SELECT l."cityNormalizado" AS ciudad, s.slug AS "especialidadSlug", count(*) AS n
+    FROM "Lawyer" l
+    JOIN "LawyerSpecialty" ls ON ls."lawyerId" = l.id
+    JOIN "Specialty" s ON s.id = ls."specialtyId"
+    WHERE l."isActive" = true
+      AND l."cityNormalizado" IS NOT NULL
+      AND s.slug IN (${Prisma.join(ESPECIALIDADES_CON_PLANTILLA)})
+    GROUP BY l."cityNormalizado", s.slug
+    HAVING count(*) >= ${UMBRAL_INDEXABLE}
+  `
+  return rows.map((r) => ({ ciudad: r.ciudad, especialidadSlug: r.especialidadSlug, n: Number(r.n) }))
 }

@@ -9,16 +9,16 @@ import {
   getComboContent,
   type CiudadLike,
 } from "@/lib/seo-data"
-import { fetchLawyersByCombo, countLawyersByCombo, getCityNormalizadoBuckets, getCiudadDisplay } from "@/lib/lawyers"
+import {
+  fetchLawyersByCombo,
+  countLawyersByCombo,
+  getCityNormalizadoBuckets,
+  getCiudadDisplay,
+  UMBRAL_INDEXABLE,
+} from "@/lib/lawyers"
 import LawyerCard from "@/components/LawyerCard"
 
 const displayFont = { fontFamily: "var(--font-cormorant)" }
-
-// Umbral mínimo de abogados reales para que un combo sea indexable. Por
-// debajo de esto, la página se genera igual (para no romper links / dar
-// una experiencia útil) pero con noindex — evita repetir el problema de
-// thin content que tenía Search Console con el modelo anterior.
-const UMBRAL_INDEXABLE = 2
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

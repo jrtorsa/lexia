@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
-import { ESPECIALIDADES, CITY_SLUGS } from "@/lib/seo-data"
 import { createClient } from "@supabase/supabase-js"
 import { prisma } from "@/lib/prisma"
+import { getIndexableCombos } from "@/lib/lawyers"
 
 function toSlug(s: string) {
   return s
@@ -68,14 +68,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "/terminos",      priority: 0.3, freq: "yearly"  },
   ]
 
-  const [ciudades, articulos, abogados] = await Promise.all([
+  const [ciudades, articulos, abogados, combosIndexables] = await Promise.all([
     getCiudadesActivas(),
     getArticulosPublicados(),
     getAbogadosActivos(),
+    getIndexableCombos(),
   ])
 
-  const comboPages = Array.from(CITY_SLUGS).flatMap((c) =>
-    Object.keys(ESPECIALIDADES).map((e) => `/abogados/${c}/${e}`)
+  // Solo los combos con 2+ abogados (indexables) van en el sitemap — los
+  // que la página marca `noindex` NO deben aparecer aquí, o se manda una
+  // señal contradictoria a Google (ver LEXIA_CONTEXT.md).
+  const comboPages = combosIndexables.map(
+    ({ ciudad, especialidadSlug }) => `/abogados/${ciudad}/${especialidadSlug}`
   )
 
   return [
